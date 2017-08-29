@@ -22,3 +22,27 @@ function dataURItoBlob(dataURI) {
 	return blob;
 
 }
+
+function readFile_DataUrl(selectedFile, callback)
+{
+	var readerURL = new FileReader(); 
+	readerURL.onload = 
+		function (ev) {
+			var dataURL = readerURL.result; 			
+			//localStorage.setItem("savedDataUrl", dataURL);
+			callback(dataURL);
+		}
+	readerURL.readAsDataURL(selectedFile);
+}
+
+function readFile_ArrayBuffer(selectedFile, callback)
+{
+	var reader_ArrayBuf = new FileReader(); 
+	reader_ArrayBuf.onload = 
+		function (ev) {
+			var arrayBuf = reader_ArrayBuf.result; 			
+			//localStorage.setItem("savedDataUrl", dataURL);
+			callback(arrayBuf);
+		}
+	reader_ArrayBuf.readAsArrayBuffer(selectedFile);
+}
