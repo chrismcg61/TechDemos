@@ -64,7 +64,7 @@ function particleSystemInit( particlesNb, posConfig, matConfig) {
 
 
 
-function animPoints_Vertex_Color(particleSystems, posConfig, matConfig) {
+function animPoints_Vertex_Color(now, _delta, particleSystems, posConfig, matConfig) {
 	var areaSize = posConfig.areaSize;
 	var speed = posConfig.speed;
 	
@@ -74,8 +74,8 @@ function animPoints_Vertex_Color(particleSystems, posConfig, matConfig) {
 	var alpha = matConfig.alpha;
 	
 
-	var slowTime = lastRenderTime * 0.00001;
-	var correctDelta = delta / 33;	
+	var slowTime = now * 0.00001;
+	var correctDelta = _delta / 33;	
 
 	for (var i = 0; i < particleSystems.length; i ++ ) {
 		//var object = scene.children[ i ];
