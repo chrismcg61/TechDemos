@@ -101,9 +101,9 @@ function animPoints_Vertex_Color(now, _delta, particleSystems, posConfig, matCon
 					
 					
 				var hslColor = geom.colors[v].getHSL();
-				var h = hslColor.h + (delta * geom.colors[v].speed.x);
-				var s = hslColor.s + (delta * geom.colors[v].speed.y);
-				var l = hslColor.l + (delta * geom.colors[v].speed.z);
+				var h = hslColor.h + (_delta * geom.colors[v].speed.x);
+				var s = hslColor.s + (_delta * geom.colors[v].speed.y);
+				var l = hslColor.l + (_delta * geom.colors[v].speed.z);
 				
 				if(h > color.max.x) h = color.min.x;
 				if(s > color.max.y) s = color.min.y;
