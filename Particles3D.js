@@ -55,7 +55,7 @@ function particleSystemInit( particlesNb, posConfig, matConfig) {
 
 		var particleSystem = new THREE.Points( geometry, material );
 		//particleSystem.rotation.y = i;
-		scene.add( particleSystem );
+		//scene.add( particleSystem );
 		//particleSystems.push( particleSystem );
 	//}
 	
