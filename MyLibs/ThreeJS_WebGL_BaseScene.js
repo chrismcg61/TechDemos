@@ -1,5 +1,5 @@
 var camera, scene, renderer, hemiLight;
-var stats, gui;
+var stats,  gui, guiFolder1;
 
 function initWebGlScene(camZ, statsIsActive, guiIsActive) {
 
@@ -44,6 +44,7 @@ function initWebGlScene(camZ, statsIsActive, guiIsActive) {
   if(guiIsActive)
   {
     gui = new dat.GUI();
+    guiFolder1 = gui.addFolder('Global Params');
   }
  
 }
