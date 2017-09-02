@@ -94,3 +94,22 @@ function createBtnGroup(btnGroup, buttonList, isHorizontal, color, colorFactor, 
 
 
 
+
+function toggleDiv(div, isHorizontal)
+{
+	var size = div.style.height;
+	if(isHorizontal) size = div.style.width;
+	
+	if(size != "0px") 
+	{
+		div.openedSize = size;
+		if(isHorizontal) div.style.width = "0px";
+		else div.style.height = "0px";
+	}
+	else 
+	{
+		if(isHorizontal) div.style.width = div.openedSize;
+		else div.style.height = div.openedSize;
+	}
+
+}
