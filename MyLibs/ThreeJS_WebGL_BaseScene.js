@@ -1,6 +1,7 @@
 var camera, scene, renderer, hemiLight;
+var stats, gui;
 
-function initWebGlScene(camZ) {
+function initWebGlScene(camZ, statsIsActive, guiIsActive) {
 
   var camAngle = 70;   //default: 70
   var camFar = 5000;
@@ -30,6 +31,14 @@ function initWebGlScene(camZ) {
   //
 
   window.addEventListener( 'resize', onWindowResize, false );
+
+  
+  //Stats:
+  if(statsIsActive)
+  {
+    stats = new Stats();
+    document.body.appendChild( stats.dom );
+  }
  
 }
 
