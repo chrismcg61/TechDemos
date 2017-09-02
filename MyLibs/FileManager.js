@@ -46,3 +46,21 @@ function readFile_ArrayBuffer(selectedFile, callback)
 		}
 	reader_ArrayBuf.readAsArrayBuffer(selectedFile);
 }
+
+
+function readFile_ArrayBuffer_FromURL(url, callback)
+{
+	var request = new XMLHttpRequest();
+	request.open('GET', url, true);
+	request.responseType = 'blob';
+	request.onload = function() {
+		var reader = new FileReader();
+		reader.onload =  function(e){
+			callback(e.target.result);
+		};
+		reader.readAsArrayBuffer(request.response);
+	};
+	request.send();
+}
+
+
