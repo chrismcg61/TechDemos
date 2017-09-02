@@ -39,6 +39,12 @@ function initWebGlScene(camZ, statsIsActive, guiIsActive) {
     stats = new Stats();
     document.body.appendChild( stats.dom );
   }
+  
+  //GUI:
+  if(guiIsActive)
+  {
+    gui = new dat.GUI();
+  }
  
 }
 
