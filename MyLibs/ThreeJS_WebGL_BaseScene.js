@@ -16,8 +16,8 @@ function initWebGlScene(camZ, statsIsActive, guiIsActive) {
   // LIGHTS
 
   hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
-  hemiLight.color.setHSL( 0.6, 1, 0.6 );
-  hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+  hemiLight.color.setHSL( 0.99, 0.99, 0.99 );
+  hemiLight.groundColor.setHSL( 0.7, 0.7, 0.7 );
   hemiLight.position.set( 0, 400, 0 );
   scene.add( hemiLight );
 
