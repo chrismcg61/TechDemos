@@ -3,7 +3,7 @@ var stats,  gui, guiFolder1;
 
 function initWebGlScene(camZ, statsIsActive, guiIsActive) {
   document.body.style.margin = "0";
-  document.body.style.padding = "0";
+  document.body.style.overflow = "hidden";
 
   var camAngle = 70;   //default: 70
   var camFar = 5000;
