@@ -5,8 +5,10 @@ MYTAGS.initEditableCodeTag = function (codeTag, languageClass)
 	//Generic styles:
 	codeTag.style.borderStyle = "solid";
 	codeTag.style.overflowY = "scroll";
-	codeTag.contentEditable = true;
+	codeTag.style.paddingTop = "0px";
+	codeTag.style.paddingBottom = "0px";
 	codeTag.className = languageClass;
+	codeTag.contentEditable = true;
 	//Default styles:	
 	codeTag.style.height = "200px";	
 	
