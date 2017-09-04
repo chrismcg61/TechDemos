@@ -15,6 +15,7 @@ MYTAGS.initEditableCodeTag = function (codeTag, languageClass)
 	hljs.highlightBlock(codeTag);	
 	
 	codeTag.onmouseenter = function(){ 
+		hljs.highlightBlock(codeTag); 
 		codeTag.innerHTML = codeTag.textContent;
 		hljs.highlightBlock(codeTag); 
 	};
@@ -23,6 +24,7 @@ MYTAGS.initEditableCodeTag = function (codeTag, languageClass)
 		console.log( "keycode = ", keycode ); 
 		if(27 == keycode)	// "Esc"
 		{
+			hljs.highlightBlock(codeTag); 
 			codeTag.innerHTML = codeTag.textContent;
 			hljs.highlightBlock(codeTag); 
 		}
