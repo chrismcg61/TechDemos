@@ -1,13 +1,13 @@
 var MYTAGS = {};
 
-MYTAGS.initEditableCodeTag = function (codeTag)
+MYTAGS.initEditableCodeTag = function (codeTag, languageClass)
 {
 	//Generic styles:
 	codeTag.style.borderStyle = "solid";
 	codeTag.style.overflowY = "scroll";
 	codeTag.contentEditable = true;
-	//Default styles:
-	codeTag.className = "javascript";
+	codeTag.className = languageClass;
+	//Default styles:	
 	codeTag.style.height = "200px";	
 	
 	hljs.highlightBlock(codeTag);	
