@@ -14,10 +14,17 @@ MYTAGS.initEditableCodeTag = function (codeTag, languageClass)
 	
 	hljs.highlightBlock(codeTag);	
 	
-	codeTag.onmouseenter = function(){ hljs.highlightBlock(codeTag); };
+	codeTag.onmouseenter = function(){ 
+		codeTag.innerHTML = codeTag.textContent;
+		hljs.highlightBlock(codeTag); 
+	};
 	codeTag.onkeypress = function(e){ 
 		var keycode = e.keyCode || e.which;
 		console.log( "keycode = ", keycode ); 
-		if(27 == keycode) hljs.highlightBlock(codeTag); // "Esc"
+		if(27 == keycode)	// "Esc"
+		{
+			codeTag.innerHTML = codeTag.textContent;
+			hljs.highlightBlock(codeTag); 
+		}
 	};
 }
