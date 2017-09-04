@@ -2,7 +2,16 @@ var MYTAGS = {};
 
 MYTAGS.initEditableCodeTag = function (codeTag)
 {
+	//Generic styles:
+	codeTag.style.borderStyle = "solid";
+	codeTag.style.overflowY = "scroll";
+	codeTag.contentEditable = true;
+	//Default styles:
+	codeTag.className = "javascript";
+	codeTag.style.height = "200px";	
+	
 	hljs.highlightBlock(codeTag);	
+	
 	codeTag.onmouseenter = function(){ hljs.highlightBlock(codeTag); };
 	codeTag.onkeypress = function(e){ 
 		var keycode = e.keyCode || e.which;
