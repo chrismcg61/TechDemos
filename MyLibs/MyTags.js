@@ -19,7 +19,7 @@ MYTAGS.initEditableCodeTag = function (codeTag, languageClass)
 		codeTag.innerHTML = codeTag.textContent;
 		hljs.highlightBlock(codeTag); 
 	};
-	codeTag.onkeypress = function(e){ 
+	codeTag.onkeydown = function(e){ 
 		var keycode = e.keyCode || e.which;
 		console.log( "keycode = ", keycode ); 
 		if(27 == keycode)	// "Esc"
