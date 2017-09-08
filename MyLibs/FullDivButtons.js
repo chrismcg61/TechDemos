@@ -55,9 +55,9 @@ function createBtnGroup(btnGroup, buttonList, isHorizontal, color, colorFactor, 
 		
 		if(isRandomColor)
 		{
-			color.r = Math.floor( Math.random()*255 );
-			color.g = Math.floor( Math.random()*255 );
-			color.b = Math.floor( Math.random()*255 );
+			color.r = Math.random()*255;
+			color.g = Math.random()*255;
+			color.b = Math.random()*255;
 		}
 		else
 		{
@@ -65,6 +65,10 @@ function createBtnGroup(btnGroup, buttonList, isHorizontal, color, colorFactor, 
 			color.g *= colorFactor.g;
 			color.b *= colorFactor.b;
 		}		
+		
+		color.r = Math.floor( color.r );
+		color.g = Math.floor( color.g );
+		color.b = Math.floor( color.b );
 		newBtn.style.backgroundColor = "rgba("+color.r+", "+color.g+", "+color.b+", "+color.a+")";		
 		
 		
