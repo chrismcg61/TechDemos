@@ -21,9 +21,9 @@ MyCanvasLib.drawShapes = function (canvas, shapes)
       shapes[i].color.b+','+
       shapes[i].color.a+')';
     ctx.fillRect(
-      shapes[i].x - size/2, 
-      shapes[i].y - size/2, 
-      size, size);
+      shapes[i].x - size.x/2, 
+      shapes[i].y - size.y/2, 
+      size.x, size.y);
   }
 }
 MyCanvasLib.drawImg = function (canvas, img)
