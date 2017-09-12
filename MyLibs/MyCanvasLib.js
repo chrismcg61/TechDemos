@@ -1,5 +1,14 @@
 
 var MyCanvasLib = {};
+
+MyCanvasLib.clear = function (canvas)
+{  
+  var ctx = canvas.getContext("2d");
+  var imgData = ctx.createImageData(canvas.width, canvas.height);  
+  
+  ctx.putImageData(imgData, 0, 0);
+}
+
 MyCanvasLib.writeText = function (canvas, text)
 {
   var ctx = canvas.getContext("2d");
@@ -9,7 +18,8 @@ MyCanvasLib.writeText = function (canvas, text)
   ctx.textBaseline = "middle";
   ctx.fillText(text, canvas.width/2 , canvas.height/2);
 }
-MyCanvasLib.drawShapes = function (canvas, shapes)
+
+MyCanvasLib.drawColorRects = function (canvas, shapes)
 {
   var ctx = canvas.getContext("2d");  
   for(var i=0; i<shapes.length; i++)
@@ -26,11 +36,13 @@ MyCanvasLib.drawShapes = function (canvas, shapes)
       size.x, size.y);
   }
 }
+
 MyCanvasLib.drawImg = function (canvas, img)
 {
   var ctx = canvas.getContext("2d");
   ctx.drawImage(img, 0, 0);    
 }
+
 MyCanvasLib.contrastor = function (color, contrastFactor){
   return 128 + (color - 128) * contrastFactor;
 }
@@ -45,6 +57,7 @@ MyCanvasLib.constrainPos = function ( pos, maxPos, size){
   
   //return {pos:pos, size:size};
 }
+
 MyCanvasLib.setColorFilter = function (canvas, canvasBack, pos, size,
 constrast, gammaOffset, colorIntensity, alpha)
 {
