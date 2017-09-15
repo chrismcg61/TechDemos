@@ -1,19 +1,16 @@
-
 function particleSystemInit( particlesNb, posConfig, matConfig) {
 	var areaSize = posConfig.areaSize;
 	var speed = posConfig.speed;
-	
+
 	var color = matConfig.color;
 	var colSpeed = matConfig.speed;
 	var size = matConfig.size;
 	var alpha = matConfig.alpha;
-	//console.log(matConfig);
-	
-	
-	//GEOMS::
+
 	geometry = new THREE.Geometry();
 
-	for (var i = 0; i < particlesNb; i ++ ) {
+	for (var i = 0; i < particlesNb; i ++ ) 
+	{
 		var vertex = new THREE.Vector3();
 		vertex.x = Math.random() * areaSize.x - areaSize.x/2;
 		vertex.y = Math.random() * areaSize.y - areaSize.y/2;
@@ -38,82 +35,83 @@ function particleSystemInit( particlesNb, posConfig, matConfig) {
 		);
 		geometry.colors.push( newColor );
 	}
+  
+	var material = new THREE.PointsMaterial( { 
+	size: size.min + Math.random() * (size.max - size.min) } );
+	material.transparent = true;
+	material.opacity = alpha;
+	material.vertexColors = THREE.VertexColors;
 
-	/*var particleSystems = [];
-	for (var i = 0; i < myParticleSystemNb; i ++ ) 
-	{
-		
-		materials[i] = new THREE.PointsMaterial( { size: myParticleSize.min + Math.random() * (myParticleSize.max - myParticleSize.min) } );
-		materials[i].transparent = true;
-		materials[i].opacity = myParticleAlpha;
-		materials[i].vertexColors = THREE.VertexColors;
-		*/
-		var material = new THREE.PointsMaterial( { size: size.min + Math.random() * (size.max - size.min) } );
-		material.transparent = true;
-		material.opacity = alpha;
-		material.vertexColors = THREE.VertexColors;
+	var particleSystem = new THREE.Points( geometry, material );
 
-		var particleSystem = new THREE.Points( geometry, material );
-		//particleSystem.rotation.y = i;
-		//scene.add( particleSystem );
-		//particleSystems.push( particleSystem );
-	//}
-	
+	scene.add(particleSystem);
+	myParticleSystems.push(particleSystem);
+	particleSystem.posConfig = posConfig;
+	particleSystem.matConfig = matConfig;
+
 	return particleSystem;
 }
 
+function animParticles(particleSystems) {
+
+  var slowTime = now * 0.00001;
+  var correctDelta = deltaT / 33;	
+
+  for (var i = 0; i < particleSystems.length; i ++ ) {
+    //var object = scene.children[ i ];
+    //if ( particleSystem instanceof THREE.Points ) 
+    var particleSystem = particleSystems[ i ];		
+    if(!particleSystem.visible) continue;
+
+    var posConfig = particleSystem.posConfig;
+    var matConfig = particleSystem.matConfig;
+
+    var areaSize = posConfig.areaSize;
+    var speed = posConfig.speed;
+
+    var color = matConfig.color;
+    var colSpeed = matConfig.speed;
+    var size = matConfig.size;
+    var alpha = matConfig.alpha;
+
+    {
+      //object.rotation.y = time * ( i < 4 ? i + 1 : - ( i + 1 ) );			
+      var geom = particleSystem.geometry;
+      //console.log(vertices);
+      for ( v = 0; v < geom.vertices.length; v ++ ) {  
+        var saveVertice = geom.vertices[v].clone();
+        //var moveFactor =  Math.sin( time*20 );
+        geom.vertices[v].x += geom.vertices[v].speed.x * correctDelta; // * moveFactor;	
+        geom.vertices[v].y += geom.vertices[v].speed.y * correctDelta;
+        geom.vertices[v].z += geom.vertices[v].speed.z * correctDelta;
+
+        if(Math.abs( geom.vertices[v].x ) > areaSize.x/2) 
+          geom.vertices[v].x  = saveVertice.x * (-1);
+        if(Math.abs( geom.vertices[v].y ) > areaSize.y/2) 
+          geom.vertices[v].y  = saveVertice.y * (-1);
+        if(Math.abs( geom.vertices[v].z ) > areaSize.z/2) 
+          geom.vertices[v].z  = saveVertice.z * (-1);
 
 
-function animPoints_Vertex_Color(now, _delta, particleSystems, posConfig, matConfig) {
-	var areaSize = posConfig.areaSize;
-	var speed = posConfig.speed;
-	
-	var color = matConfig.color;
-	var colSpeed = matConfig.speed;
-	var size = matConfig.size;
-	var alpha = matConfig.alpha;
-	
+        var hslColor = geom.colors[v].getHSL();
+        var h = hslColor.h + (deltaT * geom.colors[v].speed.x);
+        var s = hslColor.s + (deltaT * geom.colors[v].speed.y);
+        var l = hslColor.l + (deltaT * geom.colors[v].speed.z);
 
-	var slowTime = now * 0.00001;
-	var correctDelta = _delta / 33;	
+        if(h > color.max.x) h = color.min.x;
+        if(s > color.max.y) s = color.min.y;
+        if(l > color.max.z) l = color.min.z;
 
-	for (var i = 0; i < particleSystems.length; i ++ ) {
-		//var object = scene.children[ i ];
-		//if ( particleSystem instanceof THREE.Points ) 
-		var particleSystem = particleSystems[ i ];		
-		{
-			//object.rotation.y = time * ( i < 4 ? i + 1 : - ( i + 1 ) );			
-			var geom = particleSystem.geometry;
-			//console.log(vertices);
-			for ( v = 0; v < geom.vertices.length; v ++ ) {  
-				var saveVertice = geom.vertices[v].clone();
-				//var moveFactor =  Math.sin( time*20 );
-				geom.vertices[v].x += geom.vertices[v].speed.x * correctDelta; // * moveFactor;	
-				geom.vertices[v].y += geom.vertices[v].speed.y * correctDelta;
-				geom.vertices[v].z += geom.vertices[v].speed.z * correctDelta;
-				
-				if(Math.abs( geom.vertices[v].x ) > areaSize.x/2) 
-					geom.vertices[v].x  = saveVertice.x * (-1);
-				if(Math.abs( geom.vertices[v].y ) > areaSize.y/2) 
-					geom.vertices[v].y  = saveVertice.y * (-1);
-				if(Math.abs( geom.vertices[v].z ) > areaSize.z/2) 
-					geom.vertices[v].z  = saveVertice.z * (-1);
-					
-					
-				var hslColor = geom.colors[v].getHSL();
-				var h = hslColor.h + (_delta * geom.colors[v].speed.x);
-				var s = hslColor.s + (_delta * geom.colors[v].speed.y);
-				var l = hslColor.l + (_delta * geom.colors[v].speed.z);
-				
-				if(h > color.max.x) h = color.min.x;
-				if(s > color.max.y) s = color.min.y;
-				if(l > color.max.z) l = color.min.z;
-				
-				geom.colors[v].setHSL( h, s, l ); 
-			}
-			
-			geom.colorsNeedUpdate = true;
-			geom.verticesNeedUpdate = true;
-		}
-	}
+        geom.colors[v].setHSL( h, s, l ); 
+      }
+
+      geom.colorsNeedUpdate = true;
+      geom.verticesNeedUpdate = true;
+
+      particleSystem.material.opacity = alpha;
+    }
+  }
+  
+  rainParticleSystem.position.copy(camera.position);
+  dustParticleSystem.position.copy(camera.position);
 }
