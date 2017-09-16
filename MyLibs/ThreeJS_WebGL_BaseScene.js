@@ -246,7 +246,8 @@ function animSky(topColor, speed, lightningColor){
 
 
 //AMBIENT PARTICLES:
-function initRain(){
+function initRain()
+{
   var rainParticlesNb = 900;
   var rainParticlesPosConfig ={
     areaSize: new THREE.Vector3(900, 900, 900),
@@ -273,7 +274,7 @@ function initRain(){
     rainParticlesMaterialConfig
   );
 }
-function initDust(){
+function initDust()
 {
   var dustParticlesNb = 200;
   var dustParticlesPosConfig ={
