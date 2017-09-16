@@ -52,12 +52,13 @@ function particleSystemInit( particlesNb, posConfig, matConfig) {
 	return particleSystem;
 }
 
-function animParticles(particleSystems) {
+function animParticles(particleSystems, ambientOn) {
 
   var slowTime = now * 0.00001;
   var correctDelta = deltaT / 33;	
 
-  for (var i = 0; i < particleSystems.length; i ++ ) {
+  for (var i = 0; i < particleSystems.length; i ++ ) 
+  {
     //var object = scene.children[ i ];
     //if ( particleSystem instanceof THREE.Points ) 
     var particleSystem = particleSystems[ i ];		
@@ -112,6 +113,9 @@ function animParticles(particleSystems) {
     }
   }
   
-  rainParticleSystem.position.copy(camera.position);
-  dustParticleSystem.position.copy(camera.position);
+  if(ambientOn)
+  {
+	rainParticleSystem.position.copy(camera.position);
+	dustParticleSystem.position.copy(camera.position);
+  }
 }
