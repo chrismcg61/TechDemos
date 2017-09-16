@@ -27,7 +27,7 @@ var skyFragShader = ``;
 
 
 
-function initWebGlScene(camZ, statsIsActive, guiIsActive, helperIsActive, isCanvas, controlMode, ambientPartsOn, skySpeed) 
+function initWebGlScene(camZ, statsIsActive, guiIsActive, helperIsActive, isCanvas, controlMode, ambientPartsOn, skySpeed, rainDuration) 
 {
   document.body.style.margin = "0";
   document.body.style.overflow = "hidden";
@@ -108,6 +108,8 @@ function initWebGlScene(camZ, statsIsActive, guiIsActive, helperIsActive, isCanv
     initDust();
     
     //RAIN Intensity Fluctuation:
+    minRainDuration = rainDuration * 1000;
+    maxRainDuration = minRainDuration*2;
     startRain();
   }  
  
