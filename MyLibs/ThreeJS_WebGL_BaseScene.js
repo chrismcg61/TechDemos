@@ -20,32 +20,14 @@ var maxRainDuration = 20000;
 var skyColorTop;// = {min: {r:0.1,g:0.1,b:0.3},   max: {r:2.8,g:2.9,b:3}};
 var skyAnimSpeed; // = 0.001;
 var skyUniforms;
-var skyVertexShader = `
-varying vec3 vWorldPosition;
-void main() {
-  vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
-  vWorldPosition = worldPosition.xyz;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-}
-`;
-var skyFragShader = `
-uniform vec3 topColor;
-uniform vec3 bottomColor;
-uniform float offset;
-uniform float exponent;
-varying vec3 vWorldPosition;
-void main() {
-  float h = normalize( vWorldPosition + offset ).y;
-  gl_FragColor = vec4( 
-    mix( bottomColor, topColor, max( pow( max( h , 0.0), exponent ), 0.0 ) ), 
-    1.0 );
-}
-`;
+
+var skyVertexShader = ``;
+var skyFragShader = ``;
 
 
 
 
-function initWebGlScene(camZ, statsIsActive, guiIsActive, helperIsActive, isCanvas, controlMode) 
+function initWebGlScene(camZ, statsIsActive, guiIsActive, helperIsActive, isCanvas, controlMode, ambientPartsOn, skySpeed) 
 {
   document.body.style.margin = "0";
   document.body.style.overflow = "hidden";
@@ -113,68 +95,22 @@ function initWebGlScene(camZ, statsIsActive, guiIsActive, helperIsActive, isCanv
   initControls(controlMode);
   
   //SKY:
-  initSky( 0.001, 
+  initSky( skySpeed, 
     { min: {r:0.1,g:0.1,b:0.3}, 
       max: {r:0.8,g:0.9,b:1}}
   ); 
   
   
   //Ambience PARTICLES (Dust & Rain):  
-  var rainParticlesNb = 900;
-  var rainParticlesPosConfig ={
-    areaSize: new THREE.Vector3(900, 900, 900),
-    speed: {
-      min: new THREE.Vector3(0.0, -30.0, 0.0), 
-      max: new THREE.Vector3(0.0, -60.0, 0.0),
-    },
-  };
-  var rainParticlesMaterialConfig = {
-    color: {
-      min: new THREE.Vector3(0.45, 0.01, 0.01), 
-      max: new THREE.Vector3(0.55, 0.50, 0.99), },	
-    speed : {
-      min: new THREE.Vector3(0.0, 0.0, 0.0), 
-      max: new THREE.Vector3(0.0, 0.0, 0.0)}, 
-    size: {
-      min: 1, 
-      max: 4},
-    alpha: 0.4,
-  };
-  rainParticleSystem = particleSystemInit( 
-    rainParticlesNb, 
-    rainParticlesPosConfig, 
-    rainParticlesMaterialConfig
-  );
-
-  var dustParticlesNb = 200;
-  var dustParticlesPosConfig ={
-    areaSize: new THREE.Vector3(400, 400, 400),
-    speed: {
-      min: new THREE.Vector3(-0.1, -0.1, -0.1), 
-      max: new THREE.Vector3(0.1, 0.1, 0.1),
-    },
-  };
-  var dustParticlesMaterialConfig = {
-    color: {
-      min: new THREE.Vector3(0.2, 0.01, 0.01), 
-      max: new THREE.Vector3(0.8, 0.99, 0.99), },	
-    speed : {
-      min: new THREE.Vector3(0.0, 0.0, 0.0), 
-      max: new THREE.Vector3(0.0, 0.0, 0.0)}, 
-    size: {
-      min: 1, 
-      max: 2},
-    alpha: 0.2,
-  };
-  dustParticleSystem = particleSystemInit( 
-    dustParticlesNb, 
-    dustParticlesPosConfig, 
-    dustParticlesMaterialConfig
-  );
-  
-  
-  //RAIN Intensity Fluctuation:
-  startRain();
+  if(ambientPartsOn)
+  {
+    initRain();
+    initDust();
+    
+    //RAIN Intensity Fluctuation:
+    startRain();
+  }  
+ 
 }
 
 
@@ -188,6 +124,9 @@ function onWindowResize() {
 
 
 
+
+
+//CONTROLS:
 defaultConfig.FPS_Controls_Mode = function ( ) {
   initControls(2);
   document.body.requestPointerLock = 
@@ -231,6 +170,31 @@ function initControls(mode){
 }
 
 
+
+
+
+//SKY:
+skyVertexShader = `
+varying vec3 vWorldPosition;
+void main() {
+  vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
+  vWorldPosition = worldPosition.xyz;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+`;
+skyFragShader = `
+uniform vec3 topColor;
+uniform vec3 bottomColor;
+uniform float offset;
+uniform float exponent;
+varying vec3 vWorldPosition;
+void main() {
+  float h = normalize( vWorldPosition + offset ).y;
+  gl_FragColor = vec4( 
+    mix( bottomColor, topColor, max( pow( max( h , 0.0), exponent ), 0.0 ) ), 
+    1.0 );
+}
+`;
 function initSky( mySkyAnimSpeed, mySkyColorTop ){
   skyColorTop = mySkyColorTop;
   skyAnimSpeed = mySkyAnimSpeed;
@@ -278,14 +242,78 @@ function animSky(topColor, speed, lightningColor){
 }
 
 
+
+
+
+//AMBIENT PARTICLES:
+function initRain(){
+  var rainParticlesNb = 900;
+  var rainParticlesPosConfig ={
+    areaSize: new THREE.Vector3(900, 900, 900),
+    speed: {
+      min: new THREE.Vector3(0.0, -30.0, 0.0), 
+      max: new THREE.Vector3(0.0, -60.0, 0.0),
+    },
+  };
+  var rainParticlesMaterialConfig = {
+    color: {
+      min: new THREE.Vector3(0.45, 0.01, 0.01), 
+      max: new THREE.Vector3(0.55, 0.50, 0.99), },	
+    speed : {
+      min: new THREE.Vector3(0.0, 0.0, 0.0), 
+      max: new THREE.Vector3(0.0, 0.0, 0.0)}, 
+    size: {
+      min: 1, 
+      max: 4},
+    alpha: 0.4,
+  };
+  rainParticleSystem = particleSystemInit( 
+    rainParticlesNb, 
+    rainParticlesPosConfig, 
+    rainParticlesMaterialConfig
+  );
+}
+function initDust(){
+{
+  var dustParticlesNb = 200;
+  var dustParticlesPosConfig ={
+    areaSize: new THREE.Vector3(400, 400, 400),
+    speed: {
+      min: new THREE.Vector3(-0.1, -0.1, -0.1), 
+      max: new THREE.Vector3(0.1, 0.1, 0.1),
+    },
+  };
+  var dustParticlesMaterialConfig = {
+    color: {
+      min: new THREE.Vector3(0.2, 0.01, 0.01), 
+      max: new THREE.Vector3(0.8, 0.99, 0.99), },	
+    speed : {
+      min: new THREE.Vector3(0.0, 0.0, 0.0), 
+      max: new THREE.Vector3(0.0, 0.0, 0.0)}, 
+    size: {
+      min: 1, 
+      max: 2},
+    alpha: 0.2,
+  };
+  dustParticleSystem = particleSystemInit( 
+    dustParticlesNb, 
+    dustParticlesPosConfig, 
+    dustParticlesMaterialConfig
+  );
+}
+
+
+
+
+
+//RAIN INTENSITY:
 function startRain(){
   defaultConfig.lightning();
   
   rainParticleSystem.visible = true;
   rainParticleSystem.matConfig.alpha = 0.1;  
   
-  var randRainDuration = minRainDuration 
-    + Math.random()*(maxRainDuration - minRainDuration);
+  var randRainDuration = minRainDuration + Math.random()*(maxRainDuration - minRainDuration);
   setTimeout(stopRain , randRainDuration);
   
   for(var i=0; i < 10; i++)
@@ -309,8 +337,7 @@ function stopRain(){
   rainParticleSystem.visible = false;
   rainParticleSystem.matConfig.alpha = 0.0;  
   
-  var randDryDuration = minRainDuration 
-    + Math.random()*(maxRainDuration - minRainDuration);
+  var randDryDuration = minRainDuration + Math.random()*(maxRainDuration - minRainDuration);
   setTimeout(startRain , randDryDuration);
 }
 
