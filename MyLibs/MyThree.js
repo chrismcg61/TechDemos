@@ -668,6 +668,9 @@ function initStarsCanvas(){
 
 
 
+
+
+///////////////////////////////////////////////////
 //PARTICLES ENV:
 function initDust(){
   var dustParticlesNb = 300;
@@ -701,8 +704,10 @@ function initDust(){
 }
 
 
+
+/////////////////////////////////////////////////////////////
 //VID Materials:
-MyTHREE.createVidMaterial = function ( dataURL ){	
+MyTHREE.createVidMaterial = function ( dataURL, text, vidMaterial ){	
   //Video:
   var newVid = document.createElement( 'video' );
   newVid.src = dataURL;
@@ -716,26 +721,31 @@ MyTHREE.createVidMaterial = function ( dataURL ){
   newVidcanvas.width = 512; //myVid.videoWidth;
   newVidcanvas.height = 256; //myVid.videoHeight;
   //Material:
+  /*
   var newVidMaterial = new THREE.MeshBasicMaterial( {  
     map: new THREE.CanvasTexture( newVidcanvas ),
     transparent: true, opacity: 0.5,
   } );
-  newVidMaterial.needsUpdate = true;
+  */
+  vidMaterial.map = new THREE.CanvasTexture( newVidcanvas );
   
-  newVidMaterial.video = newVid;
-  newVidMaterial.canvas = newVidcanvas;
+  vidMaterial.needsUpdate = true;
+  
+  vidMaterial.video = newVid;
+  vidMaterial.canvas = newVidcanvas;
+  vidMaterial.text = text;
   //myVids.push( newVid );
   //vidCanvases.push( newVidcanvas );
-  MyTHREE.vidMaterials.push( newVidMaterial );  
+  MyTHREE.vidMaterials.push( vidMaterial );  
   
-  return newVidMaterial;
+  //return newVidMaterial;
 }
 
 MyTHREE.animVidMaterials = function (deltaVidFrame){
   for(var i=0; i < MyTHREE.vidMaterials.length; i++)
   {
     MyCanvasLib.drawImg(MyTHREE.vidMaterials[i].canvas, MyTHREE.vidMaterials[i].video);  
-    MyCanvasLib.writeText(MyTHREE.vidMaterials[i].canvas, "VID Canvas");
+    MyCanvasLib.writeText(MyTHREE.vidMaterials[i].canvas, MyTHREE.vidMaterials[i].text);
     MyTHREE.vidMaterials[i].map.needsUpdate = true;
   } 
  
@@ -743,6 +753,10 @@ MyTHREE.animVidMaterials = function (deltaVidFrame){
 }
 
 
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
 //DYNAMIC CUBES (MultiMat, Clickable, Collidable):
 MyTHREE.createCube = function (size, materials, dynamicConf, isCol) {  
   var cubeGeometry = new THREE.BoxGeometry( size, size, size );  
