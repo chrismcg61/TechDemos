@@ -192,3 +192,65 @@ MyCanvasLib.onmousedown = function(e, callback, canvas) {
   callback(e, Math.floor(mouseX), Math.floor(mouseY) );
 }
 
+
+
+MyCanvasLib.animCanvasColors = function (rectCanvas, speed){
+  var rects = rectCanvas.rects;
+  for(var i=0; i < rects.length; i++){
+    var rect = rects[i];
+    rect.color.r = Math.floor(rect.color.r + rect.colorSpeed.r*speed) % 255;    
+    rect.color.g = Math.floor(rect.color.g + rect.colorSpeed.g*speed) % 255;    
+    rect.color.b = Math.floor(rect.color.b + rect.colorSpeed.b*speed) % 255;    
+    
+    rect.color.a = (rect.color.a + rect.colorSpeed.a*speed/255) % 1;    
+  }
+  
+  MyCanvasLib.clear(rectCanvas);  
+  MyCanvasLib.drawColorRects(rectCanvas, rects);   
+}
+
+MyCanvasLib.createRandomRects = function (randCanvas, rectNb, skipIndex){
+  
+  var canvasSize = randCanvas.width;
+  var rects = [];
+  //var rectNb = 3;
+  var rectSize = canvasSize / rectNb;
+  
+  for(var x=0; x < rectNb; x++){
+    for(var y=0; y < rectNb; y++){
+      if(x%skipIndex == 0  ||  y%skipIndex == 0) 
+        continue;
+
+      var rect =  {
+        x:rectSize/2 + x*rectSize, 
+        y:rectSize/2 + y*rectSize, 
+        size:{x:rectSize, y:rectSize}, 
+        color:{
+          r: Math.floor( 255*Math.random() ),
+          g: Math.floor( 255*Math.random() ),
+          b: Math.floor( 255*Math.random() ),
+          a: Math.random()},
+        colorSpeed:{
+          r: Math.random(),
+          g: Math.random(),
+          b: Math.random(),
+          a: Math.random()
+        },   
+      };
+      rects.push( rect );
+    }
+  }
+  randCanvas.rects = rects;
+  
+  MyCanvasLib.drawColorRects(randCanvas, rects);   
+}
+MyCanvasLib.createRandomCanvas = function (canvasSize, rectNb, skipIndex){
+  
+  var newCanvas = document.createElement( 'canvas' );  
+  newCanvas.width = newCanvas.height = canvasSize;
+  
+  MyCanvasLib.createRandomRects(newCanvas, rectNb, skipIndex);
+  
+  return newCanvas;
+}
+
