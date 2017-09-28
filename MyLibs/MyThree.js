@@ -1077,3 +1077,37 @@ MyTHREE.animParticles = function (particleSystems, isCanvas) {
 }
 
 
+
+
+
+//Canvas Materials & Animation:
+
+MyTHREE.createCanvasMaterial = function(canvasSize, rectNb, skipIndex) {
+  
+  var newCanvas = MyCanvasLib.createRandomCanvas(canvasSize, rectNb, skipIndex)
+  
+  var canvasMat = new THREE.MeshBasicMaterial( {
+    transparent:true, opacity:0.8,
+    //color:0xff0000,
+  } );   
+  
+  canvasMat.map = new THREE.Texture( newCanvas ); 
+  canvasMat.needsUpdate = true;
+  canvasMat.map.needsUpdate = true;
+  
+  canvasMat.canvas = newCanvas;
+  
+  return canvasMat;
+}
+
+
+MyTHREE.animCanvasMaterial = function(canvasMat, speed, deltaFrame){
+  
+  //MyCanvasLib.animCanvasColors = function (rectCanvas, speed){
+  MyCanvasLib.animCanvasColors(canvasMat.canvas, speed);
+  canvasMat.map.needsUpdate = true;
+  
+  setTimeout(MyTHREE.animCanvasMaterial, deltaFrame,  canvasMat, speed, deltaFrame);
+}
+
+
