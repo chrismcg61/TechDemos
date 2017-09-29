@@ -1,3 +1,25 @@
+var FileManager = {};
+
+//////////////////////////////////////////////////////////////////
+//FILE SELECTOR:
+FileManager.fileSelector = document.createElement('input');
+FileManager.fileSelector.type = "file";
+FileManager.fileSelector.style.display = 'none';
+
+FileManager.fileSelector.onchange = function(){ 
+  readFile_DataUrl( FileManager.fileSelector.files[0], FileManager.onFileLoaded );
+};	
+
+FileManager.onFileLoaded = function( dataURL ){	
+  alert("File Loaded - ReDefine Func : 'FileManager.onFileLoaded( dataURL )' ");
+}
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
+//FILE READERS:
 function dataURItoBlob(dataURI) {
 	// convert base64 to raw binary data held in a string
 	// doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
