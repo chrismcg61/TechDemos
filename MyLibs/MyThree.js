@@ -57,6 +57,13 @@ var dustParticleSystem;
 MyTHREE.vidMaterials = [];
 
 
+// AUDIO VARS:
+var audioDistModel = 'exponential';
+var audioRefDist = 50;
+var audioRolloffFactor = 2;
+var audioLoopDefault = true;
+
+
 
 //INITs:
 MyTHREE.minInitScene = function ( isCanvas ){
@@ -1098,7 +1105,6 @@ MyTHREE.animParticles = function (particleSystems, isCanvas) {
 
 
 //Canvas Materials & Animation:
-
 MyTHREE.createCanvasMaterial = function(canvasSize, rectNb, skipIndex) {
   
   var newCanvas = MyCanvasLib.createRandomCanvas(canvasSize, rectNb, skipIndex)
@@ -1125,6 +1131,45 @@ MyTHREE.animCanvasMaterial = function(canvasMat, speed, deltaFrame){
   canvasMat.map.needsUpdate = true;
   
   setTimeout(MyTHREE.animCanvasMaterial, deltaFrame,  canvasMat, speed, deltaFrame);
+}
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//AUDIO:
+MyTHREE.deletaAudio = function( mesh ){
+  if( mesh.sound.isPlaying ) mesh.sound.stop();
+  mesh.remove( mesh.sound );
+  mesh.sound.setBuffer( null );  
+}
+MyTHREE.create3dAudio = function( mesh ){
+  var newPosAudio = new THREE.PositionalAudio( audioListener );
+  newPosAudio.setDistanceModel( audioDistModel );
+  newPosAudio.setRefDistance( audioRefDist );
+  newPosAudio.setRolloffFactor ( audioRolloffFactor );
+  newPosAudio.setLoop( audioLoopDefault );
+  //newPosAudio.autoplay = true;
+  
+  //if(mesh) 
+  mesh.add( newPosAudio );
+  mesh.sound = newPosAudio;
+  //return newPosAudio;
+}
+
+MyTHREE.audioLoad = function( buf, meshes ){
+  for ( var i = 0; i < meshes.length; i ++ ) {
+    var mesh = meshes[i];
+
+    if(mesh.sound) MyTHREE.deletaAudio( mesh );
+
+    //mesh.sound = 
+    MyTHREE.create3dAudio( mesh );
+
+    mesh.sound.setBuffer( buf );
+    mesh.sound.play();  
+  }
 }
 
 
