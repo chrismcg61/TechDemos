@@ -1,13 +1,15 @@
+var MyWebAudio = {};
+
 var audioContext = new (window.AudioContext || window.webKitAudioContext)();
 
-function onAudioFileLoaded( arrayBuf, sourceBuffers, sourceIndex ){	
+MyWebAudio.onAudioFileLoaded = function( arrayBuf, callback ){	
 	audioContext.decodeAudioData( 
   		arrayBuf, 
-  		function(decodedAudioBuffer){ onAudioDecoded( decodedAudioBuffer, sourceBuffers, sourceIndex ); }
+  		function(decodedAudioBuffer){ MyWebAudio.onAudioDecoded( decodedAudioBuffer, callback ); }
   	);
 }
-function onAudioDecoded(decodedAudioBuffer, sourceBuffers, sourceIndex) {
-	sourceBuffers[0] = decodedAudioBuffer; 
+MyWebAudio.onAudioDecoded = function(decodedAudioBuffer, callback) {
+  callback(decodedAudioBuffer);
 }
 
 
