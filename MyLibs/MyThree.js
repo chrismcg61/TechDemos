@@ -63,6 +63,9 @@ var audioRefDist = 50;
 var audioRolloffFactor = 2;
 var audioLoopDefault = true;
 
+var audioLoader = new THREE.AudioLoader();
+var audioListener = new THREE.AudioListener();
+
 
 
 //INITs:
@@ -79,6 +82,7 @@ MyTHREE.minInitScene = function ( isCanvas ){
 
   //SCENE Config:
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, camConf.near, camConf.far );
+  camera.add( audioListener );
   camContainer = camera;
   camera.position.set( 0, 10, 100 );
 
