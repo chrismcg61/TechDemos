@@ -757,7 +757,7 @@ MyTHREE.animVidMaterials = function (deltaVidFrame){
 
 
 /////////////////////////////////////////////////////////////////////////////////////
-//DYNAMIC CUBES (MultiMat, Clickable, Collidable):
+//DYNAMIC CUBES (MultiMat, Clickable, Collidable, Sound):
 MyTHREE.createCube = function (size, materials, dynamicConf, isCol) {  
   var cubeGeometry = new THREE.BoxGeometry( size, size, size );  
   var newCube = new THREE.Mesh( cubeGeometry, materials[0] );
@@ -784,8 +784,11 @@ MyTHREE.createCube = function (size, materials, dynamicConf, isCol) {
     collisionCubes.push( newCube );
   }
   
+  newCube.sound = null;
+  
   return newCube;
 }
+
 
 
 
