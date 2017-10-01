@@ -2,14 +2,12 @@ var MyWebAudio = {};
 
 var audioContext = new (window.AudioContext || window.webKitAudioContext)();
 
+
 MyWebAudio.onAudioFileLoaded = function( arrayBuf, callback ){	
 	audioContext.decodeAudioData( 
   		arrayBuf, 
-  		function(decodedAudioBuffer){ MyWebAudio.onAudioDecoded( decodedAudioBuffer, callback ); }
+  		function(decodedAudioBuffer){ callback(decodedAudioBuffer); }
   	);
-}
-MyWebAudio.onAudioDecoded = function(decodedAudioBuffer, callback) {
-  callback(decodedAudioBuffer);
 }
 
 
