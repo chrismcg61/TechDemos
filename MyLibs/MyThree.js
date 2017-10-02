@@ -718,6 +718,33 @@ function initDust(){
 
 /////////////////////////////////////////////////////////////
 //VID Materials:
+MyTHREE.createVidMaterialRaw = function ( dataURL, vidMaterial ){ 
+  var newVid = document.createElement( 'video' );
+  newVid.src = dataURL;
+  newVid.autoplay = true;
+  newVid.loop = true;
+  newVid.muted = true;
+
+  var vidTexture = new THREE.VideoTexture( newVid );
+  vidTexture.minFilter = THREE.LinearFilter;
+  vidTexture.magFilter = THREE.LinearFilter;
+  vidTexture.format = THREE.RGBFormat;  
+  
+  if(vidMaterial.video) 
+  {
+    vidMaterial.video.pause();
+    document.body.removeChild( vidMaterial.video );
+    
+    vidMaterial.map.dispose();
+  }
+  document.body.appendChild( newVid );
+  vidMaterial.video = newVid;
+  
+  vidMaterial.map = vidTexture;
+  vidMaterial.needsUpdate = true;  
+}
+
+
 MyTHREE.createVidMaterial = function ( dataURL, text, vidMaterial ){	
   //Video:
   var newVid = document.createElement( 'video' );
