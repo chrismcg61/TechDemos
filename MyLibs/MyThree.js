@@ -1170,10 +1170,16 @@ MyTHREE.animCanvasMaterial = function(canvasMat, speed, deltaFrame){
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //AUDIO:
-MyTHREE.deletaAudio = function( mesh ){
-  if( mesh.sound.isPlaying ) mesh.sound.stop();
-  mesh.remove( mesh.sound );
-  mesh.sound.setBuffer( null );  
+MyTHREE.deletaAudio = function( meshes ){  
+  for ( var i = 0; i < meshes.length; i ++ ) {
+    var mesh = meshes[i];
+    
+    if(mesh.sound) 
+    {
+      mesh.sound.pause();
+      mesh.sound = null;
+    }      
+  }
 }
 MyTHREE.create3dAudio = function( mesh ){
   var newPosAudio = new THREE.PositionalAudio( audioListener );
@@ -1189,18 +1195,19 @@ MyTHREE.create3dAudio = function( mesh ){
   //return newPosAudio;
 }
 
+
 MyTHREE.audioLoad = function( buf, meshes ){
+  MyTHREE.deletaAudio( meshes );
+  
   for ( var i = 0; i < meshes.length; i ++ ) {
     var mesh = meshes[i];
 
-    if(mesh.sound) MyTHREE.deletaAudio( mesh );
-
-    //mesh.sound = 
     MyTHREE.create3dAudio( mesh );
 
     mesh.sound.setBuffer( buf );
     mesh.sound.play();  
   }
 }
+
 
 
