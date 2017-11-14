@@ -1,0 +1,28 @@
+
+neon-sign {
+  --interval: 1s;
+  display: block;
+  text-shadow: 
+    0 0 10px var(--color1),
+    0 0 20px var(--color2),
+    0 0 40px var(--color3);
+  will-change: filter, color;
+  filter: saturate(60%);
+  animation: flicker steps(100) var(--interval) 1s infinite;
+  
+  /* Default Colors: */
+  color: white;
+  --color1: gray;
+  --color2: blue;
+  --color3: black;
+  //font-family: Sriracha;
+}
+
+
+@keyframes flicker {
+  50% {
+    color: #DDDDDD;
+    filter: saturate(200%) hue-rotate(20deg);
+  }
+}
+
