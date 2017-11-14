@@ -3,19 +3,25 @@ neon-sign {
   --interval: 1s;
   display: block;
   text-shadow: 
-    0 0 10px var(--color1),
-    0 0 20px var(--color2),
-    0 0 40px var(--color3);
+    0 0 var(--size1) var(--color1),
+    0 0 var(--size2) var(--color2),
+    0 0 var(--size3) var(--color3);
   will-change: filter, color;
   filter: saturate(60%);
   animation: flicker steps(100) var(--interval) 1s infinite;
   
-  /* Default Colors: */
+  
+  /* Default Style: */
   color: black;
+  //font-family: Sriracha;
+  
+  --size1: 2px;
+  --size2: 4px;
+  --size3: 6px;
+  
   --color1: white;
   --color2: red;
-  --color3: blue;
-  //font-family: Sriracha;
+  --color3: blue;  
 }
 
 
