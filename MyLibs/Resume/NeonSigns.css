@@ -11,10 +11,10 @@ neon-sign {
   animation: flicker steps(100) var(--interval) 1s infinite;
   
   /* Default Colors: */
-  color: white;
-  --color1: gray;
-  --color2: blue;
-  --color3: black;
+  color: black;
+  --color1: white;
+  --color2: red;
+  --color3: blue;
   //font-family: Sriracha;
 }
 
