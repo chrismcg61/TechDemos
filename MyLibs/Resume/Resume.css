@@ -1,0 +1,48 @@
+body{
+  font-family: "Arial";
+}
+
+.borderDiv{
+  border:solid 2px;
+}
+
+.testBorder{
+  border:solid 2px;
+}
+
+.colDiv{
+  border-color:red;
+  
+  position:absolute; 
+  top: 0px;
+}
+
+
+.floatDiv{
+  border-color:green;
+  
+  float:right;
+}
+
+
+
+
+.titles{
+  font-size:25px;
+}
+
+.values{
+  color:rgb(0,0,160);
+}
+
+.alten{
+  color:rgb(255,255,255);
+}
+
+.subSkill{
+  font-style: italic;
+  font-size: small;
+}
+
+
+
