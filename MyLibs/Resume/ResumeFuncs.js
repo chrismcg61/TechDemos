@@ -26,3 +26,13 @@ function newRating(rating){
 
   return a;
 }
+
+
+
+////////////////////////////////////////////////////
+// CATEGORIES
+///////////////////////////////////////////////////
+function generateStyle(rgb, index){
+  var alpha = Math.pow(0.5, index);
+  return {"background-color": "rgba("+rgb+","+alpha+")"};
+}
