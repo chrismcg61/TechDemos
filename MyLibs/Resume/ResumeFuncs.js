@@ -11,3 +11,18 @@ myAge = Math.floor( myAge );
 
 var myXP = curYearDecimal - myGraduationYearDecimal;
 myXP = Math.floor( myXP );
+
+
+
+////////////////////////////////////////////////////
+// SKILLS
+///////////////////////////////////////////////////
+function newRating(rating){
+  var a = [];
+  for(var i=0; i<rating; i++)
+  {
+    a.push(i);        
+  }
+
+  return a;
+}
