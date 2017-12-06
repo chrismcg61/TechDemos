@@ -36,3 +36,30 @@ function generateStyle(rgb, index){
   var alpha = Math.pow(0.5, index);
   return {"background-color": "rgba("+rgb+","+alpha+")"};
 }
+
+
+
+
+////////////////////////////////////////////////////
+// CORPs
+///////////////////////////////////////////////////
+function newDuration(lengthQ){
+  var lengthY = lengthQ/4;
+  curDate += lengthY;
+
+  var a = [];
+  for(var i=1; i<lengthQ; i++)
+  {
+    a.push(i);        
+  }
+
+  return a;
+}
+
+function getY(date){
+  return Math.floor(date);
+}   
+function getQ(date){
+  var Q = date - getY(date);
+  return Q*4 + 1;
+}
