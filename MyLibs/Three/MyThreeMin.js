@@ -75,7 +75,7 @@ function initGUI( updateCallback ) {
 }
 //
 function initGeneric() {
-  if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+  //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
   // CAMERA
   camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 );
