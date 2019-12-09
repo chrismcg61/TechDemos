@@ -97,7 +97,7 @@
  * @param {WebGLRenderer} renderer The renderer
   */
 
-THREE.GPUComputationRenderer = function ( sizeX, sizeY, renderer ) {
+GPUComputationRenderer = function ( sizeX, sizeY, renderer ) {
 
 	this.variables = [];
 
