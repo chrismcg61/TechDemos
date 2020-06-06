@@ -18,7 +18,7 @@ function initGUI( updateCallback ) {
   //for ( var i = 0; i < staticParamFolders.length; i ++ ) {  
   for(var folderKey in staticParamFolders){
     var newFolder = staticFolder.addFolder(staticParamFolders[folderKey].Title);
-    newFolder.open();
+    if(staticParamFolders[folderKey].Open) newFolder.open();
     for(var key in staticParamFolders[folderKey].Params){
       newFolder.add( staticParamFolders[folderKey].Params, key);    
     } 
