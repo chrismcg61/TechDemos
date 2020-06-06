@@ -2,7 +2,8 @@
 // USER VARS :
 /////////////////////////////////////
 var staticParamFolders = { };
-var dynParamFolders = { }
+var dynParamFolders = { };
+var hiddenParamFolders = { };
 
 
 /////////////////////////////////////
@@ -30,6 +31,16 @@ function initGUI( updateCallback ) {
     newFolder.open();
     for(var key in dynParamFolders[folderKey].Params){
       newFolder.add( dynParamFolders[folderKey].Params, key).onChange( updateCallback );    
+    } 
+  }
+  
+  var hiddenFolder = gui.addFolder("Hidden Params");
+  hiddenFolder.open();  
+  for(var folderKey in hiddenParamFolders){
+    var newFolder = staticFolder.addFolder(hiddenParamFolders[folderKey].Title);
+    //newFolder.open();
+    for(var key in hiddenParamFolders[folderKey].Params){
+      newFolder.add( hiddenParamFolders[folderKey].Params, key);    
     } 
   }
 
