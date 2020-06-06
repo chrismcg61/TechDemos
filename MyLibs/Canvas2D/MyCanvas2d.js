@@ -35,7 +35,7 @@ function initGUI( updateCallback ) {
   }
   
   var hiddenFolder = gui.addFolder("Hidden Params");
-  hiddenFolder.open();  
+  //hiddenFolder.open();  
   for(var folderKey in hiddenParamFolders){
     var newFolder = staticFolder.addFolder(hiddenParamFolders[folderKey].Title);
     //newFolder.open();
