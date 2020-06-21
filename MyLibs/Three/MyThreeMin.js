@@ -3,6 +3,7 @@
 /////////////////////////////////////////////////////
 var gpuMode = 1;
 var container,  camera, scene, renderer;
+var stats;
 //var infoDiv, stats;
 /////////////////////////////////////////////////////
 // First Time Inits :
@@ -29,6 +30,10 @@ function initMain() {
 
   // Window Events:
   window.addEventListener( 'resize', onWindowResize, false );
+  
+  // STATS
+  stats = new Stats();
+  container.appendChild( stats.dom );
 }
 /////////////////////////////////////////////////////
 // Renderer & Scene Inits :
@@ -69,7 +74,8 @@ function initScene( callback ){
 // ANIMATE & RENDER :
 ////////////////////////////////////////
 function render( animateCallback ) {
-  //stats.update();
+  stats.update();
+  
   animateCallback();
   renderer.render( scene, camera );
 
@@ -84,4 +90,3 @@ function initDefault( myInitScene, myAnimScene ){
   initScene( myInitScene );
   render( myAnimScene );  
 }
-
