@@ -2,6 +2,7 @@
 // Global Vars :
 /////////////////////////////////////////////////////
 var gpuMode = 1;
+var statsMode = 1;
 var container,  camera, scene, renderer;
 var stats;
 //var infoDiv, stats;
@@ -33,7 +34,7 @@ function initMain() {
   
   // STATS
   stats = new Stats();
-  container.appendChild( stats.dom );
+  if(statsMode) container.appendChild( stats.dom );
 }
 /////////////////////////////////////////////////////
 // Renderer & Scene Inits :
@@ -84,7 +85,9 @@ function render( animateCallback ) {
 ////////////////////////////////////////
 // DEFAULT Init Func :
 ////////////////////////////////////////
-function initDefault( myInitScene, myAnimScene ){
+function initDefault( myInitScene, myAnimScene,  _gpuMode, _statsMode ){
+  gpuMode = _gpuMode;
+  statsMode = _statsMode;
   initMain();
   initRenderer();
   initScene( myInitScene );
