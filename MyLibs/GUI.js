@@ -5,20 +5,10 @@ function initGUI( ) {
   gui.open();  
   
   if (typeof gVars !== 'undefined') {
-    folder1 = gui.addFolder("Global Vars");
-    folder1.open();
-    for(var key in gVars){
-      // folder1.add( gVars, key);  
-      addGuiVar(folder1, gVars, key);
-    }    
+    folder1 = addGuiFolder("Global Vars", gVars, 1);    
   }
   if (typeof vars !== 'undefined') {
-    folder2 = gui.addFolder("Main Vars");
-    folder2.open();
-    for(var key in vars){
-      // folder2.add( vars, key); 
-      addGuiVar(folder2, vars, key);
-    }    
+    folder2 = addGuiFolder("Main Vars", vars, 1);    
   }   
 }
 //////////////////////////////////////////////////////////////
@@ -30,5 +20,14 @@ function addGuiVar(folder, vars, key){
     subFolder.add( param, "a");  
   }
   else folder.add( vars, key);  
+}
+//////////////////////////////////////////////////////////////
+function addGuiFolder(name, vars, open){
+  var newfolder = gui.addFolder(name);
+  if(open) newfolder.open();
+  for(var key in vars){
+    addGuiVar(newfolder, vars, key);
+  } 
+  return newfolder;
 }
 //////////////////////////////////////////////////////////////
