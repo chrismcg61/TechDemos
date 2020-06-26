@@ -16,8 +16,15 @@ function addGuiVar(folder, vars, key){
   var param = vars[key];
   if( typeof(param) === 'object'){
     var subFolder = folder.addFolder(key);
-    subFolder.addColor( param, "rgb");  
-    subFolder.add( param, "a");  
+    if(param["rgb"]){
+      subFolder.addColor( param, "rgb");  
+      subFolder.add( param, "a");      
+    }
+    else{
+      for(var key2 in param){
+        addGuiVar(subFolder, param, key2);
+      } 
+    }      
   }
   else folder.add( vars, key);  
 }
