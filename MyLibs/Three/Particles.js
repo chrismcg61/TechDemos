@@ -13,9 +13,7 @@ var pDynVars = {
   ticks:90,
   speed:{ Xmin:-PARTICLES_SPEED,Xmax:PARTICLES_SPEED, Ymin:-PARTICLES_SPEED,Ymax:PARTICLES_SPEED, Zmin:-PARTICLES_SPEED,Zmax:PARTICLES_SPEED, },
 };
-var partFolder = addGuiFolder(gui, "PARTICLE VARS", pVars, 1);
-var partDynFolder = addGuiFolder(gui, "PARTICLE DYN_VARS", pDynVars, 1);
-var objsFolder = gui.addFolder("OBJS");
+var partFolder, partDynFolder, objsFolder;
 //
 var partSysList = [];
 // var pN;  //pW
@@ -48,6 +46,15 @@ function randSpeed(min,max){ return min + rand()*(max-min) };
 function randTick(){ return (rand())*pDynVars.ticks };
 function randPos(x){ return rand()*x - x/2 };
 
+
+/*** INIT PARTICLE SYSTEM ***/
+function initPartSys(){
+  //partSysList = [];
+  partFolder = addGuiFolder(gui, "PARTICLE VARS", pVars, 1);
+  partDynFolder = addGuiFolder(gui, "PARTICLE DYN_VARS", pDynVars, 1);
+  objsFolder = gui.addFolder("OBJS");
+}
+/***  ***/
 
 /*** ADD PARTICLE SYSTEM ***/
 function addPartSys(){
