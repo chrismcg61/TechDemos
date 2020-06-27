@@ -13,10 +13,18 @@ var pDynVars = {
   ticks:90,
   speed:{ Xmin:-PARTICLES_SPEED,Xmax:PARTICLES_SPEED, Ymin:-PARTICLES_SPEED,Ymax:PARTICLES_SPEED, Zmin:-PARTICLES_SPEED,Zmax:PARTICLES_SPEED, },
 };
-var partFolder, partDynFolder, objsFolder;
 //
+var PARTSYS_I = 0;
+var partFolder, partDynFolder, objsFolder, sceneFolder;
 var partSysList = [];
-// var pN;  //pW
+//
+function rand(){ return Math.random() };
+function randCol(r){ return r+rand()*pVars.mainColor.a };
+function randSpeed(min,max){ return min + rand()*(max-min) };
+function randTick(){ return (rand())*pDynVars.ticks };
+function randPos(x){ return rand()*x - x/2 };
+
+/*** INIT SHADERS ***/
 var partVShader, partFShader;
 initPartShaders();
 function initPartShaders(){
@@ -39,23 +47,24 @@ function initPartShaders(){
     }
   `;
 }
-//
-function rand(){ return Math.random() };
-function randCol(r){ return r+rand()*pVars.mainColor.a };
-function randSpeed(min,max){ return min + rand()*(max-min) };
-function randTick(){ return (rand())*pDynVars.ticks };
-function randPos(x){ return rand()*x - x/2 };
 
 
-/*** INIT PARTICLE SYSTEM ***/
+/*** INIT PARTSYS MGR ***/
 setTimeout( initPartSys ,  1);
 function initPartSys(){
-  //partSysList = [];
   if(typeof(addGuiFolder) !== 'undefined'){
     partFolder = addGuiFolder(gui, "PARTICLE VARS", pVars, 1);
     partDynFolder = addGuiFolder(gui, "PARTICLE DYN_VARS", pDynVars, 1);
     objsFolder = gui.addFolder("OBJS");
   }  
+}
+/***  ***/
+
+/*** INIT SCENE PARTSYS MGR ***/
+function initPartSys_Scene(){
+  partSysList = [];
+  sceneFolder = objsFolder.addFolder("SCENE"+PARTSYS_I);
+  PARTSYS_I++;
 }
 /***  ***/
 
@@ -114,7 +123,7 @@ function addPartSys(){
   scene.add( partSys );
   partSysList.push( partSys );
   
-  addGuiFolder(objsFolder, "PART_SYS#"+partSysList.length, partSys.dynGVars, 0);
+  addGuiFolder(sceneFolder, "PART_SYS#"+partSysList.length, partSys.dynGVars, 0);
 }
 /***  ***/
 
@@ -130,7 +139,7 @@ function updatePartSys(){
       var halfTick = tick.max/2;
       tick.cur++;
       //
-      partSys.geometry.attributes.position.array[ii] += partSys.dynVars.speeds[ii]; //Math.random()* vars.speed;  //attributes.color.array[i]
+      partSys.geometry.attributes.position.array[ii] += partSys.dynVars.speeds[ii]; 
       partSys.geometry.attributes.position.array[ii+1] += partSys.dynVars.speeds[ii+1];
       partSys.geometry.attributes.position.array[ii+2] += partSys.dynVars.speeds[ii+2]; 
       //
