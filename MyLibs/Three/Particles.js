@@ -48,7 +48,7 @@ function randPos(x){ return rand()*x - x/2 };
 
 
 /*** INIT PARTICLE SYSTEM ***/
-initPartSys();
+setTimeout( initPartSys ,  1);
 function initPartSys(){
   //partSysList = [];
   if(typeof(addGuiFolder) !== 'undefined'){
