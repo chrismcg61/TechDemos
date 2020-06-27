@@ -1,7 +1,7 @@
 /** GUI **/
 var fxVars = { bloomExposure:1, bloomStrength:0.5, bloomThreshol5d:0, bloomRadius:0,   initPostFX:initPostFX}; 
 var fxFolder;
-initPostFX_Gui();
+setTimeout( initPostFX_Gui ,  1);
 function initPostFX_Gui() {
   if(typeof(addGuiFolder) !== 'undefined') fxFolder = addGuiFolder(gui, "PostFX", fxVars, 1);
 }
