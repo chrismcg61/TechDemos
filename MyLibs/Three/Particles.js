@@ -48,11 +48,14 @@ function randPos(x){ return rand()*x - x/2 };
 
 
 /*** INIT PARTICLE SYSTEM ***/
+initPartSys();
 function initPartSys(){
   //partSysList = [];
-  partFolder = addGuiFolder(gui, "PARTICLE VARS", pVars, 1);
-  partDynFolder = addGuiFolder(gui, "PARTICLE DYN_VARS", pDynVars, 1);
-  objsFolder = gui.addFolder("OBJS");
+  if(typeof(addGuiFolder) !== 'undefined'){
+    partFolder = addGuiFolder(gui, "PARTICLE VARS", pVars, 1);
+    partDynFolder = addGuiFolder(gui, "PARTICLE DYN_VARS", pDynVars, 1);
+    objsFolder = gui.addFolder("OBJS");
+  }  
 }
 /***  ***/
 
