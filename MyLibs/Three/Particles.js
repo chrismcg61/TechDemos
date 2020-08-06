@@ -1,10 +1,9 @@
 const PARTICLES_SPEED = 0.03;
 const PARTICLES_AREA = 1.5;
 var pVars = { 
-  // speedX: 0.002, speedY: 0.002, speedZ: 0.002,    ticks:60,
-  //width:7,
-  loop:true,
-  nb:500,  size:0.5, alpha:0.8,  addPartSys:addPartSys, 
+  // speedX: 0.002, speedY: 0.002, speedZ: 0.002,    ticks:60,  width:7,
+  loop:true, depthTest:false,
+  nb:500,  size:0.5, maxSize:90.0, alpha:1.0,  addPartSys:addPartSys, 
   mainColor:{rgb:0x552266,a:0.5},
   area:{x:PARTICLES_AREA,y:PARTICLES_AREA,z:PARTICLES_AREA},
   // updatePartSys:updatePartSys 
@@ -29,20 +28,24 @@ var partVShader, partFShader;
 initPartShaders();
 function initPartShaders(){
   partVShader = `
-   attribute float size;
+    uniform float maxSize;
+    attribute float size;
     varying vec3 vColor;
     void main() {
       vColor = color;
       vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
       gl_PointSize = size * ( 300.0 / -mvPosition.z );
+      gl_PointSize = min(gl_PointSize, maxSize);
+      //
       gl_Position = projectionMatrix * mvPosition;
     }
   `;
   partFShader = `
-  uniform sampler2D pointTexture;
+    uniform sampler2D pointTexture;
+    uniform float alpha;
     varying vec3 vColor;
     void main() {
-      gl_FragColor = vec4( vColor, 1.0 );
+      gl_FragColor = vec4( vColor, alpha );
       gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
     }
   `;
@@ -99,17 +102,21 @@ function addPartSys(){
   partGeometry.addAttribute( 'color', new THREE.Float32BufferAttribute( partColors, 3 ) );
   partGeometry.addAttribute( 'size', new THREE.Float32BufferAttribute( partSizes, 1 ) );
 
-  var uniforms = { pointTexture: { value: new THREE.TextureLoader().load( 
-      "https://cdn.rawgit.com/mrdoob/three.js/r97/examples/textures/sprites/spark1.png" ) 
-  }};
+  var uniforms = { 
+    pointTexture: {value: new THREE.TextureLoader().load( "https://cdn.rawgit.com/mrdoob/three.js/r97/examples/textures/sprites/spark1.png" ) },
+    maxSize: {value:pVars.maxSize},
+    alpha: {value:pVars.alpha},
+  };
   var shaderMaterial = new THREE.ShaderMaterial( {
+    vertexColors: true,
     uniforms: uniforms,
     vertexShader: partVShader,
     fragmentShader: partFShader,
-    blending: THREE.AdditiveBlending,
-    depthTest: false,
     transparent: true,
-    vertexColors: true
+    blending: THREE.AdditiveBlending,
+    depthTest: pVars.depthTest,
+    opacity:pVars.alpha,
+    alphaTest:0.1,    
   } );  
   // var pointsMaterial = new THREE.PointsMaterial({vertexColors:true, transparent:true, opacity:pVars.alpha, size:vars.size, });
   
