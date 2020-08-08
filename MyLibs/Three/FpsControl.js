@@ -75,10 +75,12 @@ var onKeyDown = function ( event ) {
       activateTrigMesh();
       break;
 
-    case 8: // BACKSPACE
+    case 222: // ²
       closeTrigMesh();
-      break;
+      break;  
   }
+  
+  if(myOnKeyDown) myOnKeyDown(event); //onMenuKeyDown( event );
 };
 var onKeyUp = function ( event ) {
   switch( event.keyCode ) {
