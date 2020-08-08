@@ -1,7 +1,8 @@
 
 var btnList = [];
 var curBtnId = 0;
-//
+
+/*** INIT BTN LIST ***/
 function initBtnList(btnGrp){
   btnList = [];
   curBtnId = 0;
@@ -10,7 +11,8 @@ function initBtnList(btnGrp){
   //
   focusNextBtn(0);
 }
-//
+
+/*** Btn FOCUS Mgt ***/
 function focusNextBtn(i){
   var nextBtnId = curBtnId+i;
   if(nextBtnId >= btnList.length) nextBtnId=0;
@@ -19,7 +21,8 @@ function focusNextBtn(i){
   curBtnId = nextBtnId;
   btnList[curBtnId].focus();
 }
-//
+
+/*** Nav Key Events ***/
 function onMenuKeyDown( evt ) {
   switch ( evt.keyCode ) {      
     case 98: // PAD-down
