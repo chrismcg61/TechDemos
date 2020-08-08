@@ -1,0 +1,19 @@
+.btn-group button {
+  font-size: 24px;
+  /*   width: 150px; */
+  width: 100%;
+  background-color: rgba(0,0,0, 0.5);
+  border: 0px solid gray;
+  color: white;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;  
+/*   text-decoration: none; */  
+/*   display: block; */
+}
+.btn-group button:hover {
+  background-color: rgba(40,40,40, 0.5);
+}
+.btn-group button:focus {
+  background-color: rgba(100,100,100, 0.5);
+}
