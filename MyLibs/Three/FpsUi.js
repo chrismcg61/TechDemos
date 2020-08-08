@@ -1,8 +1,9 @@
 const STR_INTERACT = "(E) : Interact";
 const STR_CLOSE = "(E, ²) : CLOSE";
-
-var trigMesh = null;
 //
+var trigMesh = null;
+
+/*** INIT FPS UI ***/
 function initFpsUi(){
   initMenuDivs();
   startInfoDiv();
@@ -14,7 +15,8 @@ function initFpsUi(){
     }, false );  
   }
 }
-//
+
+/*** Triggers Update (Check Trigs Collisions) ***/
 function camTriggers(){
   hudDiv.style.display = 'none';
   trigMesh = null;
@@ -32,8 +34,23 @@ function camTriggers(){
       }
   }  
 }
-//
-// startInfoDiv();
+
+/*** OnEvent Trig Behavior ***/
+function activateTrigMesh(){
+  if(menuDiv.style.display == 'block') closeTrigMesh();
+  else if(trigMesh && trigMesh.content) {
+    menuDiv.style.display = 'block';
+    menuTitle.innerHTML = "MENU -- " + trigMesh.name;
+    menuContent.innerHTML = "";
+    menuContent.appendChild(trigMesh.content);
+    if(trigMesh.content.onload) trigMesh.content.onload();    
+  }
+}
+function closeTrigMesh(){
+  menuDiv.style.display = 'none';
+}
+
+/*** INIT DIVs ***/
 function initMenuDivs(){
   var hudDiv = addElt(document.body, "DIV", "hudDiv", "");
   hudDiv.style.display = "none";
@@ -57,6 +74,7 @@ function initMenuDivs(){
   sub2Div3.style.padding = "8px 0 0 0";
   var sub2Div4 = addElt(subDiv, "DIV", "",   STR_CLOSE);  
 }
+//
 function startInfoDiv(){
   var newDiv = addElt(menuContent, "DIV", "startInfo", "");
   newDiv.style.cursor = "pointer";
@@ -68,23 +86,11 @@ function startInfoDiv(){
   var subDiv2 = addElt(newDiv, "DIV", "", "Arrows/Q,Z,S,D = Move, SPACE = Jump, MOUSE = Look around");
   subDiv2.style.fontSize = "20px";
 }
+//
 function addElt(parent, tag, id, innerHTML){
   var newElt = document.createElement(tag);  
   newElt.id = id;
   newElt.innerHTML = innerHTML;
   parent.appendChild( newElt );  
   return newElt;
-}
-function activateTrigMesh(){
-  if(menuDiv.style.display == 'block') closeTrigMesh();
-  else if(trigMesh && trigMesh.content) {
-    menuDiv.style.display = 'block';
-    menuTitle.innerHTML = "MENU -- " + trigMesh.name;
-    menuContent.innerHTML = "";
-    menuContent.appendChild(trigMesh.content);
-    if(trigMesh.content.onload) trigMesh.content.onload();    
-  }
-}
-function closeTrigMesh(){
-  menuDiv.style.display = 'none';
 }
