@@ -1,0 +1,42 @@
+table {
+  /*   border-collapse: collapse; */
+  /*   font-size: 24px; */
+  /*   font-family: arial, sans-serif; */
+  /*   width: 1280px; */
+  width: 100%;
+  color:white;
+  table-layout: fixed;
+  white-space:nowrap;
+  border-spacing: 0;
+}
+td, th {
+  overflow:hidden;
+  border: 1px solid;  //#dddddd;
+  text-align: center; //left;
+  padding: 4px 0px;
+}
+th{
+  background-color: rgba(160,160,160, 0.5);
+}
+tr:nth-child(odd) {
+  background-color: rgba(80,80,80, 0.5);
+}
+
+
+.inputVal{
+  width:40px;  
+}
+
+.minBtn{
+  padding: 0px 2px;
+}
+
+.bigFont{
+  font-size: 20px;
+}
+
+.barCanvas{
+  border:1px solid #000000;
+  margin-left:0px;  
+  padding-left:0px;
+}
