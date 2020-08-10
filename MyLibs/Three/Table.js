@@ -1,4 +1,9 @@
+const canvasW = 100;
+//
 var curTable, tableContainer;
+var sortDir = 1;
+
+/*** HIDE a Column ***/
 function hideColumn(colId) {  
   if(curTable.rows[0].cells[colId].style.width != "auto") 
     curTable.rows[0].cells[colId].style.width = "auto";
@@ -6,8 +11,7 @@ function hideColumn(colId) {
     curTable.rows[0].cells[colId].style.width = "20px";    
 }
 
-
-var sortDir = 1;
+/*** SORT a Column ***/
 function sortTable(colId) {  
   var rows, switching, i, x, y, shouldSwitch;
   // var table = curTable;
@@ -57,53 +61,7 @@ function sortTable(colId) {
 }
 
 
-
-const canvasW = 100;
-refreshTable();
-function refreshTable() {  
-  //maxVal = parseInt(inputMax.value);
-  refreshBars();
-  
-  setTimeout(refreshTable, 500);
-}
-function refreshBars() {  
-  //var table = document.getElementById("myTable");
-  var rows = curTable.rows;
-  for (var colId = 1; colId < (rows[0].cells.length); colId++) {
-    refreshColBars(colId);
-  }        
-}
-function refreshColBars(colId) {
-  var rows = curTable.rows;
-  var maxColVal = 0;
-  /* Find MAX Col Value : */
-  for (var i = 1; i < (rows.length); i++) {
-    var cell = rows[i].getElementsByTagName("TD")[colId];
-    var cellVal = parseInt( cell.getElementsByTagName("INPUT")[0].value );
-    if(cellVal > maxColVal) maxColVal = cellVal;
-  }
-  /* Refresh Bars Accordingly : */
-  for (var i = 1; i < (rows.length); i++) {
-    var cell = rows[i].getElementsByTagName("TD")[colId];
-    var cellVal = cell.getElementsByTagName("INPUT")[0].value;
-    var bar = cell.getElementsByTagName("CANVAS")[0];
-    var barBack = cell.getElementsByTagName("CANVAS")[1];
-    refreshBar(bar, barBack, cellVal, maxColVal);
-  }
-}
-function refreshBar(bar, barBack, cellVal,maxColVal) {
-  if(cellVal<=maxColVal){
-    bar.width = cellVal * canvasW/maxColVal;
-    barBack.width = (maxColVal-cellVal) * canvasW/maxColVal;    
-  }    
-  else{
-    bar.width = cellVal;
-    barBack.width = 0;    
-  }     
-}
-
-
-
+/*** CREATE Table from DATA Obj ***/
 function createTable(items, titleKey, paramsKey){
   var params0 = items[0][paramsKey];
   var newTable = document.createElement("TABLE");  
@@ -161,3 +119,47 @@ function createTable(items, titleKey, paramsKey){
   return newTable;
 }
 
+
+/*** Sync Table Data/Display ***/
+refreshTable();
+function refreshTable() {  
+  //maxVal = parseInt(inputMax.value);
+  refreshBars();
+  
+  setTimeout(refreshTable, 500);
+}
+function refreshBars() {  
+  //var table = document.getElementById("myTable");
+  var rows = curTable.rows;
+  for (var colId = 1; colId < (rows[0].cells.length); colId++) {
+    refreshColBars(colId);
+  }        
+}
+function refreshColBars(colId) {
+  var rows = curTable.rows;
+  var maxColVal = 0;
+  /* Find MAX Col Value : */
+  for (var i = 1; i < (rows.length); i++) {
+    var cell = rows[i].getElementsByTagName("TD")[colId];
+    var cellVal = parseInt( cell.getElementsByTagName("INPUT")[0].value );
+    if(cellVal > maxColVal) maxColVal = cellVal;
+  }
+  /* Refresh Bars Accordingly : */
+  for (var i = 1; i < (rows.length); i++) {
+    var cell = rows[i].getElementsByTagName("TD")[colId];
+    var cellVal = cell.getElementsByTagName("INPUT")[0].value;
+    var bar = cell.getElementsByTagName("CANVAS")[0];
+    var barBack = cell.getElementsByTagName("CANVAS")[1];
+    refreshBar(bar, barBack, cellVal, maxColVal);
+  }
+}
+function refreshBar(bar, barBack, cellVal,maxColVal) {
+  if(cellVal<=maxColVal){
+    bar.width = cellVal * canvasW/maxColVal;
+    barBack.width = (maxColVal-cellVal) * canvasW/maxColVal;    
+  }    
+  else{
+    bar.width = cellVal;
+    barBack.width = 0;    
+  }     
+}
