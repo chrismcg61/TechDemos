@@ -5,8 +5,9 @@ var curTable;
 var sortDir = 1;
 
 /*** INIT Table Mgr ***/
-function initTableMgr(_canvasW){ //_tableContainer
+function initTableMgr(_table, _canvasW){    //_tableContainer
   canvasW = _canvasW;  
+  curTable = _table;
   refreshTable();
 }
 
