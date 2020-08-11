@@ -1,8 +1,21 @@
-const canvasW = 100;
+var canvasW = 70;
 //
 var curTable;
 //var tableContainer;
 var sortDir = 1;
+
+/*** INIT Table Mgr ***/
+function initTableMgr(_canvasW){ //_tableContainer
+  canvasW = _canvasW;  
+  refreshTable();
+}
+
+/*** DISPLAY Current Table ***/
+function displayTable(_table, _tableContainer){
+  curTable = _table;
+  _tableContainer.innerHTML = "";
+  _tableContainer.appendChild( _table );
+}
 
 /*** HIDE a Column ***/
 function hideColumn(colId) {  
@@ -117,7 +130,7 @@ function createTable(items, titleKey, paramsKey){
     }
   }
   // meshBis.content = newTable;  
-  curTable = newTable;
+  //curTable = newTable;
   return newTable;
 }
 
