@@ -1,6 +1,7 @@
 const canvasW = 100;
 //
-var curTable, tableContainer;
+var curTable;
+//var tableContainer;
 var sortDir = 1;
 
 /*** HIDE a Column ***/
@@ -116,25 +117,25 @@ function createTable(items, titleKey, paramsKey){
     }
   }
   // meshBis.content = newTable;  
+  curTable = newTable;
   return newTable;
 }
 
 
 /*** Sync Table Data/Display ***/
-refreshTable();
+//refreshTable();
 function refreshTable() {  
-  //maxVal = parseInt(inputMax.value);
-  refreshBars();
-  
+  refreshBars();  
   setTimeout(refreshTable, 500);
 }
+//
 function refreshBars() {  
-  //var table = document.getElementById("myTable");
   var rows = curTable.rows;
   for (var colId = 1; colId < (rows[0].cells.length); colId++) {
     refreshColBars(colId);
   }        
 }
+//
 function refreshColBars(colId) {
   var rows = curTable.rows;
   var maxColVal = 0;
@@ -153,6 +154,7 @@ function refreshColBars(colId) {
     refreshBar(bar, barBack, cellVal, maxColVal);
   }
 }
+//
 function refreshBar(bar, barBack, cellVal,maxColVal) {
   if(cellVal<=maxColVal){
     bar.width = cellVal * canvasW/maxColVal;
@@ -162,4 +164,17 @@ function refreshBar(bar, barBack, cellVal,maxColVal) {
     bar.width = cellVal;
     barBack.width = 0;    
   }     
+}
+
+/*** Dyn HTML Tools ***/
+function setFunc(_func, i){
+  return function(){ _func(i) };
+}
+//
+function addElt(parent, tag, id, innerHTML){
+  var newElt = document.createElement(tag);  
+  newElt.id = id;
+  newElt.innerHTML = innerHTML;
+  parent.appendChild( newElt );  
+  return newElt;
 }
