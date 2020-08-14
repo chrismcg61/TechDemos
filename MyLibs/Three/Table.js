@@ -1,4 +1,6 @@
 var canvasW = 70;
+var PREFIX_SUBITEM = "﹍﹍►";
+var createTableCallback = function(){};
 //
 var curTable;
 //var tableContainer;
@@ -77,60 +79,91 @@ function sortTable(colId) {
 
 
 /*** CREATE Table from DATA Obj ***/
-function createTable(items, titleKey, paramsKey){
-  var params0 = items[0][paramsKey];
-  var newTable = document.createElement("TABLE");  
-  for ( var i=-1; i<items.length; i++ ) {
-    var item;
-    if(i==-1) item = items[0];
-    else item = items[i];
-    //
-    var params = item[paramsKey];
-    if(!params) continue;
-    /* Add Title to Params : */
-    if(!params[titleKey]) params[titleKey] = item[titleKey];
-    //
-    // var newTr = addRow(newTable);   
-    var newTr = addElt(newTable, "TR", "", "");
-    var colId = -1;
-    for(var key in params0){
-      colId++;
-      if(i==-1) {
-        var cell = addElt(newTr, "TH", "", "");
-        var btn = addElt(cell, "BUTTON", "", "+");
-        btn.onclick = setFunc(hideColumn,colId);      
-        btn.classList.add("minBtn");
-        var colName = addElt(cell, "SPAN", "", key);
+function createItemRow(items, titleKey, paramsKey,  i, params0, newTable, rowId){
+  var item;
+  if(i==-1) item = items[0];
+  else item = items[i];
+  //
+  var params = item[paramsKey];
+  if(!params) return; //continue;
+  /* Add Title to Params : */
+  if(!params[titleKey]) params[titleKey] = item[titleKey];
+  //var newTr = addElt(newTable, "TR", "", "");
+  var newTr = newTable.insertRow(rowId);  
+  var colId = -1;
+  for(var key in params0){
+    colId++;
+    if(i==-1) {
+      var cell = addElt(newTr, "TH", "", "");
+      var btn = addElt(cell, "BUTTON", "", "+");
+      btn.onclick = setFunc(hideColumn,colId);      
+      btn.classList.add("minBtn");
+      var colName = addElt(cell, "SPAN", "", key);
+      if(key!=titleKey){
         var btn = addElt(cell, "BUTTON", "", "▼");
         btn.onclick = setFunc(sortTable,colId);
         btn.classList.add("minBtn");
       }
-      else{ 
-        // addCell(newTr, "TD", params[key] );
-        if(key==titleKey) var cell = addElt(newTr, "TD", "", params[key]);
-        else{
-          var cell = addElt(newTr, "TD", "", "");
-          var newInput = addElt(cell, "INPUT", "", "");
-          newInput.type = "number";
-          newInput.classList.add("bigFont");
-          newInput.style.width = "50px";
-          newInput.value = params[key];
-          var canvas = addElt(cell, "CANVAS", "", "");
-          canvas.classList.add("barCanvas");
-          canvas.height = 8;
-          canvas.width = 100;
-          canvas.style.backgroundColor = "red";
-          canvas.style.marginLeft = "8px";
-          var canvas = addElt(cell, "CANVAS", "", "");
-          canvas.classList.add("barCanvas");
-          canvas.height = 8;
-          canvas.width = 100;
-          // canvas.style.backgroundColor = "red";
+    }
+    else{ 
+      if(key==titleKey) {
+        var cell = addElt(newTr, "TD", "", params[key]);
+        cell.style.textAlign = "left";
+        if(item.class) newTr.classList.add(item.class);
+        if(item.subItems) {
+          var btn = addElt(cell, "BUTTON", "", "+");
+          btn.classList.add("minBtn");
+          btn.onclick = function(){ 
+            if(item.subItems.expand) item.subItems.expand = false;
+            else item.subItems.expand = true;
+            createTableCallback();
+          };
         }
+      }
+      else{
+        var cell = addElt(newTr, "TD", "", "");
+        var newInput = addElt(cell, "INPUT", "", "");
+        newInput.type = "number";
+        newInput.classList.add("bigFont");
+        newInput.style.width = "50px";
+        newInput.value = params[key];
+        var canvas = addElt(cell, "CANVAS", "", "");
+        canvas.classList.add("barCanvas");
+        canvas.height = 8;
+        canvas.width = 100;
+        canvas.style.backgroundColor = "red";
+        canvas.style.marginLeft = "8px";
+        var canvas = addElt(cell, "CANVAS", "", "");
+        canvas.classList.add("barCanvas");
+        canvas.height = 8;
+        canvas.width = 100;
       }
     }
   }
-  // meshBis.content = newTable;  
+}
+//
+function createTable(items, titleKey, paramsKey){
+  var params0 = items[0][paramsKey];
+  var newTable = document.createElement("TABLE");  
+  for ( var i=-1; i<items.length; i++ ) {
+    var item = items[i];
+    var rowId = newTable.rows.length;
+    createItemRow(items, titleKey, paramsKey,  i, params0, newTable, rowId);    
+    if(i>=0 && item.subItems && item.subItems.expand){    
+      for ( var j=0; j<item.subItems.length; j++ ) {
+        var subItem = item.subItems[j];
+        if(!subItem[paramsKey]) {
+          subItem[paramsKey] = {};
+          for(var sKey in item[paramsKey]){
+            subItem[paramsKey][sKey] = item[paramsKey][sKey];
+          }          
+        }
+        if(item.class) subItem.class = item.class;
+        subItem[paramsKey][titleKey] = PREFIX_SUBITEM + subItem[titleKey];
+        createItemRow(item.subItems, titleKey, paramsKey,  j, params0, newTable, rowId+j+1 );    
+      }
+    }
+  }
   //curTable = newTable;
   return newTable;
 }
@@ -170,9 +203,14 @@ function refreshColBars(colId) {
 }
 //
 function refreshBar(bar, barBack, cellVal,maxColVal) {
+  var ratio = cellVal/maxColVal;
+  // bar.style.backgroundColor = "rgb("+(ratio*255)+",0,"+(ratio*50)+")";
+  var ratio2 = Math.max(0, (ratio-0.5)*2);
+  bar.style.backgroundImage = "linear-gradient(to right, rgb(0,0,0), rgb("+(180*ratio)+",0,0), rgb("+(180+75*(ratio2))+","+(255*(ratio2))+",0) )";
+  
   if(cellVal<=maxColVal){
-    bar.width = cellVal * canvasW/maxColVal;
-    barBack.width = (maxColVal-cellVal) * canvasW/maxColVal;    
+    bar.width = canvasW * ratio;
+    barBack.width = canvasW * (maxColVal-cellVal)/maxColVal;
   }    
   else{
     bar.width = cellVal;
