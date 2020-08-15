@@ -1,5 +1,4 @@
-import * as THREE from 'https://cdn.rawgit.com/mrdoob/three.js/r119/build/three.module.js';
-
+// import * as THREE from 'https://cdn.rawgit.com/mrdoob/three.js/r119/build/three.module.js';
 /////////////////////////////////////////////////////
 // Global Vars :
 /////////////////////////////////////////////////////
