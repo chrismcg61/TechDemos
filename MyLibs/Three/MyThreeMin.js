@@ -4,7 +4,8 @@
 /////////////////////////////////////////////////////
 var gpuMode = 1;
 var statsMode = 1;
-var fogMode = 0;
+var fogDist = 0;
+var ambLightIntensity = 0;
 var shadowMode = 0;
 var aliasingMode = false;
 var camParams = {fov:50, near:0.01, far:90*1000};
@@ -12,6 +13,7 @@ var backColor = 0x03030f;
 //
 var container,  camera, scene, renderer;
 var stats;
+var ambientLight;
 //var infoDiv, stats;
 /////////////////////////////////////////////////////
 // First Time Inits :
@@ -51,6 +53,8 @@ function initRenderer() {
   if(gpuMode)   {
     renderer = new THREE.WebGLRenderer( { antialias: aliasingMode } );
     //infoDiv.innerHTML = "Mode: GPU";
+    if(shadowMode) renderer.shadowMap.enabled = true;
+    //renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
   }
   else  {
     renderer = new THREE.CanvasRenderer();
@@ -61,10 +65,7 @@ function initRenderer() {
   renderer.setSize( window.innerWidth, window.innerHeight );
   //renderer.gammaInput = true;
   //renderer.gammaOutput = true;
-  if(shadowMode) renderer.shadowMap.enabled = true;
-  //renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
-
-  //
+  
   container.appendChild( renderer.domElement );
 
   gpuMode = !gpuMode;
@@ -74,7 +75,12 @@ function initScene( callback ){
   // SCENE
   scene = new THREE.Scene();
   scene.background = new THREE.Color( backColor );
-  if(fogMode) scene.fog = new THREE.Fog( 0xffffff, 0, 1200 );
+  if(fogDist>0) scene.fog = new THREE.Fog( 0xffffff, 0, fogDist );
+  
+  if(ambLightIntensity>0){
+    ambientLight = new THREE.AmbientLight( 0xffffff, ambLightIntensity );
+    scene.add( ambientLight );
+  }
 
   callback(); 
   //setTimeout(callback, 1);
