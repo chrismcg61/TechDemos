@@ -4,6 +4,12 @@
 /////////////////////////////////////////////////////
 var gpuMode = 1;
 var statsMode = 1;
+var fogMode = 0;
+var shadowMode = 0;
+var aliasingMode = false;
+var camParams = {fov:50, near:0.01, far:90*1000};
+var backColor = 0x03030f;
+//
 var container,  camera, scene, renderer;
 var stats;
 //var infoDiv, stats;
@@ -18,15 +24,14 @@ function onWindowResize() {
 //
 function initMain() {
   //if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+  // DIV Display :
   document.body.style.margin = 0;
   document.body.style.overflow = "hidden"; 
-  
-  // 3D Container :
   container = document.createElement( 'div' );
   document.body.appendChild( container );
   
    // CAMERA
-  camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 );
+  camera = new THREE.PerspectiveCamera( camParams.fov, window.innerWidth / window.innerHeight, camParams.near, camParams.far );
   //camera.position.set( 2, 0, 2 );
   //camera.lookAt( new THREE.Vector3() );
 
@@ -44,7 +49,7 @@ function initRenderer() {
   if(renderer) container.removeChild( renderer.domElement );
 
   if(gpuMode)   {
-    renderer = new THREE.WebGLRenderer( { antialias: false } );
+    renderer = new THREE.WebGLRenderer( { antialias: aliasingMode } );
     //infoDiv.innerHTML = "Mode: GPU";
   }
   else  {
@@ -56,6 +61,8 @@ function initRenderer() {
   renderer.setSize( window.innerWidth, window.innerHeight );
   //renderer.gammaInput = true;
   //renderer.gammaOutput = true;
+  if(shadowMode) renderer.shadowMap.enabled = true;
+  //renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
   //
   container.appendChild( renderer.domElement );
@@ -66,8 +73,8 @@ function initRenderer() {
 function initScene( callback ){
   // SCENE
   scene = new THREE.Scene();
-  scene.background = new THREE.Color( 0x03030f );
-  //scene.fog = new THREE.Fog( 0x040306, 10, 300 ); 
+  scene.background = new THREE.Color( backColor );
+  if(fogMode) scene.fog = new THREE.Fog( 0xffffff, 0, 1200 );
 
   callback(); 
   //setTimeout(callback, 1);
