@@ -1,3 +1,23 @@
+import {
+	Color,
+	LinearFilter,
+	MathUtils,
+	Matrix4,
+	Mesh,
+	PerspectiveCamera,
+  Scene,
+  Fog,
+	Plane,
+	Quaternion,
+	RGBFormat,
+	ShaderMaterial,
+	UniformsUtils,
+	Vector3,
+	Vector4,
+	WebGLRenderTarget,
+  WebGLRenderer
+} from "https://cdn.rawgit.com/mrdoob/three.js/r119/build/three.module.js";
+
 
 var camera, scene, renderer;
 
@@ -10,14 +30,14 @@ function init() {
   document.body.appendChild( container );
 
   /* CAM & SCENE & RENDERER */
-  camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 90*1000 );
+  camera = new PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 90*1000 );
   camera.position.set(0, 0 ,1);
   //
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color( 0x03030f );
-  //scene.fog = new THREE.Fog( 0x040306, 10, 300 ); 
+  scene = new Scene();
+  scene.background = new Color( 0x03030f );
+  //scene.fog = new Fog( 0x040306, 10, 300 ); 
   //
-  renderer = new THREE.WebGLRenderer( { antialias: true } );
+  renderer = new WebGLRenderer( { antialias: true } );
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );  
   
