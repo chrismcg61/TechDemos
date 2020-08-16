@@ -1,14 +1,13 @@
 
 var camera, scene, renderer;
 
-/* INIT */
+/*** INIT ***/
 function init() {
   /* DIV Display */
   document.body.style.margin = 0;
   document.body.style.overflow = "hidden"; 
   var container = document.createElement( 'div' );
   document.body.appendChild( container );
-
 
   /* CAM & SCENE & RENDERER */
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 90*1000 );
@@ -20,15 +19,14 @@ function init() {
   //
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   renderer.setPixelRatio( window.devicePixelRatio );
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  
+  renderer.setSize( window.innerWidth, window.innerHeight );  
   
   container.appendChild( renderer.domElement );
   //
   window.addEventListener( 'resize', onWindowResize, false );
 }
 
-/* Win Resize Evt */
+/*** Window RESIZE Evt ***/
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
