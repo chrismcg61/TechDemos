@@ -15,23 +15,21 @@ var HIDDEN_DIV_MARGIN_L = "8px";
 var HIDDEN_DIV_BORDER_L = "6px dotted blue";
 //
 var START_DATE = 1999.0;
+//
 function getDate(_durationQ){
   var start = START_DATE;
   START_DATE += _durationQ*0.25;
   return {start:start,duration:_durationQ};  
 }
+//
 function small(_txt){
   return "<small><i>"+_txt+"</i></small>"  
 }
+//
 function addTableTag(_table, _tag, _obj){
   _table[_tag] = _obj;  
   _table.push( _obj );
 }
-//
-
-
-
-
 //
 function getAge(_startT){
   var now = Date.now();
@@ -40,6 +38,27 @@ function getAge(_startT){
   return Math.floor(now_Y - _startT);  
 }
 //
+function addElt(_tag, _parent, _txt){
+  var newDiv = document.createElement(_tag);
+  newDiv.innerHTML = _txt;
+  _parent.appendChild(newDiv); 
+  //
+  return newDiv;
+}
+//
+function getMissionsByType(_type, _subDivs){
+  var newDivList = [];
+  for ( var i=0; i<_subDivs.length; i++ ) {
+    var subDiv = _subDivs[i];
+    if(subDiv.type == _type){
+      newDivList.push( subDiv );      
+    }
+  }  
+  return newDivList;
+}
+
+
+/*** Display Data from Obj (Recursive) ***/
 function displayData(_data, _parent, _lvl){
   var subDivs = _data.subDivs;
   if(subDivs){
@@ -137,22 +156,4 @@ function displayData(_data, _parent, _lvl){
     }
   }
 }
-function addElt(_tag, _parent, _txt){
-  var newDiv = document.createElement(_tag);
-  newDiv.innerHTML = _txt;
-  _parent.appendChild(newDiv); 
-  //
-  return newDiv;
-}
-//
-function getMissionsByType(_type, _subDivs){
-  var newDivList = [];
-  for ( var i=0; i<_subDivs.length; i++ ) {
-    var subDiv = _subDivs[i];
-    if(subDiv.type == _type){
-      newDivList.push( subDiv );      
-    }
-  }  
-  return newDivList;
-}
-//
+
