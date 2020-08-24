@@ -75,8 +75,7 @@ var rootData_Pers = {
           ],
         },
       ],
-    },
-    
+    },    
     {
       title:{txt:"Contracts : ", classes:["title"]},
       // classes:["title"],
@@ -121,6 +120,9 @@ var rootData_Pers = {
     },   
   ],
 };
+
+
+
 var rootData_JobTitles = {
   subDivs:[
     {
