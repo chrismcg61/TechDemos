@@ -1,3 +1,4 @@
+var BAR_TXT = "_";
 var BAR_OFFSET = 20;
 var BAR_FACTOR = 2.5;
 // var BAR_COL = "rgba(255,0,0, 0.99)";
@@ -141,7 +142,7 @@ function displayData(_data, _parent, _lvl){
         var spanContainer = addElt("SPAN", newSubDiv, "");
         spanContainer.style.position = "relative";
         spanContainer.style.float = "right";
-        var newSpan = addElt("SPAN", spanContainer, "_");
+        var newSpan = addElt("SPAN", spanContainer, BAR_TXT);
         newSpan.style.display = "inline-block";
         newSpan.style.width = BAR_FACTOR*(subDiv.rating-BAR_OFFSET)+"px";
         newSpan.style.backgroundColor = "rgba(255,"+(-300+_lvl*70)+",0, 0.99)"; //BAR_COL;
