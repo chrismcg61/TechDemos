@@ -10,6 +10,7 @@ var DIV_BTN_ON = "►";
 // var DIV_BTN_COL = "rgba(255,0,0, 0.5)";
 var DIV_BTN_CLASS = "spanBtn";
 //
+var SUBDIV_OPACITY = 0.9;
 var SUBDIV_FONT_SIZE = "90%";
 var DIV_MARGIN_TOP = "4px";
 var HIDDEN_DIV_MARGIN_L = "8px";
@@ -96,7 +97,7 @@ function displayData(_data, _parent, _lvl){
         }      
       }
       else newSubDiv.style.fontSize = SUBDIV_FONT_SIZE;
-      newSubDiv.style.opacity = 0.9;
+      if(SUBDIV_OPACITY<1) newSubDiv.style.opacity = SUBDIV_OPACITY;
       //
       if(subDiv.title) {
         var newTitleDiv = addElt("DIV", newSubDiv, subDiv.title.txt);
