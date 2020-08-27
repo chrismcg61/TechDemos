@@ -87,6 +87,7 @@ function startInfoDiv(){
   subDiv2.style.fontSize = "20px";
 }
 //
+/*** Add HTML Elt (FpsUI Version) ***/
 function addEltUI(parent, tag, id, innerHTML){
   var newElt = document.createElement(tag);  
   newElt.id = id;
