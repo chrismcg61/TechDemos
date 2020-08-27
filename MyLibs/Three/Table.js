@@ -88,30 +88,30 @@ function createItemRow(items, titleKey, paramsKey,  i, params0, newTable, rowId)
   if(!params) return; //continue;
   /* Add Title to Params : */
   if(!params[titleKey]) params[titleKey] = item[titleKey];
-  //var newTr = addElt(newTable, "TR", "", "");
+  //var newTr = addEltUI(newTable, "TR", "", "");
   var newTr = newTable.insertRow(rowId);  
   var colId = -1;
   for(var key in params0){
     colId++;
     if(i==-1) {
-      var cell = addElt(newTr, "TH", "", "");
-      var btn = addElt(cell, "BUTTON", "", "+");
+      var cell = addEltUI(newTr, "TH", "", "");
+      var btn = addEltUI(cell, "BUTTON", "", "+");
       btn.onclick = setFunc(hideColumn,colId);      
       btn.classList.add("minBtn");
-      var colName = addElt(cell, "SPAN", "", key);
+      var colName = addEltUI(cell, "SPAN", "", key);
       if(key!=titleKey){
-        var btn = addElt(cell, "BUTTON", "", "▼");
+        var btn = addEltUI(cell, "BUTTON", "", "▼");
         btn.onclick = setFunc(sortTable,colId);
         btn.classList.add("minBtn");
       }
     }
     else{ 
       if(key==titleKey) {
-        var cell = addElt(newTr, "TD", "", params[key]);
+        var cell = addEltUI(newTr, "TD", "", params[key]);
         cell.style.textAlign = "left";
         if(item.class) newTr.classList.add(item.class);
         if(item.subItems) {
-          var btn = addElt(cell, "BUTTON", "", "+");
+          var btn = addEltUI(cell, "BUTTON", "", "+");
           btn.classList.add("minBtn");
           btn.onclick = function(){ 
             if(item.subItems.expand) item.subItems.expand = false;
@@ -121,19 +121,19 @@ function createItemRow(items, titleKey, paramsKey,  i, params0, newTable, rowId)
         }
       }
       else{
-        var cell = addElt(newTr, "TD", "", "");
-        var newInput = addElt(cell, "INPUT", "", "");
+        var cell = addEltUI(newTr, "TD", "", "");
+        var newInput = addEltUI(cell, "INPUT", "", "");
         newInput.type = "number";
         newInput.classList.add("bigFont");
         newInput.style.width = "50px";
         newInput.value = params[key];
-        var canvas = addElt(cell, "CANVAS", "", "");
+        var canvas = addEltUI(cell, "CANVAS", "", "");
         canvas.classList.add("barCanvas");
         canvas.height = 8;
         canvas.width = 100;
         canvas.style.backgroundColor = "red";
         canvas.style.marginLeft = "8px";
-        var canvas = addElt(cell, "CANVAS", "", "");
+        var canvas = addEltUI(cell, "CANVAS", "", "");
         canvas.classList.add("barCanvas");
         canvas.height = 8;
         canvas.width = 100;
@@ -222,8 +222,9 @@ function refreshBar(bar, barBack, cellVal,maxColVal) {
 function setFunc(_func, i){
   return function(){ _func(i) };
 }
-//
-function addElt(parent, tag, id, innerHTML){
+
+/*** Add HTML Elt (FPS UI Version) ***/
+function addEltUI(parent, tag, id, innerHTML){
   var newElt = document.createElement(tag);  
   newElt.id = id;
   newElt.innerHTML = innerHTML;
