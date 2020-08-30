@@ -1,4 +1,7 @@
-var BAR_TXT = "_";
+var BAR_FONTSIZE = "80%";
+var BAR_COLOR_OFFSET = 250;
+//
+var BAR_TXT = "░"; // "▌";
 var BAR_OFFSET = 20;
 var BAR_FACTOR = 2.5;
 // var BAR_COL = "rgba(255,0,0, 0.99)";
@@ -10,11 +13,11 @@ var DIV_BTN_ON = "►";
 // var DIV_BTN_COL = "rgba(255,0,0, 0.5)";
 var DIV_BTN_CLASS = "spanBtn";
 //
-var SUBDIV_OPACITY = 0.9;
+var SUBDIV_OPACITY = 1;
 var SUBDIV_FONT_SIZE = "90%";
 var DIV_MARGIN_TOP = "4px";
 var HIDDEN_DIV_MARGIN_L = "8px";
-var HIDDEN_DIV_BORDER_L = "6px dotted blue";
+var HIDDEN_DIV_BORDER_L = "2px dotted blue";
 //
 var START_DATE = 1999.0;
 //
@@ -146,8 +149,9 @@ function displayData(_data, _parent, _lvl){
         var newSpan = addElt("SPAN", spanContainer, BAR_TXT);
         newSpan.style.display = "inline-block";
         newSpan.style.width = BAR_FACTOR*(subDiv.rating-BAR_OFFSET)+"px";
-        newSpan.style.backgroundColor = "rgba(255,"+(-300+_lvl*70)+",0, 0.99)"; //BAR_COL;
+        newSpan.style.backgroundColor = "rgba(255,"+(-BAR_COLOR_OFFSET+_lvl*70)+",0, 0.99)"; //BAR_COL;
         newSpan.style.marginLeft = "8px";
+		    newSpan.style.fontSize = BAR_FONTSIZE;
         newSpan.classList.add( "tooltipBtn" ); 
         var tooltip = addElt("DIV", spanContainer, subDiv.rating+"%");
         tooltip.classList.add( "centered" ); 
