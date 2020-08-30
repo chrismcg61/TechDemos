@@ -14,7 +14,7 @@ var rootData_Pers = {
       ]},
     },
     {
-      tagDiv:{title:"Degrees : ", tags:[
+      tagDiv:{title:"✎🎓 Degrees: ", tags:[
         "IT-Engineer",        
         small("Elec-Robotics"),
         small("Maths"),
@@ -37,7 +37,7 @@ var rootData_Pers = {
       ],
     },
     {
-      tagDiv:{title:"Mobility : ", tags:[
+      tagDiv:{title:"✈🌍 Mobility: ", tags:[
         "Global "+small("(HiTech-Cities)"),
       ]},
       subDivs:[
@@ -52,7 +52,7 @@ var rootData_Pers = {
       ],
     },    
     {
-      tagDiv:{title:"WebCV "+small("(Portfolio/Contacts)")+" : ", tags:[
+      tagDiv:{title:"✉📞 Full-WebCV: ", tags:[
         "chrismcg61.wixsite.com/home"
       ]},
       subDivs:[
@@ -77,43 +77,33 @@ var rootData_Pers = {
       ],
     },    
     {
-      title:{txt:"Contracts : ", classes:["title"]},
+      title:{txt:"Contracts:", classes:["title2"]},
       // classes:["title"],
       tagDiv:{title:"", tags:[
         "3-Months+",
-        "FullTime", "Flex-HalfTime",
-        "Mobility", "TeleWork",
+        "FullTime", "HalfTime"+small("(Flex)"),         
       ]},   
     },
     {
       tagDiv:{title:"", tags:[
-         "Agile", "Flex-Time", "Prod-Focus", "Overtime Mgt",
+         "Mobility", "Flex-Time", "Agile", "TeleWork", 
       ]},
       subDivs:[
         {
           hidden:true,
           subDivs:[ 
             {
-              tagDiv:{title:"", tags:[
-                "Overtime "+small("(80-140h./2W)"), 
-                "HiTech",
+              tagDiv:{title:"Overtime++ : ", tags:[
+                "80-140h./2W", "Telework++",
               ]},
             },
-            {
-              tagDiv:{title:"Team : ", tags:[
-                "Pair-Prog", "Team Training", "Mentoring",
+			{
+              tagDiv:{title:"Proj : ", tags:[
+                "Guidelines", "Strong Scope",
               ]},
             },
-            {
-              tagDiv:{title:"Sprint : ", tags:[
-                "Review", "Proj Metrics",
-              ]},
-            },
-            {
-              tagDiv:{title:"MGT : ", tags:[
-                "Product Owner", "SCRUM Master",
-              ]},
-            },
+            
+            
           ],
         },
       ],    
@@ -129,7 +119,7 @@ var rootData_JobTitles = {
       // classes:["separateDiv"],
       subDivs:[
         {
-          title:{txt:"Senior Versatile Programmer", classes:["title"]},
+          title:{txt:"Senior Versatile Programmer", classes:["maintTitle"]},
         },
         {
           tagDiv:{title:"", tags:[
