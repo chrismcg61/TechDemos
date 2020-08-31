@@ -322,6 +322,7 @@ var favProjsData = {
 		}, 
 		{
 		  tagDiv:{title:"Quality", tags:[ ]},
+		  subRatings:{title:"", S:80},
 		  subDivs:[
 			{
 			  hidden:true,
@@ -339,6 +340,7 @@ var favProjsData = {
 		}, 
 		{
 		  tagDiv:{title:"Team", tags:[ ]},
+		  subRatings:{title:"", S:75},
 		  subDivs:[
 			{
 			  hidden:true,
@@ -356,6 +358,7 @@ var favProjsData = {
 		},
 		{
 		  tagDiv:{title:"Agile++", tags:[ ]},
+		  subRatings:{title:"", S:70},
 		  subDivs:[
 			{
 			  hidden:true,
@@ -364,7 +367,7 @@ var favProjsData = {
 				  tagDiv:{title:"Strong Struct : ", tags:[ "Strong Mgt Duo (PO+SM)", "Closed Sprint" ]},
 				},				
 				{
-				  tagDiv:{title:"Sprint++ : ", tags:[ "Sprint Review", "PairProg(COmmits)" ]},
+				  tagDiv:{title:"Sprint++ : ", tags:[ "Sprint Review", "PairProg(Commits)" ]},
 				},															
 				
 			  ],
@@ -373,6 +376,7 @@ var favProjsData = {
 		},
 		{
 		  tagDiv:{title:"Risk Mgt", tags:[ ]},
+		  subRatings:{title:"", S:65},
 		  subDivs:[
 			{
 			  hidden:true,
@@ -389,10 +393,6 @@ var favProjsData = {
 			},
 		  ],
 		},
-		
-		
-		
-		
 		
 		
   ]
