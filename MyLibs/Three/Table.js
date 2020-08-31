@@ -231,3 +231,131 @@ function addEltUI(parent, tag, id, innerHTML){
   parent.appendChild( newElt );  
   return newElt;
 }
+
+
+
+
+
+/*** --- ***/
+/*** NEW Section ***/
+/*** MAIN Creation API ***/
+function createMyTable(_items, _paramsKey, _params0){
+  var newTable = document.createElement("TABLE");    
+  //
+  createMyRow(newTable, _items[0], _paramsKey, _params0, -1, 0);  
+  //
+  createMySubTable(newTable, _items, _paramsKey, _params0, 0);  
+  //
+  return newTable;
+}
+
+/*** FILL EXISTING TABLE (Recursive) ***/
+function createMySubTable(_newTable, _items, _paramsKey, _params0, _lvl){
+  for ( var i=0; i<_items.length; i++ ) {
+    var item = _items[i];
+    //if(getTitle(item)=="") continue;
+    var newTr = createMyRow(_newTable, item, _paramsKey, _params0, 0, _lvl);
+    //
+    var subItems = getSubItems(item);
+    if(subItems){
+      var titleCell = newTr.cells[0];
+      var btn = addEltUI(titleCell, "BUTTON", "", "+");
+      // btn.classList.add("minBtn");
+      btn.onclick = setFunc(function(item){ 
+        if(item.expand) item.expand = false;
+        else item.expand = true;
+        createTableCallback();
+      },item);    
+      if(item.expand)
+      {
+        createMySubTable(_newTable, subItems, _paramsKey, _params0, _lvl+1);      
+      }
+    } 
+  }  
+}
+
+/*** Add a Row ***/
+function createMyRow(_newTable, _item, _paramsKey, _params0, _lineId, _lvl){
+  var rowId = _newTable.rows.length;
+  var newTr = _newTable.insertRow(rowId);    
+  var cellContent_Title = getTitle(_item);
+  if(_lvl>0) cellContent_Title = PREFIX_SUBITEM + cellContent_Title;
+  if(_lineId==-1)  addEltUI(newTr, "TH", "id", "TITLE");  
+  else {
+    var cell = addEltUI(newTr, "TD", "id", cellContent_Title);
+    cell.style.textAlign = "left";
+  }  
+  //
+  var colId = 0;
+  for(var key in _params0){
+    if(key=="title") continue;
+    colId++;
+    //
+    //var cellContent_Val = getVal(_item, _paramsKey, key);
+    if(_lineId==-1) displayTitleCell(newTr, colId, key);
+    else displayNumVal(newTr, _item, _paramsKey, key,  );
+      //addEltUI(newTr, "TD", "id", cellContent_Val);
+    //var cell = addEltUI(newTr, "TD", "id", cellContent_Val);
+  }  
+  //
+  return newTr;
+}
+
+/*** Display Number Elements ***/
+function displayNumVal(_newTr, _item, _paramsKey, _key,  ){
+  var cell = addEltUI(_newTr, "TD", "", "");
+  var newInput = addEltUI(cell, "INPUT", "", "");
+  newInput.type = "number";
+  newInput.classList.add("bigFont");
+  newInput.style.width = "50px";
+  //var cellContent_Val = getVal(_item, _paramsKey, _key);
+  newInput.value = getVal(_item, _paramsKey, _key);
+  //else newInput.value = 0;
+  var canvas = addEltUI(cell, "CANVAS", "", "");
+  canvas.classList.add("barCanvas");
+  canvas.height = 8;
+  canvas.width = 100;
+  canvas.style.backgroundColor = "red";
+  canvas.style.marginLeft = "8px";
+  var canvas = addEltUI(cell, "CANVAS", "", "");
+  canvas.classList.add("barCanvas");
+  canvas.height = 8;
+  canvas.width = 100;  
+}
+
+/*** Display Title-Line Elements ***/
+function displayTitleCell(_newTr, _colId, _key){
+  var cell = addEltUI(_newTr, "TH", "", "");
+  var btn = addEltUI(cell, "BUTTON", "", "+");
+  btn.onclick = setFunc(hideColumn,_colId);      
+  btn.classList.add("minBtn");
+  var colName = addEltUI(cell, "SPAN", "", _key);
+  //if(key!=titleKey)
+  {
+    var btn = addEltUI(cell, "BUTTON", "", "▼");
+    btn.onclick = setFunc(sortTable,_colId);
+    btn.classList.add("minBtn");
+  }  
+}
+
+/*** Getters (Subitems + Title + Vals) ***/
+function getSubItems(_item){
+  var subItems = null;
+  if(subItems==null && _item.subItems) subItems = _item.subItems;
+  if(subItems==null && _item.subDivs) subItems = _item.subDivs;
+  return subItems;
+}
+function getTitle(_item){
+  var title = "";
+  if(title=="" && _item.title && _item.title.txt) title = _item.title.txt;
+  if(title=="" && _item.tagDiv && _item.tagDiv.title) title = _item.tagDiv.title;
+  //
+  return title;  
+}
+function getVal(_item, _paramsKey, _key){
+  var value = 0;
+  if(value==0 && _item[_paramsKey] && _item[_paramsKey][_key] ) value = _item[_paramsKey][_key];
+  //
+  return value;  
+}
+
