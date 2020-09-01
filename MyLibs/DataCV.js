@@ -1,3 +1,15 @@
+/*** Tags ***/
+var roleTags = [];
+roleTags["LEAD"] = "Team-Lead";
+roleTags["MGR"] = "Proj-Mgr";
+roleTags["EXPERT"] = "Tech-Expert";
+var processTags = [];
+processTags["AGILE"] = "AGILE";
+processTags["AUTO"] = "Auto-Mgt";
+processTags["CodeQual"] = "Code-Quality";
+
+
+
 /*** PERS DATA ***/
 var rootData_Pers = {
   subDivs:[
@@ -15,16 +27,18 @@ var rootData_Pers = {
     },
     {
       tagDiv:{title:"✎🎓 Degrees: ", tags:[
-        "IT-Engineer",        
-        small("Elec-Robotics"),
-        small("Maths"),
+        "IT-Engineer"+small("(2006)"),        
+        small("HMI-Robotics"),
       ]},
       subDivs:[
         {
           hidden:true,
-          subDivs:[                        
+          subDivs:[
+			{  
+              tagDiv:{title:"Maths-Sup/Spe"+small("(2003)"), tags:[]},
+            }, 		  
             {  
-              tagDiv:{title:"BAFA "+small("(Summer Camp Animator)"), tags:[]},
+              tagDiv:{title:"BAFA "+small("(Summer-Camp Animator)"), tags:[]},
             },
             {  
               tagDiv:{title:"BIA "+small("(Aircraft Pilot)"), tags:[]},
@@ -60,13 +74,13 @@ var rootData_Pers = {
           hidden:true,
           subDivs:[                        
             {  
-              tagDiv:{title:"Mail : mail@fai.com", tags:[]},
+              tagDiv:{title:"Mail: mail@fai.com", tags:[]},
               subDivs:[
                 {
                   hidden:true,
                   subDivs:[                        
                     {  
-                      tagDiv:{title:"Tel : 0123456789", tags:[]},
+                      tagDiv:{title:"Tel: 0123456789", tags:[]},
                     },
                   ],
                 },
@@ -86,20 +100,20 @@ var rootData_Pers = {
     },
     {
       tagDiv:{title:"", tags:[
-         "Mobility", "Flex-Time", "Agile", "TeleWork", 
+         "Mobility", "Flex-Time", "Agile", "TeleWork++", 
       ]},
       subDivs:[
         {
           hidden:true,
           subDivs:[ 
             {
-              tagDiv:{title:"Overtime++ : ", tags:[
-                "80-140h./2W", "Telework++",
+              tagDiv:{title:"Overtime++: ", tags:[
+                "80-140h./2W", "FlexTime Rewards",
               ]},
             },
 			{
-              tagDiv:{title:"Proj : ", tags:[
-                "Guidelines", "Strong Scope",
+              tagDiv:{title:"Proj: ", tags:[
+                "Strong Scope",  "Clear Needs"+small(" (Expertise/Time)"),
               ]},
             },
             
@@ -215,6 +229,10 @@ var hobbiesTechData = {
     // },    
   ],
 };
+
+
+
+/*** MiniJobs ***/
 var miniJobsData = {
   subDivs:[
     // {
@@ -223,20 +241,36 @@ var miniJobsData = {
           title:{txt:"MiniJobs & Volunteer", classes:["maintTitle"]},
         },
         
-        {
-          tagDiv:{title:"Tech "+small("(Computer-ER, Teaching, Translate)"), tags:[]},
+		{
+          tagDiv:{title:"Proficient+"+small(" (PC/Elec-ER & Teaching)"), tags:[]},
           subDivs:[
             {
               hidden:true,
               subDivs:[                        
                 {  
-                  tagDiv:{title:"Computer Install/Repair", tags:[]},
+                  tagDiv:{title:"Computer/Robot/Electronics Install/Repair", tags:[]},
                 },
                 {  
                   tagDiv:{title:"Teaching (Maths, Prog)", tags:[]},
                 },                
+                
+                
+              ],
+            },
+          ],
+        },
+		
+        {
+          tagDiv:{title:"Proficient"+small(" (Translator & Animator)"), tags:[]},
+          subDivs:[
+            {
+              hidden:true,
+              subDivs:[                        
                 {  
                   tagDiv:{title:"Translator (ENG/FR)", tags:[]},
+                },
+				{  
+                  tagDiv:{title:"Teen Summer Camp Animator", tags:[]},
                 },
                 
               ],
@@ -245,19 +279,19 @@ var miniJobsData = {
         },
         
         {
-          tagDiv:{title:"Other "+small("(Animator, Elder-ER, Event-Org)"), tags:[]},
+          tagDiv:{title:"Other"+small(" (Elder-ER, Event Org°...)"), tags:[]},
           subDivs:[
             {
               hidden:true,
-              subDivs:[                        
-                {  
-                  tagDiv:{title:"Teen Summer Camp Animator", tags:[]},
-                },
+              subDivs:[   
                 {  
                   tagDiv:{title:"Elder/Dependent People Assist", tags:[]},
                 },                
                 {  
                   tagDiv:{title:"Event Org°", tags:[]},
+                },
+				{  
+                  tagDiv:{title:"Gardening/Construction", tags:[]},
                 },
                 
               ],
@@ -269,6 +303,7 @@ var miniJobsData = {
     // },    
   ],
 };
+	
 
 
 
@@ -290,6 +325,9 @@ var liveProjsData = {
     // },    
   ]
 }
+
+
+/*** Fav Projs ***/
 var favProjsData = {
 	subDivs:[
 		{
@@ -327,13 +365,9 @@ var favProjsData = {
 			{
 			  hidden:true,
 			  subDivs:[ 
-				{
-				  tagDiv:{title:"Product : ", tags:[ "Value Features", "ROI(Tech...)"]},
-				},
-				{
-				  tagDiv:{title:"Code : ", tags:[ "Review", "Auto-Analysis" ]},
+			    {
+				  tagDiv:{title:"", tags:[ "Value Features", "ROI(Tech...)", "Regression Prevent°"]},
 				},				
-				
 			  ],
 			},
 		  ],
@@ -345,13 +379,10 @@ var favProjsData = {
 			{
 			  hidden:true,
 			  subDivs:[ 
-				{
-				  tagDiv:{title:"Environment : ", tags:[ "CoWorking Days++", "CoWorking Offices++" ]},
-				},
-				{
-				  tagDiv:{title:"Training : ", tags:[ "Daily Mentoring", "Training Season" ]},
-				},							
-				
+			    {
+				  tagDiv:{title:"", tags:[ 
+				    "Strong Training"+small("(+Mentoring)"), "CoWorking-Env++"+small(" (Offices+Days)"), ]},
+				},				
 			  ],
 			},
 		  ],
@@ -363,13 +394,10 @@ var favProjsData = {
 			{
 			  hidden:true,
 			  subDivs:[ 
-				{
-				  tagDiv:{title:"Strong Struct : ", tags:[ "Strong Mgt Duo (PO+SM)", "Closed Sprint" ]},
+			    {
+				  tagDiv:{title:"", tags:[ 
+				    "X/Pair-Prog", "Strong Struct"+small("(MgtDuo+Sprint)"), "Sprint Correct°", ]},
 				},				
-				{
-				  tagDiv:{title:"Sprint++ : ", tags:[ "Sprint Review", "PairProg(Commits)" ]},
-				},															
-				
 			  ],
 			},
 		  ],
@@ -382,68 +410,205 @@ var favProjsData = {
 			  hidden:true,
 			  subDivs:[ 
 				{
-				  tagDiv:{title:"Prevention", tags:[  ]},
-				},
-				{
-				  tagDiv:{title:"Actions : ", tags:[ "Lo-Workload Mgt", "Issue Escalat°", "Scope Correct°" ]},
+				  tagDiv:{title:"", tags:[ "Prevention", "Lo-Workload Mgt", "Issue Escalat°", ]},
 				},	
-																			
-				
 			  ],
 			},
 		  ],
 		},
-		
-		
   ]
 }
+
+
+
+
 
 
 
 /*** SKILLS ***/
 var techList = [];
 addTableTag( techList, "TOOLS", {
-    rating:95,
+    rating:85,
     tagDiv:{title:"Tools", tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+		    {
+				rating:85,
+				tagDiv:{title:"", tags:[ 
+				  "Unity"+small("(Unreal)"), "VStudio", "Win/Linux"+small("(All)"), "VMware", ]},
+				subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[
+					    {
+							rating:85,
+							tagDiv:{title:"", tags:[ 
+							  "Eclipse", "Versioning"+small("(All)"), "Jira/Bugzilla", "Codepen/Github/SO" ]},
+						},
+					  ]
+					}
+				]
+			},
+			
+			
+			
+		  ]
+		}
+	]
+	
 });
 addTableTag( techList, "LANG", {
     rating:85,
     tagDiv:{title:"Prog-Lang.", tags:[ ]},
-});
-addTableTag( techList, "LIBS", {
-    rating:85,
-    tagDiv:{title:"Libs", tags:[ ]},
-});
-//
-var aiSkills = [];
-addTableTag( aiSkills, "GAME", {
-    rating:85,
-    tagDiv:{title:"AI-Game", tags:[ ]},
-  });
-addTableTag( aiSkills, "FLEX", {
-    rating:85,
-    tagDiv:{title:"AI-Flex", tags:[ ]},  
-  });
-//
-var webAppSkills = [];
-addTableTag( webAppSkills, "STB", {
-    rating:85,
-    tagDiv:{title:"WebApp-STB", tags:[ ]},
-  });
-addTableTag( webAppSkills, "Std", {
-    rating:85,
-    tagDiv:{title:"WebApp-Std", tags:[ ]},  
 	subDivs:[
 		{
 		  hidden:true,
 		  subDivs:[
 			{
 				rating:85,
-				tagDiv:{title:"WebApp-Std1", tags:[ ]},
+				tagDiv:{title:"", tags:[ "JS", "C,C++,C#", "Lua", "Batch", "HTML/CSS3D" ]},
+				subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[
+						{
+							rating:50,
+							tagDiv:{title:"", tags:[ "Python", "Java", "Dart", "Flash/AS", ]},
+						},
+					  ],
+					},
+				],
 			},
+		  ],
+		},
+	],
+});
+addTableTag( techList, "LIBS", {
+    rating:85,
+    tagDiv:{title:"Libs", tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
 			{
 				rating:85,
-				tagDiv:{title:"WebApp-Std2", tags:[ ]},
+				tagDiv:{title:"GPU: ", tags:[ 
+				  "WebGL"+small("(OpenGL/DX)"), "WebCL/GLSL"+small("(OpenCL)"), "Wii/PS3" ]},
+			},
+			{
+				rating:75,
+				tagDiv:{title:"Other: ", tags:[ "AngularJS", "ReactJS", ]},
+				subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[
+						{
+							rating:70,
+							tagDiv:{title:"", tags:[ "Jasmine/Bullseye", "Qt,WebExt", "WebWorkers,NodeJS", ".Net",  ]},
+						},
+					  ]
+					}
+				]
+				
+			},
+			
+			
+		  ],
+		},
+	],
+});
+//
+var aiSkills = [];
+addTableTag( aiSkills, "Generic", {
+	rating:85,
+	tagDiv:{title:"AI-Basic"+small(" (Bots Behavior/Sync)"), tags:[ ]},
+	subDivs:[
+		{
+			hidden:true,
+			subDivs:[
+				{
+					rating:85,
+					tagDiv:{title:"Bots: ", tags:[ "Idle/Aggro Behavior", "Team Sync AI" ]},
+				},				
+			]
+		}
+	]
+});
+addTableTag( aiSkills, "GAME", {
+	rating:85,
+	tagDiv:{title:"AI-Game"+small(" (World-Sim + User-Act°)"), tags:[ ]},
+	subDivs:[
+		{
+			hidden:true,
+			subDivs:[
+				{
+					rating:85,
+					tagDiv:{title:"", tags:[ "Player Assist", "World Simulation", "Player Interaction", ]},
+				},				
+			]
+		}
+	]
+});
+addTableTag( aiSkills, "FLEX", {
+    rating:85,
+    tagDiv:{title:"AI-Flex"+small(" (Neural-Net. + M-Learning)"), tags:[ ]},  
+	subDivs:[
+		{
+			hidden:true,
+			subDivs:[
+				{
+					rating:85,
+					tagDiv:{title:"", tags:[ "Distrib Robots AI", "Neural Network", "Machine-Learning" ]},
+				},				
+			]
+		}
+	]
+});
+//
+var webAppSkills = [];
+addTableTag( webAppSkills, "Generic", {
+    rating:85,
+    tagDiv:{title:"WebApp-Generic"+small(" (Modular & 3D)"), tags:[ ]},
+	subDivs:[
+		{
+			hidden:true,
+			subDivs:[
+				{
+					rating:85,
+					tagDiv:{title:"", tags:[ "Modular", "3D (CPU-GPU)",  ]},
+				},
+			]
+		}
+	]
+	
+  });
+addTableTag( webAppSkills, "STB", {
+    rating:85,
+    tagDiv:{title:"WebApp-STB"+small(" (Perf & GridUI)"), tags:[ ]},
+	subDivs:[
+		{
+			hidden:true,
+			subDivs:[
+				{
+					rating:85,
+					tagDiv:{title:"", tags:[ "Perf/Stability", "Grid UI",  ]},
+				},
+			]
+		}
+	]
+  });
+addTableTag( webAppSkills, "Std", {
+    rating:85,
+    tagDiv:{title:"WebApp-Std++"+small(" (MultiProc & Gamif°)"), tags:[ ]},  
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			{
+				rating:85,
+				tagDiv:{title:"", tags:[ "Multithreads", "Gamification", ]},
 			},
 		  ],
 		},
@@ -465,14 +630,107 @@ addTableTag( techSkills, "WebAPP",  {
 addTableTag( techSkills, "GameDev", {
     rating:85,
     tagDiv:{title:"GameDev/Design", tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			{
+				subDivs:[
+					{
+						rating:85,
+						tagDiv:{title:"", tags:[ "Controls++", "Procedural Stream", "Editor Extension",  ]},
+						subDivs:[
+							{
+							  hidden:true,
+							  subDivs:[
+								{
+									rating:85,
+									tagDiv:{title:"", tags:[ 
+									  "Scripted Events", "Area Integrity",   "Grid UI", "Dynamic HUD",
+									 ]},
+								},
+							  ]
+							}
+						]
+					},
+				]
+			}
+		  ],
+		},
+	],
   });
 addTableTag( techSkills, "MW", {
     rating:85,
-    tagDiv:{title:"MW/Tools", tags:[ ]},
-  });
+    tagDiv:{title:"MiddleWare", tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			{
+				rating:85,
+				tagDiv:{title:"", tags:[ 
+				  "Engine"+small("(Game/Video)"), "Modular App"+small("(Backend)"), "Drivers", ]},
+				subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[
+						{
+							rating:85,
+							tagDiv:{title:"", tags:[  "API Harmonization", ]},
+						},
+					  ]
+					}
+				]
+					  
+			},		
+		  ],
+		},
+	],
+});
+addTableTag( techSkills, "Tools", {
+    rating:85,
+    tagDiv:{title:"Tools", tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			{
+				rating:85,
+				tagDiv:{title:"", tags:[  "Perf/Qual Monitor", "Auto-Docs", "Resource Proc",  ]},
+				subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[
+						  {
+							rating:85,
+							tagDiv:{title:"", tags:[ "UT+Stress",  "Distrib Process",   ]},
+						},
+					  ]
+					}
+				]				
+			},						
+		  ],
+		},
+	],
+});
 addTableTag( techSkills, "3D", {
     rating:85,
     tagDiv:{title:"3D/GPU", tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			{
+				rating:85,
+				tagDiv:{title:"CPU-GPU: ", tags:[ "3D-Mesh Anim", "Physics", ]},
+			},
+{
+				rating:85,
+				tagDiv:{title:"Parallel Prog: ", tags:[ "Script Accelerat°", "M-Learning++" ]},
+			},			
+		  ],
+		},
+	],
   });
 addTableTag( techSkills, "AI",  {
   rating:85,
@@ -487,39 +745,137 @@ addTableTag( techSkills, "AI",  {
 });
 addTableTag( techSkills, "Embed", {
 	rating:75,
-	tagDiv:{title:"Embed", tags:[ ]},
+	tagDiv:{title:"Embedded", tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			{
+				rating:75,
+				tagDiv:{title:"", tags:[ "Drivers", "Debug Bench", ]},
+			},		
+		  ],
+		},
+	],
 });
 addTableTag( techSkills, "Misc", {
 	rating:50,
-	tagDiv:{title:"Misc", tags:[ ]},
+	tagDiv:{title:"Network/Elec", tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			{
+				rating:50,
+				tagDiv:{title:"", tags:[ "Security/Encryption", ".Net", "Data Processing", ]},
+			},		
+		  ],
+		},
+	],
 });
 //
 var mgtSkills = [];
 addTableTag( mgtSkills, "AUTO", {
     rating:90,
-    tagDiv:{title:"Auto-Mgt", tags:[ ]},
+    tagDiv:{title:processTags["AUTO"], tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			{
+				rating:85,
+				tagDiv:{title:"", tags:[ "Guidelines", "Feature/Tech Tasks", "Scope Correct°",   ]},
+				subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[
+					    {
+							rating:85,
+							tagDiv:{title:"Tasks: ", tags:[ "Important/Urgent", "MultiTask" ]},
+						},
+						{
+							rating:85,
+							tagDiv:{title:"Code: ", tags:[ "Test-Driven", "API Refactoring", ]},
+						},	
+						{
+							rating:85,
+							tagDiv:{title:"", tags:[ "RetroEngineering", "API Sharing", "Perf Monitor", ]},
+						},
+					  ]
+					}
+				]					  
+			},						
+		  ],
+		},
+	],
   });
 addTableTag( mgtSkills, "AGILE", {
     rating:85,
-    tagDiv:{title:"AGILE", tags:[ ]},
+    tagDiv:{title:processTags["AGILE"], tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			  {
+				  subDivs:[
+				    {
+						rating:85,
+						tagDiv:{title:"", tags:[ "SCRUM", "PairCommit", "CodeReview", "SprintReview"+small("(Monitor)") ]},
+						subDivs:[
+							{
+							  hidden:true,
+							  subDivs:[
+								{
+									rating:85,
+									tagDiv:{title:"", tags:[  "Inter-Team Sync", ]},
+								},
+							  ]
+							}
+						]
+					},			
+				  ]
+			  }		
+		  ],
+		},
+	],
   });
 addTableTag( mgtSkills, "CodeQual", {
     rating:75,
-    tagDiv:{title:"CodeQual", tags:[ ]},
+    tagDiv:{title:processTags["CodeQual"], tags:[ ]},
+	subDivs:[
+		{
+		  hidden:true,
+		  subDivs:[
+			{
+				rating:75,
+				tagDiv:{title:"", tags:[ "Strong UTs", "Qual/Regression Monitor", ]},
+			},		
+		  ],
+		},
+	],
   });
+//
+var skillMgtData = {  
+  // subDivs:[
+    // {
+      subDivs:[
+        {
+          title:{txt:"Skills [Mgt]", classes:["maintTitle"]},
+          subDivs:mgtSkills,
+        },
+      ],
+    // }
+  // ]
+}
 //
 var skillData = {  
   // subDivs:[
     // {
       subDivs:[
-        {
-          title:{txt:"Skills[Tech]", classes:["maintTitle"]},
-          subDivs:techSkills,
-        },
 		{
-          title:{txt:"Skills[Mgt]", classes:["maintTitle"]},
-          subDivs:mgtSkills,
-        },
+          title:{txt:"Skills [Tech]", classes:["maintTitle"]},
+          subDivs:techSkills,
+        },		
 		{
           title:{txt:"Techs", classes:["maintTitle"]},
           subDivs:techList,
@@ -528,6 +884,11 @@ var skillData = {
     // }
   // ]
 }
+
+
+
+
+
 
 
 
@@ -603,12 +964,11 @@ var missionsByDate = {
       type:"STB",
       dates:getDate(5),
       tagDiv:{title:"Cisco", tags:[ ]},
-    },
-	
+    },	
 	{
       type:"GameDev",
       dates:getDate(6),
-      tagDiv:{title:"TechSurvey[GameDev]", tags:[ ]},
+      tagDiv:{title:"MyProj-NextGen[Game]", tags:[ ]},
     },
 	{
       dates:getDate(6),
@@ -616,24 +976,19 @@ var missionsByDate = {
 	{
       type:"WebApp++",
       dates:getDate(5),
-      tagDiv:{title:"TechSurvey[WebApp++]", tags:[ ]},
-    },
-	
+      tagDiv:{title:"MyProj-NextGen[WebApp]", tags:[ ]},
+    },	
   ],  
 }
-//
-var roleTags = [];
-roleTags["LEAD"] = "Team-Lead";
-roleTags["MGR"] = "Proj-Mgr";
-roleTags["EXPERT"] = "Tech-Expert";
-var processTags = [];
-processTags["AGILE"] = "AGILE";
-processTags["AUTO"] = "Auto-Mgt";
-processTags["CodeQual"] = "CodeQual";
+
+
+
+
+
 var missionsByType = {
   subDivs:[
     {
-      title:{txt:"Projects[Experiences]", classes:["maintTitle"]},
+      title:{txt:"Projects [Experiences]", classes:["maintTitle"]},
       // classes:["maintTitle"],
     },
     
@@ -658,7 +1013,10 @@ var missionsByType = {
         {
           subDivs:[
             {
-              subDivs:[ webAppSkills["Std"], techSkills["3D"], aiSkills["FLEX"], ],
+              subDivs:[ webAppSkills["Generic"], webAppSkills["Std"], 
+			    techSkills["3D"], 
+				aiSkills["Generic"], aiSkills["FLEX"], 
+			  ],
             },
           ],          
         },        
@@ -676,8 +1034,10 @@ var missionsByType = {
 			{
 			  subDivs:[
 				{
-					tagDiv:{title:"", tags:[ roleTags["MGR"], roleTags["LEAD"], roleTags["EXPERT"],   
-					processTags["AUTO"], processTags["AGILE"], ]},
+					tagDiv:{title:"", tags:[ 
+					  roleTags["MGR"], roleTags["LEAD"], roleTags["EXPERT"],   
+					  processTags["AUTO"], processTags["AGILE"], 
+					]},
 				},
 			  ]
 			},
@@ -686,7 +1046,10 @@ var missionsByType = {
         {
           subDivs:[
             {
-              subDivs:[  techSkills["GameDev"], techSkills["MW"], techSkills["3D"],  aiSkills["GAME"],   ],
+              subDivs:[  techSkills["GameDev"],  techSkills["3D"],  
+			    aiSkills["Generic"], aiSkills["GAME"],   
+				techSkills["MW"],techSkills["Tools"],
+			  ],
             },
           ],          
         },
@@ -714,7 +1077,8 @@ var missionsByType = {
         {
           subDivs:[
             {
-              subDivs:[ webAppSkills["STB"], techSkills["MW"],   ],
+              subDivs:[  webAppSkills["Generic"], webAppSkills["STB"], 
+			    techSkills["MW"],techSkills["Tools"],   ],
             },
           ],          
         },        
@@ -723,7 +1087,7 @@ var missionsByType = {
 	
 	{
 	  classes:["hilightLo"],
-      title:{txt:"Embed", classes:["title"]},
+      title:{txt:"Embedded", classes:["title"]},
       subDivs:[
         {
           subDivs:getMissionsByType("Embed", missionsByDate.subDivs),
@@ -786,9 +1150,7 @@ var missionsByType = {
 		},
 	]
 	}
-    
-    
-    
   ],
 };
+
 
