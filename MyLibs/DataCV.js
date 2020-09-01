@@ -192,6 +192,7 @@ var langData = {
     },    
   ]
 };
+
 var hobbiesTechData = {
   subDivs:[
     // {
@@ -201,34 +202,111 @@ var hobbiesTechData = {
         },
         {
           //rating:95,    
-          tagDiv:{title:"Tech Research "+small("(Next-Gen Prog/Mgt)"), tags:[ ]},
+          tagDiv:{title:"Tech Research ", tags:[ ]},
+		  subDivs:[
+			{
+			  hidden:true,
+			  subDivs:[                        
+				{  
+				  tagDiv:{title:"", tags:[
+				    "Coding++"+small(" (Tech/Methods)"), "Mgt++"+small(" (Tools/Methods)"),  ]},
+				},
+			  ]
+			}
+		  ]
         },
         {
-          tagDiv:{title:"Gaming & Dev/Test Community", tags:[ ]},
+          tagDiv:{title:"Gaming/Test Community", tags:[ ]},
+		  subDivs:[
+			{
+			  hidden:true,
+			  subDivs:[                        
+				{  
+				  tagDiv:{title:"", tags:[
+				    "Retro-Gaming"+small(" (90s-2010s)"), "Competitive", "Early-Access",  ]},
+				},
+			  ]
+			}
+		  ]
         },
         {
           tagDiv:{title:"Documentaries", tags:[ ]},
+		  subDivs:[
+			{
+			  hidden:true,
+			  subDivs:[                        
+				{  
+				  tagDiv:{title:"", tags:[
+				    "Techs", "Sciences", "History", "Soft-Skills",  ]},
+				},
+			  ]
+			}
+		  ]
         },
         
         
         {
           title:{txt:"Hobbies [Other]", classes:["maintTitle"]},
         },
-        {
-          tagDiv:{title:"Music", tags:[ ]},
-        },
-        {
-          tagDiv:{title:"Sports", tags:[ ]},
-        },
-        {
-          tagDiv:{title:"Culture/Arts", tags:[ ]},
-        },
-        
-        
+		
+		{
+			subDivs:[
+				{
+				  tagDiv:{title:"Music ", tags:[ "Piano++", "Guitar", "Singing/Musicals", ]},
+				},
+				{
+				  tagDiv:{title:"Sports"+small(" (Running,Cycling,Football,Rackets,Ski)"), tags:[  ]},
+				  subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[                        
+						{  
+						  tagDiv:{title:"", tags:[
+						  "Semi-Marathon", "Mountain-Bike", "Racket Sports",  ]},
+						},
+						{  
+						  tagDiv:{title:"", tags:[
+							"Football",  "Ski/Snowboard"  ]},
+						},
+					  ]
+					}
+				  ]
+				},
+				{
+				  tagDiv:{title:"Culture/Arts"+small(" (SF,Fantasy,Thriller,Music,Sports,Politics)"), tags:[ ]},
+				  subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[                        
+						{  
+						  tagDiv:{title:"TV-Series"+small("(Books): "), tags:[
+							"SF", "Fantasy", "Thriller", "History",  ]},
+						},
+						{  
+						  tagDiv:{title:"Sport-Events: ", tags:[
+							"Football", "Tennis", "Cycling", "Olympics",  ]},
+						},
+						{  
+						  tagDiv:{title:"Other Events: ", tags:[
+							"Music", "E-Sport", "Politics",  ]},
+						},
+					  ]
+					}
+				  ]
+				},
+			]
+		},
       // ],
     // },    
   ],
 };
+
+
+
+
+
+
+
 
 
 
@@ -307,24 +385,79 @@ var miniJobsData = {
 
 
 
-/*** FAV & LIVE PROJs ***/
+
+
+
+/*** LIVE PROJs ***/
 var liveProjsData = {
 	subDivs:[
     // {
       // subDivs:[
         {
-          title:{txt:"Projects[Live]", classes:["maintTitle"]},
+          title:{txt:"Projects [Live]", classes:["maintTitle"]},
         },
         {
           tagDiv:{title:"AI++", tags:[ ]},
+		  subDivs:[
+			{
+			  hidden:true,
+			  subDivs:[                        
+				{  
+				  tagDiv:{title:"Machine-Learning: ", tags:[
+				    "GPU M-Learning", "Bots Optim"+small(" (Act°/Strat)"),]},
+				},
+				{  
+				  tagDiv:{title:"PathFinding: ", tags:[ "Traffic Sim", "GPU-PathFinding", ]},
+				},
+				{  
+				  tagDiv:{title:"Image Analysis AI: ", tags:[
+				    "Face Detect°", "Auto-Optim", ]},
+				},
+			  ],
+			},
+		  ],
+		  
         },
         {
           tagDiv:{title:"Mgt++", tags:[ ]},
+		  subDivs:[
+			{
+			  hidden:true,
+			  subDivs:[   
+				{  
+				  tagDiv:{title:"", tags:[ "Async Tools", "Metrics++", "WorkForce Correct°" ]},
+				},				
+				{  
+				  tagDiv:{title:"Bonus Objectives", tags:[]},
+				  subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[                        
+						{  
+						  tagDiv:{title:"Tech: ", tags:[ 
+						    "AI"+small(" (Assist+DataProc)"), "Gamificat°", "Energy...",  ]},
+						},
+						{  
+						  tagDiv:{title:"Soft: ", tags:[ 
+						    "Mentoring++", "RiskPrevent°++", "Ecology/Social...",  ]},
+						},
+					  ],
+					},
+				  ],
+				},
+			  ],
+			},
+		  ],
         },                
       // ],
     // },    
   ]
 }
+
+
+
+
+
 
 
 /*** Fav Projs ***/
@@ -425,8 +558,14 @@ var favProjsData = {
 
 
 
+
+
+
+
+
 /*** SKILLS ***/
 var techList = [];
+{
 addTableTag( techList, "TOOLS", {
     rating:85,
     tagDiv:{title:"Tools", tags:[ ]},
@@ -519,8 +658,10 @@ addTableTag( techList, "LIBS", {
 		},
 	],
 });
+}
 //
 var aiSkills = [];
+{
 addTableTag( aiSkills, "Generic", {
 	rating:85,
 	tagDiv:{title:"AI-Basic"+small(" (Bots Behavior/Sync)"), tags:[ ]},
@@ -553,7 +694,7 @@ addTableTag( aiSkills, "GAME", {
 });
 addTableTag( aiSkills, "FLEX", {
     rating:85,
-    tagDiv:{title:"AI-Flex"+small(" (Neural-Net. + M-Learning)"), tags:[ ]},  
+    tagDiv:{title:"AI-Flex"+small(" (Neural-Net. + Machine-Learning)"), tags:[ ]},  
 	subDivs:[
 		{
 			hidden:true,
@@ -566,8 +707,10 @@ addTableTag( aiSkills, "FLEX", {
 		}
 	]
 });
+}
 //
 var webAppSkills = [];
+{
 addTableTag( webAppSkills, "Generic", {
     rating:85,
     tagDiv:{title:"WebApp-Generic"+small(" (Modular & 3D)"), tags:[ ]},
@@ -614,8 +757,10 @@ addTableTag( webAppSkills, "Std", {
 		},
 	],
   });
+}
 //
 var techSkills = [];
+{
 addTableTag( techSkills, "WebAPP",  {
   rating:85,
   tagDiv:{title:"WebApp", tags:[ ]},
@@ -773,8 +918,10 @@ addTableTag( techSkills, "Misc", {
 		},
 	],
 });
+}
 //
 var mgtSkills = [];
+{
 addTableTag( mgtSkills, "AUTO", {
     rating:90,
     tagDiv:{title:processTags["AUTO"], tags:[ ]},
@@ -854,6 +1001,7 @@ addTableTag( mgtSkills, "CodeQual", {
 		},
 	],
   });
+}
 //
 var skillMgtData = {  
   // subDivs:[
@@ -884,6 +1032,13 @@ var skillData = {
     // }
   // ]
 }
+
+
+
+
+
+
+
 
 
 
