@@ -388,6 +388,11 @@ var miniJobsData = {
 
 
 
+
+
+
+
+
 /*** LIVE PROJs ***/
 var liveProjsData = {
 	subDivs:[
@@ -397,7 +402,7 @@ var liveProjsData = {
           title:{txt:"Projects [Live]", classes:["maintTitle"]},
         },
         {
-          tagDiv:{title:"AI++", tags:[ ]},
+          tagDiv:{title:"GPU-AI++"+small(" (M-Learning++, Traffic/Pathing++, ImageAI)"), tags:[ ]},
 		  subDivs:[
 			{
 			  hidden:true,
@@ -419,7 +424,7 @@ var liveProjsData = {
 		  
         },
         {
-          tagDiv:{title:"Mgt++", tags:[ ]},
+          tagDiv:{title:"Mgt++"+small(" (Tools/Metrics++, Objectives++, WorkForce++)"), tags:[ ]},
 		  subDivs:[
 			{
 			  hidden:true,
@@ -460,6 +465,8 @@ var liveProjsData = {
 
 
 
+
+
 /*** Fav Projs ***/
 var favProjsData = {
 	subDivs:[
@@ -468,31 +475,42 @@ var favProjsData = {
 		},
 		
 		{
-		  tagDiv:{title:"Productivity", tags:[ ],  },
+		  tagDiv:{title:"Productivity"+small(" (WorkLoad/ChangeReq)"), tags:[ ],  },
 		  subRatings:{title:"", S:85},
 		  subDivs:[
 			{
 			  hidden:true,
 			  subDivs:[ 
 				{
-				  tagDiv:{title:"Workload : ", tags:[ "Continuity(Non-Work Days)", "HiWorkload Mgt"]},
+				  tagDiv:{title:"WorkLoad: ", tags:[ "Continuity(Non-Work Days)", "HiWorkload Mgt",   ]},
 				},
 				{
-				  tagDiv:{title:"Tasks : ", tags:[ "Automation(LoTech)", "Bonus Dev Tasks"]},
+				  tagDiv:{title:"", tags:[ "Lo-ChangeReq", "Release Freq" ]},
 				},
-				{
-				  tagDiv:{title:"Tools : ", tags:[ "Async CoWorking", "Metrics(Prod+Qual)"]},
-				},
-				{
-				  tagDiv:{title:"Mgt : ", tags:[ "Lo-ChangeReq", "Release Freq"]},
-				},
-				
 			  ],
 			},
 		  ],
 		}, 
 		{
-		  tagDiv:{title:"Quality", tags:[ ]},
+		  tagDiv:{title:"Productivity"+small(" (Tasks/Tools++)"), tags:[ ],  },
+		  subRatings:{title:"", S:85},
+		  subDivs:[
+			{
+			  hidden:true,
+			  subDivs:[ 				
+				{
+				  tagDiv:{title:"Tasks : ", tags:[ "Automation(LoTech)", "Bonus Dev Tasks"]},
+				},
+				{
+				  tagDiv:{title:"Tools : ", tags:[ "Async CoWorking", "Metrics(Prod+Qual)"]},
+				},				
+			  ],
+			},
+		  ],
+		},
+		
+		{
+		  tagDiv:{title:"Quality"+small(" (Value,ROI,Regression)"), tags:[ ]},
 		  subRatings:{title:"", S:80},
 		  subDivs:[
 			{
@@ -506,7 +524,7 @@ var favProjsData = {
 		  ],
 		}, 
 		{
-		  tagDiv:{title:"Team", tags:[ ]},
+		  tagDiv:{title:"Team"+small(" (CoWorking/Training)"), tags:[ ]},
 		  subRatings:{title:"", S:75},
 		  subDivs:[
 			{
@@ -536,14 +554,20 @@ var favProjsData = {
 		  ],
 		},
 		{
-		  tagDiv:{title:"Risk Mgt", tags:[ ]},
+		  tagDiv:{title:"Risk Mgt"+small(" (StressTest,Plan,Act°)"), tags:[ ]},
 		  subRatings:{title:"", S:65},
 		  subDivs:[
 			{
 			  hidden:true,
 			  subDivs:[ 
 				{
-				  tagDiv:{title:"", tags:[ "Prevention", "Lo-Workload Mgt", "Issue Escalat°", ]},
+				  tagDiv:{title:"Actions: ", tags:[ "Lo-Workload Mgt", "Issue Escalat°", ]},
+				},	
+				{
+				  tagDiv:{title:"Prevention: ", tags:[ "Risk-Plan"+small("(Proj/Corp)"), "Risk Limit", "Risk Manager", ]},
+				},	
+				{
+				  tagDiv:{title:"", tags:[ "StressTest",   ]},
 				},	
 			  ],
 			},
@@ -551,6 +575,7 @@ var favProjsData = {
 		},
   ]
 }
+
 
 
 
