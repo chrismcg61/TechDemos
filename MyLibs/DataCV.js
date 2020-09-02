@@ -1079,7 +1079,7 @@ var missionsByDate = {
     {
       type:"OTHER",
       dates:getDate(2),
-      tagDiv:{title:"Holomatix", tags:[ ]},
+      tagDiv:{title:"Holomatix"+small(" (London)"), tags:[ ]},
     },
 	{
       dates:getDate(7),
@@ -1088,67 +1088,67 @@ var missionsByDate = {
     { 
       type:"Embed",
       dates:getDate(3),
-      tagDiv:{title:"Dassault", tags:[ ]},
+      tagDiv:{title:"Dassault"+small(" (Istres)"), tags:[ ]},
     },
     { 
       type:"GameDev",
       dates:getDate(4),
-      tagDiv:{title:"ELB", tags:[ ]},
+      tagDiv:{title:"Ubi/Etranges-Libellules"+small(" (Lyon)"), tags:[ ]},
     },
 	{ 
       type:"GameDev",
       dates:getDate(8),
-      tagDiv:{title:"Phoenix", tags:[ ]},
+      tagDiv:{title:"Ubi/Phoenix"+small(" (Lyon)"), tags:[ ]},
     },
 	{
       type:"OTHER",
       dates:getDate(1),
-      tagDiv:{title:"Sword", tags:[ ]},
+      tagDiv:{title:"Sword"+small(" (Lyon)"), tags:[ ]},
     },
 	{
       type:"Embed",
       dates:getDate(2),
-      tagDiv:{title:"NeoPost", tags:[ ]},
+      tagDiv:{title:"NeoPost"+small(" (Paris)"), tags:[ ]},
     },
 	{
       type:"Embed",
       dates:getDate(2),
-      tagDiv:{title:"Nagra", tags:[ ]},
+      tagDiv:{title:"Nagra/Canal+"+small(" (Paris)"), tags:[ ]},
     },
 	{
       type:"STB",
       dates:getDate(5),
-      tagDiv:{title:"SAH", tags:[ ]},
+      tagDiv:{title:"SAH/Orange"+small(" (Paris)"), tags:[ ]},
     },
 	{
       type:"OTHER",
       dates:getDate(1),
-      tagDiv:{title:"Technicolor", tags:[ ]},
+      tagDiv:{title:"Technicolor"+small(" (Paris)"), tags:[ ]},
     },
 	{
       type:"OTHER",
       dates:getDate(1),
-      tagDiv:{title:"SagemCom", tags:[ ]},
+      tagDiv:{title:"SagemCom"+small(" (Paris)"), tags:[ ]},
     },
 	{
       type:"STB",
       dates:getDate(4),
-      tagDiv:{title:"BouyguesTel", tags:[ ]},
+      tagDiv:{title:"BouyguesTel"+small(" (Paris)"), tags:[ ]},
     },
 	{
       type:"OTHER",
       dates:getDate(1),
-      tagDiv:{title:"Parrot", tags:[ ]},
+      tagDiv:{title:"Parrot"+small(" (Paris)"), tags:[ ]},
     },
 	{
       type:"STB",
       dates:getDate(5),
-      tagDiv:{title:"Cisco", tags:[ ]},
+      tagDiv:{title:"Cisco[TV]"+small(" (Paris)"), tags:[ ]},
     },	
 	{
       type:"GameDev",
       dates:getDate(6),
-      tagDiv:{title:"MyProj-NextGen[Game]", tags:[ ]},
+      tagDiv:{title:"MyProj[NextGen-Game]", tags:[ ]},
     },
 	{
       dates:getDate(6),
@@ -1156,12 +1156,10 @@ var missionsByDate = {
 	{
       type:"WebApp++",
       dates:getDate(5),
-      tagDiv:{title:"MyProj-NextGen[WebApp]", tags:[ ]},
+      tagDiv:{title:"MyProj[WebApp++]", tags:[ ]},
     },	
   ],  
 }
-
-
 
 
 
@@ -1237,7 +1235,7 @@ var missionsByType = {
     },
 	{
       classes:["hilightHi"],
-	  title:{txt:"STB", classes:["title"]},
+	  title:{txt:"SetTopBox", classes:["title"]},
       subDivs:[
         {
           subDivs:getMissionsByType("STB", missionsByDate.subDivs),
@@ -1299,7 +1297,7 @@ var missionsByType = {
 		  subDivs:[
 		  {
 			
-		  title:{txt:"OTHER", classes:["title", ]},
+		  title:{txt:"Other", classes:["title", ]},
 		  // classes:["hilightLo"],
 		  subDivs:[
 			{
@@ -1332,5 +1330,6 @@ var missionsByType = {
 	}
   ],
 };
+
 
 
