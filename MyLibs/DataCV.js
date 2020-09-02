@@ -164,7 +164,7 @@ var rootData_JobTitles = {
 
 
 
-/*** LANG & HOBBIES ***/
+/*** LANG ***/
 var langData = {
   subDivs:[
     {
@@ -193,6 +193,15 @@ var langData = {
   ]
 };
 
+
+
+
+
+
+
+
+
+/*** HOBBIES ***/
 var hobbiesTechData = {
   subDivs:[
     // {
@@ -252,10 +261,10 @@ var hobbiesTechData = {
 		{
 			subDivs:[
 				{
-				  tagDiv:{title:"Music ", tags:[ "Piano++", "Guitar", "Singing/Musicals", ]},
+				  tagDiv:{title:"Music: ", tags:[ "Piano++", "Guitar", "Singing/Musicals", ]},
 				},
 				{
-				  tagDiv:{title:"Sports"+small(" (Running,Cycling,Football,Rackets,Ski)"), tags:[  ]},
+				  tagDiv:{title:"Sports"+small(" (Running/Cycling, Rackets, Football, Ski)"), tags:[  ]},
 				  subDivs:[
 					{
 					  hidden:true,
@@ -273,7 +282,7 @@ var hobbiesTechData = {
 				  ]
 				},
 				{
-				  tagDiv:{title:"Culture/Arts"+small(" (SF,Fantasy,Thriller,Music,Sports,Politics)"), tags:[ ]},
+				  tagDiv:{title:"Culture/Arts"+small(" (SF/Fantasy, Sport-Evts, Politics)"), tags:[ ]},
 				  subDivs:[
 					{
 					  hidden:true,
@@ -300,6 +309,9 @@ var hobbiesTechData = {
     // },    
   ],
 };
+
+
+
 
 
 
