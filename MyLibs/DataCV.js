@@ -607,6 +607,25 @@ var favProjsData = {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*** SKILLS ***/
 var techList = [];
 {
@@ -934,14 +953,14 @@ addTableTag( techSkills, "AI",  {
 });
 addTableTag( techSkills, "Embed", {
 	rating:75,
-	tagDiv:{title:"Embedded", tags:[ ]},
+	tagDiv:{title:"Embedded"+small(" (Secu/Drivers...)"), tags:[ ]},
 	subDivs:[
 		{
 		  hidden:true,
 		  subDivs:[
 			{
 				rating:75,
-				tagDiv:{title:"", tags:[ "Drivers", "Debug Bench", ]},
+				tagDiv:{title:"", tags:[  "Debug Bench", "Security/Encryption", "Drivers",  ]},
 			},		
 		  ],
 		},
@@ -949,14 +968,14 @@ addTableTag( techSkills, "Embed", {
 });
 addTableTag( techSkills, "Misc", {
 	rating:50,
-	tagDiv:{title:"Network/Elec", tags:[ ]},
+	tagDiv:{title:"Other"+small(" (Network/Elec...)"), tags:[ ]},
 	subDivs:[
 		{
 		  hidden:true,
 		  subDivs:[
 			{
 				rating:50,
-				tagDiv:{title:"", tags:[ "Security/Encryption", ".Net", "Data Processing", ]},
+				tagDiv:{title:"", tags:[ "Network/Elec", ".Net", "Data Processing",     ]},
 			},		
 		  ],
 		},
@@ -1076,6 +1095,8 @@ var skillData = {
     // }
   // ]
 }
+
+
 
 
 
@@ -1349,6 +1370,9 @@ var missionsByType = {
 	}
   ],
 };
+
+
+
 
 
 
