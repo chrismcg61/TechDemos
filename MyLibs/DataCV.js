@@ -480,6 +480,10 @@ var liveProjsData = {
 
 
 
+
+
+
+
 /*** Fav Projs ***/
 var favProjsData = {
 	subDivs:[
@@ -554,7 +558,7 @@ var favProjsData = {
 				  ],
 				},
 				{
-				  tagDiv:{title:"Agile++", tags:[ ]},
+				  tagDiv:{title:"Agile++"+small(" (Struct/Sprint++)"), tags:[ ]},
 				  subRatings:{title:"", S:70},
 				  subDivs:[
 					{
@@ -569,7 +573,7 @@ var favProjsData = {
 				  ],
 				},
 				{
-				  tagDiv:{title:"Risk Mgt"+small(" (StressTest,Plan,Act°)"), tags:[ ]},
+				  tagDiv:{title:"Risk Mgt"+small(" (StressTest, Plan, Act°)"), tags:[ ]},
 				  subRatings:{title:"", S:65},
 				  subDivs:[
 					{
@@ -587,7 +591,23 @@ var favProjsData = {
 					  ],
 					},
 				  ],
-				},			
+				},
+				{
+				  tagDiv:{title:"Success Def"+small(" (Proj->Corp)"), tags:[ ]},
+				  subRatings:{title:"", S:65},
+				  subDivs:[
+					{
+					  hidden:true,
+					  subDivs:[ 
+						{
+						  tagDiv:{title:"Levels: ", tags:[ "Project", "Product", "Corporate", "Reusable", ]},
+						},	
+							
+					  ],
+					},
+				  ],
+				},
+				
 			]
 		},				
 	]
