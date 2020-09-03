@@ -201,114 +201,125 @@ var langData = {
 
 
 
+
+
+
+
 /*** HOBBIES ***/
 var hobbiesTechData = {
   subDivs:[
-    // {
-      // subDivs:[
-        {
-          title:{txt:"Hobbies [Tech]", classes:["maintTitle"]},
-        },
-        {
-          //rating:95,    
-          tagDiv:{title:"Tech Research ", tags:[ ]},
-		  subDivs:[
+    {
+      subDivs:[
+		  {
+			subDivs:[  
+	  
 			{
-			  hidden:true,
-			  subDivs:[                        
-				{  
-				  tagDiv:{title:"", tags:[
-				    "Coding++"+small(" (Tech/Methods)"), "Mgt++"+small(" (Tools/Methods)"),  ]},
-				},
-			  ]
-			}
-		  ]
-        },
-        {
-          tagDiv:{title:"Gaming/Test Community", tags:[ ]},
-		  subDivs:[
+			  title:{txt:"Hobbies [Tech]", classes:["maintTitle"]},
+			},		
+			
 			{
-			  hidden:true,
-			  subDivs:[                        
-				{  
-				  tagDiv:{title:"", tags:[
-				    "Retro-Gaming"+small(" (90s-2010s)"), "Competitive", "Early-Access",  ]},
-				},
-			  ]
-			}
-		  ]
-        },
-        {
-          tagDiv:{title:"Documentaries", tags:[ ]},
-		  subDivs:[
+			  //rating:95,    
+			  tagDiv:{title:"Tech Research: ", tags:[ "Coding++"+small("(Tech/Concept)"), "Mgt++"+small("(Tools/Methods)"), ]},
+			  // subDivs:[
+				// {
+				  // hidden:true,
+				  // subDivs:[                        
+					// {  
+					  // tagDiv:{title:"XXX", tags:[   ]},
+					// },
+				  // ]
+				// }
+			  // ]
+			},
 			{
-			  hidden:true,
-			  subDivs:[                        
-				{  
-				  tagDiv:{title:"", tags:[
-				    "Techs", "Sciences", "History", "Soft-Skills",  ]},
-				},
-			  ]
-			}
-		  ]
-        },
-        
-        
-        {
-          title:{txt:"Hobbies [Other]", classes:["maintTitle"]},
-        },
-		
-		{
-			subDivs:[
-				{
-				  tagDiv:{title:"Music: ", tags:[ "Piano++", "Guitar", "Singing/Musicals", ]},
-				},
-				{
-				  tagDiv:{title:"Sports"+small(" (Running/Cycling, Rackets, Football, Ski)"), tags:[  ]},
-				  subDivs:[
+			  tagDiv:{title:"Gaming/DevTest: ", tags:[ "Early-Access", "Competitive",  "Retro"+small("(90s)"),  ]},
+			  // subDivs:[
+				// {
+				  // hidden:true,
+				  // subDivs:[                        
+					// {  
+					  // tagDiv:{title:"XXX", tags:[  ]},
+					// },
+				  // ]
+				// }
+			  // ]
+			},
+			{
+			  tagDiv:{title:"Documentaries: ", tags:[ "Tech/Science", "History/Politics", "Social", ]},
+			  // subDivs:[
+				// {
+				  // hidden:true,
+				  // subDivs:[                        
+					// {  
+					  // tagDiv:{title:"XXX", tags:[   ]},
+					// },
+				  // ]
+				// }
+			  // ]
+			},
+			
+			
+			{
+			  title:{txt:"Hobbies [Other]", classes:["maintTitle"]},
+			},
+			
+			{
+				subDivs:[
 					{
-					  hidden:true,
-					  subDivs:[                        
-						{  
-						  tagDiv:{title:"", tags:[
-						  "Semi-Marathon", "Mountain-Bike", "Racket Sports",  ]},
-						},
-						{  
-						  tagDiv:{title:"", tags:[
-							"Football",  "Ski/Snowboard"  ]},
-						},
-					  ]
-					}
-				  ]
-				},
-				{
-				  tagDiv:{title:"Culture/Arts"+small(" (SF/Fantasy, Sport-Evts, Politics)"), tags:[ ]},
-				  subDivs:[
+					  tagDiv:{title:"Music: ", tags:[ "Piano++", "Guitar", "Singing/Musicals", ]},
+					},
 					{
-					  hidden:true,
-					  subDivs:[                        
-						{  
-						  tagDiv:{title:"TV-Series"+small("(Books): "), tags:[
-							"SF", "Fantasy", "Thriller", "History",  ]},
-						},
-						{  
-						  tagDiv:{title:"Sport-Events: ", tags:[
-							"Football", "Tennis", "Cycling", "Olympics",  ]},
-						},
-						{  
-						  tagDiv:{title:"Other Events: ", tags:[
-							"Music", "E-Sport", "Politics",  ]},
-						},
+					  tagDiv:{title:"Sports: ", tags:[ "Semi-Marathon", "Mountain-Bike", "Racket Sports", "Football", ]},
+					  subDivs:[
+						{
+						  hidden:true,
+						  subDivs:[                        
+							{  
+							  tagDiv:{title:"", tags:[
+								  "Ski/Snowboard"  ]},
+							},
+						  ]
+						}
 					  ]
-					}
-				  ]
-				},
+					},
+					{
+					  tagDiv:{title:"Culture: ", tags:[ 
+					    "TV-Series"+small("(Books)"), "SF/Fantasy/Thriller", "BritPop", "E-Sport",  ]},
+					  // subDivs:[
+						// {
+						  // hidden:true,
+						  // subDivs:[ 
+							// {  
+							  // tagDiv:{title:"XXX", tags:[   ]},
+							// },
+						  // ]
+						// }
+					  // ]
+					},
+					{
+					  tagDiv:{title:"Events: ", tags:[ 
+					    "EU-Football", "ATP-Tennis", "Olympics", "Cycling"+small("(TdF)"),   ]},
+					  // subDivs:[
+						// {
+						  // hidden:true,
+						  // subDivs:[ 
+							// {  
+							  // tagDiv:{title:"XXX", tags:[  ]},
+							// },
+						  // ]
+						// }
+					  // ]
+					},
+				]
+			},
 			]
-		},
-      // ],
-    // },    
+		 }
+      ],
+    },    
   ],
 };
+
+
 
 
 
