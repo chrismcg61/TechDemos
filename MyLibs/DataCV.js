@@ -1132,6 +1132,7 @@ var skillData = {
 
 
 
+
 /*** MISSIONS ***/
 START_DATE = 2004.5;
 var missionsByDate = {
@@ -1151,6 +1152,7 @@ var missionsByDate = {
       tagDiv:{title:"Dassault"+small(" (Istres)"), tags:[ ]},
     },
     { 
+	  //classes:["hilightHi"],
       type:"GameDev",
       dates:getDate(4),
       tagDiv:{title:"Ubi/Etranges-Libellules"+small(" (Lyon)"), tags:[ ]},
@@ -1223,6 +1225,13 @@ var missionsByDate = {
 
 
 
+
+
+
+
+
+
+
 var missionsByType = {
   subDivs:[
     {
@@ -1235,6 +1244,7 @@ var missionsByType = {
 	  title:{txt:"WebApp++", classes:["title"]},
       subDivs:[
         {
+		  classes:["backColHi"],
           subDivs:getMissionsByType("WebApp++", missionsByDate.subDivs),
         },
 		{
@@ -1265,6 +1275,7 @@ var missionsByType = {
 	  title:{txt:"GameDev", classes:["title"]},
       subDivs:[
         {
+		  classes:["backColHi"],
           subDivs:getMissionsByType("GameDev", missionsByDate.subDivs),
         },
 		{
@@ -1298,6 +1309,7 @@ var missionsByType = {
 	  title:{txt:"SetTopBox", classes:["title"]},
       subDivs:[
         {
+		  classes:["backColHi"],
           subDivs:getMissionsByType("STB", missionsByDate.subDivs),
         },
 		{
@@ -1328,6 +1340,7 @@ var missionsByType = {
       title:{txt:"Embedded", classes:["title"]},
       subDivs:[
         {
+		  classes:["backColLo"],
           subDivs:getMissionsByType("Embed", missionsByDate.subDivs),
         },
 		{
@@ -1361,6 +1374,7 @@ var missionsByType = {
 		  // classes:["hilightLo"],
 		  subDivs:[
 			{
+			  classes:["backColLo"],
 			  subDivs:getMissionsByType("OTHER", missionsByDate.subDivs),
 			},
 			
@@ -1390,6 +1404,7 @@ var missionsByType = {
 	}
   ],
 };
+
 
 
 
