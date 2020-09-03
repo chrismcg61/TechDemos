@@ -495,6 +495,11 @@ var liveProjsData = {
 
 
 
+
+
+
+
+
 /*** Fav Projs ***/
 var favProjsData = {
 	subDivs:[
@@ -505,12 +510,18 @@ var favProjsData = {
 		{
 			subDivs:[			
 				{
-				  tagDiv:{title:"Productivity"+small(" (WorkLoad/ChangeReq)"), tags:[ ],  },
+				  tagDiv:{title:"Productivity"+small(" (Tasks/Tools++, WorkLoad/ChangeReq)"), tags:[ ],  },
 				  subRatings:{title:"", S:85},
 				  subDivs:[
 					{
 					  hidden:true,
 					  subDivs:[ 
+					    {
+						  tagDiv:{title:"Tasks : ", tags:[ "Automation(LoTech)", "Bonus Dev Tasks"]},
+						},
+						{
+						  tagDiv:{title:"Tools : ", tags:[ "Async CoWorking", "Metrics(Prod+Qual)"]},
+						},	
 						{
 						  tagDiv:{title:"WorkLoad: ", tags:[ "Continuity(Non-Work Days)", "HiWorkload Mgt",   ]},
 						},
@@ -521,24 +532,7 @@ var favProjsData = {
 					},
 				  ],
 				}, 
-				{
-				  tagDiv:{title:"Productivity"+small(" (Tasks/Tools++)"), tags:[ ],  },
-				  subRatings:{title:"", S:85},
-				  subDivs:[
-					{
-					  hidden:true,
-					  subDivs:[ 				
-						{
-						  tagDiv:{title:"Tasks : ", tags:[ "Automation(LoTech)", "Bonus Dev Tasks"]},
-						},
-						{
-						  tagDiv:{title:"Tools : ", tags:[ "Async CoWorking", "Metrics(Prod+Qual)"]},
-						},				
-					  ],
-					},
-				  ],
-				},
-				
+								
 				{
 				  tagDiv:{title:"Quality"+small(" (Value,ROI,Regression)"), tags:[ ]},
 				  subRatings:{title:"", S:80},
@@ -584,14 +578,17 @@ var favProjsData = {
 				  ],
 				},
 				{
-				  tagDiv:{title:"Risk Mgt"+small(" (StressTest, Plan, Act°)"), tags:[ ]},
+				  tagDiv:{title:"Risk/Success Mgt"+small(" (Plan, StressTest, Correct°, Scopes)"), tags:[ ]},
 				  subRatings:{title:"", S:65},
 				  subDivs:[
 					{
 					  hidden:true,
 					  subDivs:[ 
+					    {
+						  tagDiv:{title:"Success Scopes: ", tags:[ "Project", "Product", "Corporate", "Reusable", ]},
+						},
 						{
-						  tagDiv:{title:"Actions: ", tags:[ "Lo-Workload Mgt", "Issue Escalat°", ]},
+						  tagDiv:{title:"Corrections: ", tags:[ "Lo-Workload Mgt", "Issue Escalat°", ]},
 						},	
 						{
 						  tagDiv:{title:"Prevention: ", tags:[ "Risk-Plan"+small("(Proj/Corp)"), "Risk Limit", "Risk Manager", ]},
@@ -603,27 +600,11 @@ var favProjsData = {
 					},
 				  ],
 				},
-				{
-				  tagDiv:{title:"Success Def"+small(" (Proj->Corp)"), tags:[ ]},
-				  subRatings:{title:"", S:65},
-				  subDivs:[
-					{
-					  hidden:true,
-					  subDivs:[ 
-						{
-						  tagDiv:{title:"Levels: ", tags:[ "Project", "Product", "Corporate", "Reusable", ]},
-						},	
-							
-					  ],
-					},
-				  ],
-				},
 				
 			]
 		},				
 	]
 }
-
 
 
 
