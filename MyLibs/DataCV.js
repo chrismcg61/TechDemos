@@ -1,3 +1,5 @@
+var ING = "<sup>ŋ</sup>";
+
 /*** Tags ***/
 var roleTags = [];
 roleTags["LEAD"] = "Team-Lead";
@@ -637,13 +639,12 @@ var favProjsData = {
 
 
 
-
 /*** SKILLS ***/
 var techList = [];
 {
 addTableTag( techList, "TOOLS", {
     rating:85,
-    tagDiv:{title:"Tools", tags:[ ]},
+    tagDiv:{title:"Tools/Environment", tags:[ ]},
 	subDivs:[
 		{
 		  hidden:true,
@@ -666,8 +667,6 @@ addTableTag( techList, "TOOLS", {
 				]
 			},
 			
-			
-			
 		  ]
 		}
 	]
@@ -682,14 +681,19 @@ addTableTag( techList, "LANG", {
 		  subDivs:[
 			{
 				rating:85,
-				tagDiv:{title:"", tags:[ "JS", "C,C++,C#", "Lua", "Batch", "HTML/CSS3D" ]},
+				tagDiv:{title:"", tags:[ "JS", "C,C++,C#", "Lua", "Batch", "HTML/CSS3D",  ]},				
+			},
+			{
+				rating:75,
+				tagDiv:{title:"", tags:[ "Assembly", "Bash/PowerShell", "Dart",  ]},
 				subDivs:[
 					{
 					  hidden:true,
 					  subDivs:[
 						{
 							rating:50,
-							tagDiv:{title:"", tags:[ "Python", "Java", "Dart", "Flash/AS", ]},
+							tagDiv:{title:"", tags:[ 
+							  "TypeScript", "Python", "Swift", "VBA/Obj-C", "Flash/AS", "Java", "SQL", ]},
 						},
 					  ],
 					},
@@ -701,7 +705,7 @@ addTableTag( techList, "LANG", {
 });
 addTableTag( techList, "LIBS", {
     rating:85,
-    tagDiv:{title:"Libs", tags:[ ]},
+    tagDiv:{title:"Libs/Frameworks", tags:[ ]},
 	subDivs:[
 		{
 		  hidden:true,
@@ -712,7 +716,7 @@ addTableTag( techList, "LIBS", {
 				  "WebGL"+small("(OpenGL/DX)"), "WebCL/GLSL"+small("(OpenCL)"), "Wii/PS3" ]},
 			},
 			{
-				rating:75,
+				rating:70,
 				tagDiv:{title:"Other: ", tags:[ "AngularJS", "ReactJS", ]},
 				subDivs:[
 					{
@@ -720,7 +724,7 @@ addTableTag( techList, "LIBS", {
 					  subDivs:[
 						{
 							rating:70,
-							tagDiv:{title:"", tags:[ "Jasmine/Bullseye", "Qt,WebExt", "WebWorkers,NodeJS", ".Net",  ]},
+							tagDiv:{title:"", tags:[ "JasmineUT/Bullseye", "Qt,WebExt", "WebWorkers,NodeJS", "Asp.Net",  ]},
 						},
 					  ]
 					}
@@ -858,16 +862,20 @@ addTableTag( techSkills, "GameDev", {
 				subDivs:[
 					{
 						rating:85,
-						tagDiv:{title:"", tags:[ "Controls++", "Procedural Stream", "Editor Extension",  ]},
+						tagDiv:{title:"", tags:[ 
+						  "Controls++", "EditorUI++", "Dyn. HUD", "Grid UI"  ]},
+					},
+					{
+						rating:85,
+						tagDiv:{title:"Scene: ", tags:[ 
+						  "Procedural", "Stream", "Integrity",  "Scripted Evts",   ]},
 						subDivs:[
 							{
 							  hidden:true,
 							  subDivs:[
 								{
 									rating:85,
-									tagDiv:{title:"", tags:[ 
-									  "Scripted Events", "Area Integrity",   "Grid UI", "Dynamic HUD",
-									 ]},
+									tagDiv:{title:"XXX", tags:[ ]},
 								},
 							  ]
 							}
@@ -889,14 +897,14 @@ addTableTag( techSkills, "MW", {
 			{
 				rating:85,
 				tagDiv:{title:"", tags:[ 
-				  "Engine"+small("(Game/Video)"), "Modular App"+small("(Backend)"), "Drivers", ]},
+				  "Engine"+small("(Game/Video)"), "Embedded Modular App", "Drivers", ]},
 				subDivs:[
 					{
 					  hidden:true,
 					  subDivs:[
 						{
 							rating:85,
-							tagDiv:{title:"", tags:[  "API Harmonization", ]},
+							tagDiv:{title:"", tags:[   "End-User API", "User-Tools", ]},
 						},
 					  ]
 					}
@@ -944,7 +952,7 @@ addTableTag( techSkills, "3D", {
 				rating:85,
 				tagDiv:{title:"CPU-GPU: ", tags:[ "3D-Mesh Anim", "Physics", ]},
 			},
-{
+			{
 				rating:85,
 				tagDiv:{title:"Parallel Prog: ", tags:[ "Script Accelerat°", "M-Learning++" ]},
 			},			
@@ -965,7 +973,7 @@ addTableTag( techSkills, "AI",  {
 });
 addTableTag( techSkills, "Embed", {
 	rating:75,
-	tagDiv:{title:"Embedded"+small(" (Secu/Drivers...)"), tags:[ ]},
+	tagDiv:{title:"Embedded"+small(" (Security/Drivers...)"), tags:[ ]},
 	subDivs:[
 		{
 		  hidden:true,
@@ -999,30 +1007,27 @@ var mgtSkills = [];
 {
 addTableTag( mgtSkills, "AUTO", {
     rating:90,
-    tagDiv:{title:processTags["AUTO"], tags:[ ]},
+    tagDiv:{title:processTags["AUTO"]+": ", tags:[ small("Guidelines"), small("Scope Correct°"), ]},
 	subDivs:[
 		{
 		  hidden:true,
 		  subDivs:[
 			{
 				rating:85,
-				tagDiv:{title:"", tags:[ "Guidelines", "Feature/Tech Tasks", "Scope Correct°",   ]},
+				tagDiv:{title:"", tags:[ "RetroEng"+ING, "API Refactor"+ING, "Perf Monitor",    ]},
 				subDivs:[
 					{
 					  hidden:true,
 					  subDivs:[
 					    {
 							rating:85,
-							tagDiv:{title:"Tasks: ", tags:[ "Important/Urgent", "MultiTask" ]},
+							tagDiv:{title:"Tasks: ", tags:[ "Important/Urgent", "Feature/Tech", ]},
 						},
 						{
 							rating:85,
-							tagDiv:{title:"Code: ", tags:[ "Test-Driven", "API Refactoring", ]},
+							tagDiv:{title:"Code: ", tags:[ "Test-Driven", "API Sharing",  ]},
 						},	
-						{
-							rating:85,
-							tagDiv:{title:"", tags:[ "RetroEngineering", "API Sharing", "Perf Monitor", ]},
-						},
+						
 					  ]
 					}
 				]					  
@@ -1032,8 +1037,9 @@ addTableTag( mgtSkills, "AUTO", {
 	],
   });
 addTableTag( mgtSkills, "AGILE", {
-    rating:85,
-    tagDiv:{title:processTags["AGILE"], tags:[ ]},
+    rating:90,
+    tagDiv:{title:processTags["AGILE"]+": ", tags:[ 
+	  small("SCRUM"), small("PairCommit"), small("SprintReview"), ]},
 	subDivs:[
 		{
 		  hidden:true,
@@ -1042,14 +1048,14 @@ addTableTag( mgtSkills, "AGILE", {
 				  subDivs:[
 				    {
 						rating:85,
-						tagDiv:{title:"", tags:[ "SCRUM", "PairCommit", "CodeReview", "SprintReview"+small("(Monitor)") ]},
+						tagDiv:{title:"", tags:[  "CodeReview", "Inter-Team Sync", ]},
 						subDivs:[
 							{
 							  hidden:true,
 							  subDivs:[
 								{
 									rating:85,
-									tagDiv:{title:"", tags:[  "Inter-Team Sync", ]},
+									tagDiv:{title:"XXX", tags:[   ]},
 								},
 							  ]
 							}
@@ -1063,14 +1069,14 @@ addTableTag( mgtSkills, "AGILE", {
   });
 addTableTag( mgtSkills, "CodeQual", {
     rating:75,
-    tagDiv:{title:processTags["CodeQual"], tags:[ ]},
+    tagDiv:{title:processTags["CodeQual"]+": ", tags:[ small("Strong UTs"), small("Qual/Regr° Monitor"), ]},
 	subDivs:[
 		{
 		  hidden:true,
 		  subDivs:[
 			{
 				rating:75,
-				tagDiv:{title:"", tags:[ "Strong UTs", "Qual/Regression Monitor", ]},
+				tagDiv:{title:"", tags:[ "UT Maintenance", "UT Auto-Alerts", "API-Docs Monitor", ]},
 			},		
 		  ],
 		},
@@ -1107,6 +1113,23 @@ var skillData = {
     // }
   // ]
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
