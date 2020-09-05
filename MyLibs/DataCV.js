@@ -338,75 +338,94 @@ var hobbiesTechData = {
 /*** MiniJobs ***/
 var miniJobsData = {
   subDivs:[
-    // {
-      // subDivs:[
-        {
-          title:{txt:"MiniJobs & Volunteer", classes:["maintTitle"]},
-        },
+    {
+      subDivs:[
+	  {
+		  subDivs:[
+		  
+			{
+			  title:{txt:"MiniJobs & Volunteer", classes:["maintTitle"]},
+			},
+			
+			{
+			  tagDiv:{title:"Proficient+"+small(" (PC/Elec-ER & Teaching)"), tags:[]},
+			  subDivs:[
+				{
+				  hidden:true,
+				  subDivs:[                        
+					{  
+					  tagDiv:{title:"Computer/Robot/Electronics Install/Repair", tags:[]},
+					},
+					{  
+					  tagDiv:{title:"Teaching (Maths, Prog)", tags:[]},
+					},                
+					
+					
+				  ],
+				},
+			  ],
+			},
+			
+			{
+			  tagDiv:{title:"Proficient"+small(" (Translator & Animator)"), tags:[]},
+			  subDivs:[
+				{
+				  hidden:true,
+				  subDivs:[                        
+					{  
+					  tagDiv:{title:"Translator (ENG/FR)", tags:[]},
+					},
+					{  
+					  tagDiv:{title:"Teen Summer Camp Animator", tags:[]},
+					},
+					
+				  ],
+				},
+			  ],
+			},
+			
+			{
+			  tagDiv:{title:"Other"+small(" (Elder-ER, Event Org°...)"), tags:[]},
+			  subDivs:[
+				{
+				  hidden:true,
+				  subDivs:[   
+					{  
+					  tagDiv:{title:"Elder/Dependent People Assist", tags:[]},
+					},                
+					{  
+					  tagDiv:{title:"Event Org°", tags:[]},
+					},
+					{  
+					  tagDiv:{title:"Gardening/Construction", tags:[]},
+					},
+					
+				  ],
+				},
+			  ],
+			},
+		  
+		  
+		  
+		  ]
+	  }
+	  
         
-		{
-          tagDiv:{title:"Proficient+"+small(" (PC/Elec-ER & Teaching)"), tags:[]},
-          subDivs:[
-            {
-              hidden:true,
-              subDivs:[                        
-                {  
-                  tagDiv:{title:"Computer/Robot/Electronics Install/Repair", tags:[]},
-                },
-                {  
-                  tagDiv:{title:"Teaching (Maths, Prog)", tags:[]},
-                },                
-                
-                
-              ],
-            },
-          ],
-        },
-		
-        {
-          tagDiv:{title:"Proficient"+small(" (Translator & Animator)"), tags:[]},
-          subDivs:[
-            {
-              hidden:true,
-              subDivs:[                        
-                {  
-                  tagDiv:{title:"Translator (ENG/FR)", tags:[]},
-                },
-				{  
-                  tagDiv:{title:"Teen Summer Camp Animator", tags:[]},
-                },
-                
-              ],
-            },
-          ],
-        },
         
-        {
-          tagDiv:{title:"Other"+small(" (Elder-ER, Event Org°...)"), tags:[]},
-          subDivs:[
-            {
-              hidden:true,
-              subDivs:[   
-                {  
-                  tagDiv:{title:"Elder/Dependent People Assist", tags:[]},
-                },                
-                {  
-                  tagDiv:{title:"Event Org°", tags:[]},
-                },
-				{  
-                  tagDiv:{title:"Gardening/Construction", tags:[]},
-                },
-                
-              ],
-            },
-          ],
-        },
-        
-      // ],
-    // },    
+      ],
+    },    
   ],
 };
 	
+
+
+
+
+
+
+
+
+
 
 
 
