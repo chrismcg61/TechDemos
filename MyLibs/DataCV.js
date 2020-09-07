@@ -811,7 +811,7 @@ var webAppSkills = [];
 {
 addTableTag( webAppSkills, "Generic", {
     rating:85,
-    tagDiv:{title:"WebApp-Generic"+small(" (Modular & 3D)"), tags:[ ]},
+    tagDiv:{title:"WebApp-Generic"+small(" (Modular & 3D/GPU)"), tags:[ ]},
 	subDivs:[
 		{
 			hidden:true,
@@ -888,17 +888,17 @@ addTableTag( techSkills, "GameDev", {
 						rating:85,
 						tagDiv:{title:"Scene: ", tags:[ 
 						  "Procedural", "Stream", "Integrity",  "Scripted Evts",   ]},
-						subDivs:[
-							{
-							  hidden:true,
-							  subDivs:[
-								{
-									rating:85,
-									tagDiv:{title:"XXX", tags:[ ]},
-								},
-							  ]
-							}
-						]
+						// subDivs:[
+							// {
+							  // hidden:true,
+							  // subDivs:[
+								// {
+									// rating:85,
+									// tagDiv:{title:"XXX", tags:[ ]},
+								// },
+							  // ]
+							// }
+						// ]
 					},
 				]
 			}
@@ -1068,17 +1068,6 @@ addTableTag( mgtSkills, "AGILE", {
 				    {
 						rating:85,
 						tagDiv:{title:"", tags:[  "CodeReview", "Inter-Team Sync", ]},
-						subDivs:[
-							{
-							  hidden:true,
-							  subDivs:[
-								{
-									rating:85,
-									tagDiv:{title:"XXX", tags:[   ]},
-								},
-							  ]
-							}
-						]
 					},			
 				  ]
 			  }		
@@ -1132,6 +1121,7 @@ var skillData = {
     // }
   // ]
 }
+
 
 
 
