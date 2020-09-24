@@ -19,6 +19,10 @@ var DIV_MARGIN_TOP = "4px";
 var HIDDEN_DIV_MARGIN_L = "8px";
 var HIDDEN_DIV_BORDER_L = "2px dotted blue";
 //
+var REGION_FONT_SIZE = "70%";
+//var MAX_DURATION = 8;
+//var MIN_DURATION = MAX_DURATION/2;
+//
 var START_DATE = 1999.0;
 //
 function getDate(_durationQ){
@@ -53,7 +57,7 @@ function addElt(_tag, _parent, _txt){
 //
 function getMissionsByType(_type, _subDivs){
   var newDivList = [];
-  for ( var i=0; i<_subDivs.length; i++ ) {
+  for ( var i=_subDivs.length-1; i>=0; i-- ) {
     var subDiv = _subDivs[i];
     if(subDiv.type == _type){
       newDivList.push( subDiv );      
@@ -73,6 +77,7 @@ function displayData(_data, _parent, _lvl){
       if(subDiv.hidden) {
         btnSpan = addElt("SPAN", _parent, DIV_BTN_OFF);
         btnSpan.classList.add( DIV_BTN_CLASS ); 
+		if(subDiv.expandPrio) btnSpan.expandPrio = subDiv.expandPrio;
       }
       var newSubDiv = addElt("DIV", _parent, "");
       newSubDiv.style.marginTop = DIV_MARGIN_TOP;
@@ -122,10 +127,29 @@ function displayData(_data, _parent, _lvl){
         var endQ = 1+(endDate-endY)*4;
         var endQ_Str = "Q"+endQ;
         //
-        var dateStr = startY+small(startQ_Str) + "-" +  endY+small(endQ_Str);
+        var dateStr = startY+small(startQ_Str);
+		//dateStr +=  "-"+ endY+small(endQ_Str);
         var dateSpan = addElt("SPAN", newSubDiv, dateStr);
         dateSpan.style.marginRight = "8px";
+		//
+		var durationStr = "";
+		durationStr += dates.duration+"Q";
+		var durationSpan1 = addElt("SPAN", newSubDiv, durationStr);
+		//durationSpan1.style.opacity = dates.duration/8;	
+		durationSpan1.style.display = "inline-block";
+        durationSpan1.style.width = (15+10*dates.duration)+"px";
+        durationSpan1.style.backgroundColor = "rgb(150,150,150)";
+		//
+		var durationSpan2 = addElt("SPAN", newSubDiv, "");
+		durationSpan2.style.display = "inline-block";
+        durationSpan2.style.width = (10*(8-dates.duration))+"px";
       }
+	  //
+	  if(subDiv.region){
+		  var regionTxt = "["+subDiv.region+"] ";
+		  var regionSpan = addElt("SPAN", newSubDiv, regionTxt);
+		  regionSpan.style.fontSize = REGION_FONT_SIZE;		  
+	  }
       //
       var tagDiv = subDiv.tagDiv;
       if(tagDiv){
@@ -141,6 +165,13 @@ function displayData(_data, _parent, _lvl){
           newSpan.style.backgroundColor = TAG_BG_COL;
         }
       }
+	  //
+	  var url = subDiv.url;
+	  if(url){
+		  var urlTag = addElt("A", newSubDiv, "i");		
+		  urlTag.href = url;
+		  urlTag.target = "_blank";		  
+	  }
       //
       if(subDiv.rating){
         var spanContainer = addElt("SPAN", newSubDiv, "");
@@ -162,4 +193,3 @@ function displayData(_data, _parent, _lvl){
     }
   }
 }
-
