@@ -168,7 +168,9 @@ function displayData(_data, _parent, _lvl){
 	  //
 	  var url = subDiv.url;
 	  if(url){
-		  var urlTag = addElt("A", newSubDiv, "i");		
+		  var urlChar = "";
+		  if(url[4]=="s") urlChar="i";  // Real "https" or Fake "http"?
+		  var urlTag = addElt("A", newSubDiv, urlChar);		
 		  urlTag.href = url;
 		  urlTag.target = "_blank";		  
 	  }
