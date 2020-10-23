@@ -297,7 +297,7 @@ var hobbiesTechData = {
 			
 			{
 			  //rating:95,    
-			  tagDiv:{title:"Tech Research: ", tags:[ "Coding++"+small("(Tech/Concept)"), "Mgt++"+small("(Tools/Methods)"), ]},
+			  tagDiv:{title:"Tech Research: ", tags:[ "Coding++"+small("(Techs/Concepts)"), "Mgt++"+small("(Tools/Methods)"), ]},
 			  // subDivs:[
 				// {
 				  // hidden:true,
@@ -323,7 +323,7 @@ var hobbiesTechData = {
 			  // ]
 			},
 			{
-			  tagDiv:{title:"Documentaries: ", tags:[ "Tech/Science", "History/Politics", "Psycho/Mgt", ]},
+			  tagDiv:{title:"Documentaries: ", tags:[ "Techs/Science", "History/Politics", "Psycho/Mgt", ]},
 			  // subDivs:[
 				// {
 				  // hidden:true,
@@ -362,7 +362,7 @@ var hobbiesTechData = {
 					},
 					{
 					  tagDiv:{title:"Culture: ", tags:[ 
-					    "TV-Series"+small("(Books)"), "SF/Fantasy/Thriller", "BritPop",   ]},
+					    "TV-Series"+small("(Books)"), "SF/Fantasy/Thriller", "BritPop"+small("/WorldMusic"),   ]},
 					  // subDivs:[
 						// {
 						  // hidden:true,
@@ -376,7 +376,7 @@ var hobbiesTechData = {
 					},
 					{
 					  tagDiv:{title:"Events: ", tags:[ 
-					    "EU-Football", "ATP-Tennis", "Olympics", "Cycling"+small("(TdF)"),  "E-Sport",  ]},
+					    "EU-Football", "ATP-Tennis", "Olympics", "Cycling"+small("(TdF…)"),  "E-Sports",  ]},
 					  // subDivs:[
 						// {
 						  // hidden:true,
@@ -708,7 +708,7 @@ addTableTag( techList, "LANG", {
 						{
 							rating:70,
 							tagDiv:{title:"", tags:[ 
-							 "Python", "Assembly", "ActionScript"+small("(Flash)"), small("VBA/SQL"), ]},
+							 "Python", "Assembly", small("Flash-")+"AS", "Other"+small("(VBA,SQL...)"),  ]},
 						},
 					  ],
 					},
@@ -742,7 +742,8 @@ addTableTag( techList, "LIBS", {
 					  subDivs:[
 						{
 							rating:70,
-							tagDiv:{title:"", tags:[ "NodeJS,WebWorkers", "Jasmine/Bullseye", "Tk,Qt,WebExt",  "Asp.Net",  ]},
+							tagDiv:{title:"", tags:[ "NodeJS/WebWorkers", "UTs"+small("(Jasmine,Bullseye...)"), "Tk,Qt",  small("Asp.Net"),  ]},
+							url:"http:/a/WebExt",
 						},
 					  ]
 					}
@@ -912,7 +913,7 @@ addTableTag( techSkills, "GameDev", {
 					{
 						rating:85,
 						tagDiv:{title:"", tags:[ 
-						  "Controls++", "EditorUI++", "Dyn. HUD", "Grid UI"  ]},
+						  "Controls++", "EditorUI++", "Dynamic HUD/GridUI",  ]},
 					},
 					{
 						rating:85,
@@ -1408,7 +1409,7 @@ var missionsByDate = {
       type:"OTHER",
       dates:getDate(1),
 	  region:"Lyon__",
-      tagDiv:{title:"Sword", tags:[ ]},
+      tagDiv:{title:"Sword"+small("[Web]"), tags:[ ]},
     },
 	{
       type:"Embed",
@@ -1456,7 +1457,7 @@ var missionsByDate = {
       type:"STB",
       dates:getDate(5),
 	  region:"Paris_",
-      tagDiv:{title:"Cisco[TV]", tags:[ ]},
+      tagDiv:{title:"Cisco"+small("[TV]"), tags:[ ]},
     },	
 	{
       type:"GameDev",
