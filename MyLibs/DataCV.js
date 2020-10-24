@@ -107,7 +107,7 @@ var rootData_Pers = {
           hidden:true,
           subDivs:[                        
             {  
-              tagDiv:{title:"Mail: ", tags:[ "mcgarrychristopher<b>@</b>"+small("yahoo.fr") ]},
+              tagDiv:{title:"Mail(Pro): ", tags:[ "mcgarrychristopher<b>@</b>"+small("yahoo.fr") ]},
               subDivs:[
                 {
                   hidden:true,
@@ -229,8 +229,9 @@ var rootData_JobTitles = {
         },
         {
           tagDiv:{title:"Junior Teacher : ", tags:[            
-            "Prog",
+            // small("Program"+ING),
             "Maths/Physics",
+			"Programming",
             "FR./ENG"
           ]},
         },  
@@ -651,7 +652,7 @@ addTableTag( techList, "TOOLS", {
 });
 addTableTag( techList, "LANG", {
     rating:88,
-    tagDiv:{title:"Prog-Lang.", tags:[ ]},
+    tagDiv:{title:"Prog-Languages", tags:[ ]},
 	subDivs:[
 		{
 		  expandPrio:1,
