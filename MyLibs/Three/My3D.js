@@ -3,7 +3,8 @@ var camera, scene, renderer;
 var MY3D = {};
 MY3D.camFov = 50;
 MY3D.camFar = 2000;
-MY3D.preInit = function() {
+
+MY3D.preInit = function(THREE) {
   document.body.style.margin = 0; 
   document.body.style.overflow = "hidden"; 
   //
@@ -19,6 +20,7 @@ MY3D.preInit = function() {
   MY3D.onWindowResize();
   window.addEventListener( 'resize', MY3D.onWindowResize, false );
 }
+
 MY3D.onWindowResize = function(){
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
