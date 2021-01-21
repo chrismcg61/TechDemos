@@ -27,3 +27,6 @@ MY3D.onWindowResize = function(){
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
 }
+
+
+export default MY3D;
