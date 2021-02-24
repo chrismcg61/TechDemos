@@ -30,7 +30,8 @@ MY3D.onWindowResize = function(){
 
 
 
-function addParams(_folder, _params){
+/*** GUI ***/
+MY3D.addGuiParams = function(_folder, _params){
   for(var key in _params){
     var param = _params[key];
     var max = 10.0;
