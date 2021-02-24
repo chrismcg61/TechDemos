@@ -30,27 +30,6 @@ MY3D.onWindowResize = function(){
 
 
 
-/* GUI */
-function addParams(_folder, _params){
-  for(var key in _params){
-    var param = _params[key];
-    var max = 10.0;
-    if(param>=1)  max = 100*param;
-
-    if( typeof(param) === 'object') {
-      var subFolder = _folder.addFolder(key);
-      addParams(subFolder, param);
-    }
-    else if(param>0xffff) {
-      _folder.addColor( _params, key, );
-    }
-    else _folder.add( _params, key, 0.0,max).onChange(onGuiChange);
-  }
-}
-function onGuiChange(){
-  //init();  
-}
-
 
 
 export default MY3D;
