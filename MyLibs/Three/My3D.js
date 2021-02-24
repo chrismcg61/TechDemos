@@ -39,7 +39,7 @@ MY3D.addGuiParams = function(_folder, _params){
 
     if( typeof(param) === 'object') {
       var subFolder = _folder.addFolder(key);
-      addParams(subFolder, param);
+      MY3D.addGuiParams(subFolder, param);
     }
     else if(param>0xffff) {
       _folder.addColor( _params, key, );
