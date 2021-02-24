@@ -30,6 +30,4 @@ MY3D.onWindowResize = function(){
 
 
 
-
-
-export default MY3D;
+// export default MY3D;
