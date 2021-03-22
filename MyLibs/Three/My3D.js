@@ -127,7 +127,7 @@ function initGpuParticlesSky(pointNb, size, pointSize, _col, _colA){
     pointSize: {value:pointSize},
     pointTexture: {value: null},
   };
-  shaderUniformList.push( newShaderUniforms );
+  //shaderUniformList.push( newShaderUniforms );
   var shaderMaterialSky = new THREE.ShaderMaterial( {
     uniforms: newShaderUniforms,
     vertexShader: vShaderSky,
