@@ -2,9 +2,12 @@ var camera, scene, renderer;
 
 var MY3D = {};
 MY3D.camFov = 50;
-MY3D.camFar = 2000;
+MY3D.camFar = 900000;
 
-MY3D.preInit = function(THREE) {
+var THREE;
+MY3D.preInit = function(_THREE) {
+  THREE=_THREE;
+  //
   document.body.style.margin = 0; 
   document.body.style.overflow = "hidden"; 
   //
