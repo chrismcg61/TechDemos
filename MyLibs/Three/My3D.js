@@ -125,7 +125,7 @@ function initGpuParticlesSky(pointNb, size, pointSize, _col, _colA){
     speed: {value:0.02},
     alpha: {value:0.9},
     pointSize: {value:pointSize},
-    pointTexture: {value: pointTexture},
+    pointTexture: {value: null},
   };
   shaderUniformList.push( newShaderUniforms );
   var shaderMaterialSky = new THREE.ShaderMaterial( {
