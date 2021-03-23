@@ -68,6 +68,7 @@ var vShaderRain, fShaderRain;
     uniform float time;
     uniform float pointSize;
     uniform float speed;
+    uniform float aoeRatio;
     struct lightMesh
     {
       vec3 pos;
@@ -78,7 +79,7 @@ var vShaderRain, fShaderRain;
     uniform vec3 camPos;
     void main() {
       vColor = color;
-      vec3 tmpPos = position;
+      vec3 tmpPos = aoeRatio * position;
       tmpPos.y = mod(tmpPos.y - time*speed, 10.0);     
       if(pointSize==1.0) tmpPos.y = 0.2*cos(time*speed + position.y);
       tmpPos += vec3(camPos.x, 0.0, camPos.z);
@@ -118,6 +119,7 @@ var vShaderRain, fShaderRain;
     }
     `;
 }
+
 var vShaderSky, fShaderSky;
 {
   vShaderSky = `
@@ -167,6 +169,7 @@ var vShaderSky, fShaderSky;
 }
 
 
+
 function initGpuParticlesSky(bNormalize, pointNb, size, pointSize, _col, _colA){
   // var vertices = new THREE.BoxGeometry( 50,50,50, 10,10,10 ).vertices;
   var positions = new Float32Array( pointNb * 3 );
@@ -191,6 +194,7 @@ function initGpuParticlesSky(bNormalize, pointNb, size, pointSize, _col, _colA){
     pointSize: {value:pointSize},
     pointRatio: {value:1.0},
     pointTexture: {value: null},
+    aoeRatio: {value:1.0},
   };
   //shaderUniformList.push( newShaderUniforms );
   var shaderMaterialSky = new THREE.ShaderMaterial( {
@@ -208,6 +212,7 @@ function initGpuParticlesSky(bNormalize, pointNb, size, pointSize, _col, _colA){
   //scene.add( particles );
   return particles;
 }
+
 
 
 
