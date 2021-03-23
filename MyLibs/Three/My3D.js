@@ -56,7 +56,68 @@ function onGuiChange(){
 
 
 
-
+/*** PARTICLE Shaders ***/
+const MAX_LIGHTS_SHADER = 32;
+var vShaderRain, fShaderRain;
+{
+  vShaderRain = `
+    attribute vec3 color;
+    varying vec3 vColor;
+    attribute float texIndex;
+    varying float fTexIndex;
+    uniform float time;
+    uniform float pointSize;
+    uniform float speed;
+    struct lightMesh
+    {
+      vec3 pos;
+      vec3 color;
+      //sampler2D emissiveMap;
+    };
+    uniform lightMesh lightMeshes[`+MAX_LIGHTS_SHADER+`];
+    uniform vec3 camPos;
+    void main() {
+      vColor = color;
+      vec3 tmpPos = position;
+      tmpPos.y = mod(tmpPos.y - time*speed, 10.0);     
+      if(pointSize==1.0) tmpPos.y = 0.2*cos(time*speed + position.y);
+      tmpPos += vec3(camPos.x, 0.0, camPos.z);
+      vec4 mvPosition = modelViewMatrix * vec4( tmpPos, 1.0 );
+      //
+      gl_PointSize = pointSize / -mvPosition.z;
+      
+      gl_Position = projectionMatrix * mvPosition;
+      
+      
+      //vColor = vec3(0.0,0.0,0.0);
+      for (int i=0; i<2; i++ ) 
+      {
+        float dist = length( tmpPos - lightMeshes[i].pos );
+        vColor += lightMeshes[i].color * 2.0/pow(dist,2.0);
+      }
+    }
+    `;   
+  fShaderRain = `
+    uniform sampler2D pointTexture;
+    uniform float alpha;
+    uniform float pointRatio;
+    varying vec3 vColor;
+    varying float fTexIndex;
+    void main() {      
+      float rr = length( gl_PointCoord - vec2( 0.5, 0.5 ) );
+      float ww = gl_PointCoord.x;
+      float aa = 0.1;
+      //aa = 1.0 - 2.0*rr;  // Alpha-Disc
+      //aa = 0.1 - 2.0*ww;  // Alpha V-Rect
+      gl_FragColor = vec4( vColor + vec3(aa,aa,aa), alpha );
+      
+      //if ( rr > 0.5 ) discard;      //Draw Disc
+      if ( ww > pointRatio ) discard;      //Draw V-Rect
+      
+      // if(fTexIndex==1.0) gl_FragColor = vec4(gl_FragColor.xyz, 0.1) * texture2D( pointTexture, gl_PointCoord );
+    }
+    `;
+}
 var vShaderSky, fShaderSky;
 {
   vShaderSky = `
@@ -104,13 +165,16 @@ var vShaderSky, fShaderSky;
     }
     `;
 }
-function initGpuParticlesSky(pointNb, size, pointSize, _col, _colA){
+
+
+function initGpuParticlesSky(bNormalize, pointNb, size, pointSize, _col, _colA){
   // var vertices = new THREE.BoxGeometry( 50,50,50, 10,10,10 ).vertices;
   var positions = new Float32Array( pointNb * 3 );
   var colors = new Float32Array( pointNb * 3 );
   for ( var i = 0, l = pointNb; i < l; i ++ ) {
     var vertex = new THREE.Vector3( (Math.random()-0.5), Math.random()-0.5, (Math.random()-0.5) );
-    vertex.normalize().multiplyScalar(size);
+    if(bNormalize) vertex.normalize();
+    vertex.multiplyScalar(size);
     vertex.toArray( positions, i * 3 );
     var color = new THREE.Color( _col.r+Math.random()*_colA.r,  _col.g+Math.random()*_colA.g,  _col.b+Math.random()*_colA.b );
     color.toArray( colors, i * 3 );
@@ -125,6 +189,7 @@ function initGpuParticlesSky(pointNb, size, pointSize, _col, _colA){
     speed: {value:0.02},
     alpha: {value:0.9},
     pointSize: {value:pointSize},
+    pointRatio: {value:1.0},
     pointTexture: {value: null},
   };
   //shaderUniformList.push( newShaderUniforms );
@@ -143,6 +208,7 @@ function initGpuParticlesSky(pointNb, size, pointSize, _col, _colA){
   //scene.add( particles );
   return particles;
 }
+
 
 
 
