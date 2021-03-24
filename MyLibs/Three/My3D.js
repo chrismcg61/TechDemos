@@ -59,6 +59,8 @@ function onGuiChange(){
 /*** PARTICLE Shaders ***/
 const MAX_LIGHTS_SHADER = 32;
 var vShaderRain, fShaderRain;
+initRainShader(MAX_LIGHTS_SHADER);
+function initRainShader(nbLights)
 {
   vShaderRain = `
     attribute vec3 color;
@@ -75,7 +77,7 @@ var vShaderRain, fShaderRain;
       vec3 color;
       //sampler2D emissiveMap;
     };
-    uniform lightMesh lightMeshes[`+MAX_LIGHTS_SHADER+`];
+    uniform lightMesh lightMeshes[`+nbLights+`];
     uniform vec3 camPos;
     void main() {
       vColor = color;
