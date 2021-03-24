@@ -169,8 +169,8 @@ var vShaderSky, fShaderSky;
 }
 
 
-
-function initGpuParticlesSky(bNormalize, pointNb, size, pointSize, _col, _colA){
+var shaderUniformList = [];
+function initGpuParticlesSky(bNormalize, pointNb, size, aoeRatio, pointSize, speed, _col,_colA, vShader,fShader){
   // var vertices = new THREE.BoxGeometry( 50,50,50, 10,10,10 ).vertices;
   var positions = new Float32Array( pointNb * 3 );
   var colors = new Float32Array( pointNb * 3 );
@@ -189,18 +189,17 @@ function initGpuParticlesSky(bNormalize, pointNb, size, pointSize, _col, _colA){
   var newShaderUniforms = 
   {
     time: {value:0.0},
-    speed: {value:0.02},
+    speed: {value:speed},
     alpha: {value:0.9},
     pointSize: {value:pointSize},
     pointRatio: {value:1.0},
     pointTexture: {value: null},
-    aoeRatio: {value:1.0},
+    aoeRatio: {value:aoeRatio},
   };
-  //shaderUniformList.push( newShaderUniforms );
   var shaderMaterialSky = new THREE.ShaderMaterial( {
     uniforms: newShaderUniforms,
-    vertexShader: vShaderSky,
-    fragmentShader: fShaderSky,
+    vertexShader: vShader,
+    fragmentShader: fShader,
     transparent:true,
     //alphaTest: 0.9,
     blending: THREE.AdditiveBlending,
@@ -208,6 +207,7 @@ function initGpuParticlesSky(bNormalize, pointNb, size, pointSize, _col, _colA){
     depthWrite: false,
   } );
   
+  shaderUniformList.push( newShaderUniforms );  
   var particles = new THREE.Points( geometry, shaderMaterialSky );
   //scene.add( particles );
   return particles;
