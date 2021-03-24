@@ -57,9 +57,8 @@ function onGuiChange(){
 
 
 /*** PARTICLE Shaders ***/
-const MAX_LIGHTS_SHADER = 32;
 var vShaderRain, fShaderRain;
-initRainShader(MAX_LIGHTS_SHADER);
+initRainShader(1);
 function initRainShader(nbLights)
 {
   vShaderRain = `
