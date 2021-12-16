@@ -14,7 +14,7 @@ var DIV_BTN_ON = "►";
 var DIV_BTN_CLASS = "spanBtn";
 //
 var SUBDIV_OPACITY = 1;
-var SUBDIV_FONT_SIZE = "90%";
+var SUBDIV_FONT_SIZE = "85%";
 var DIV_MARGIN_TOP = "4px";
 var HIDDEN_DIV_MARGIN_L = "8px";
 var HIDDEN_DIV_BORDER_L = "2px dotted blue";
@@ -132,17 +132,22 @@ function displayData(_data, _parent, _lvl){
         var dateSpan = addElt("SPAN", newSubDiv, dateStr);
         dateSpan.style.marginRight = "8px";
 		//
+		var totalW = 50;
+		var maxQ = 8;
 		var durationStr = "";
-		durationStr += dates.duration+"Q";
+		durationStr += dates.duration + small("Q");
 		var durationSpan1 = addElt("SPAN", newSubDiv, durationStr);
+		durationSpan1.style.color = "rgba(255,255,255, 0.8)";
+		// durationSpan1.style.fontSize = "90%";	
 		//durationSpan1.style.opacity = dates.duration/8;	
 		durationSpan1.style.display = "inline-block";
-        durationSpan1.style.width = (15+10*dates.duration)+"px";
-        durationSpan1.style.backgroundColor = "rgb(150,150,150)";
+		durationSpan1.style.width = (totalW*dates.duration/maxQ)+"px";
+        durationSpan1.style.backgroundColor = "rgb(200,200,200)";
 		//
-		var durationSpan2 = addElt("SPAN", newSubDiv, "");
+		var durationSpan2 = addElt("SPAN", newSubDiv, "&nbsp");
 		durationSpan2.style.display = "inline-block";
-        durationSpan2.style.width = (10*(8-dates.duration))+"px";
+        durationSpan2.style.width = (totalW*(maxQ-dates.duration)/maxQ)+"px";
+		durationSpan2.style.backgroundColor = "rgba(150,150,150, 0.5)";
       }
 	  //
 	  if(subDiv.region){
