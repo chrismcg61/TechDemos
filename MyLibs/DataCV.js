@@ -113,7 +113,7 @@ var rootData_Pers = {
                   hidden:true,
                   subDivs:[                        
                     {  
-                      tagDiv:{title:"Tel: ", tags:[ "0123456789", small("10am-7pm"+small(" (CET)")),  ]},
+                      tagDiv:{title:"Tel: ", tags:[ "0635915517", small("10am-7pm"+small(" (CET)")),  ]},
                     },
                   ],
                 },
