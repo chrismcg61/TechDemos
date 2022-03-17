@@ -20,6 +20,10 @@ var HIDDEN_DIV_MARGIN_L = "8px";
 var HIDDEN_DIV_BORDER_L = "2px dotted blue";
 //
 var REGION_FONT_SIZE = "70%";
+var DATE2_FONT_SIZE = "75%";
+var DATE_MARGIN = "0.3em";
+var DATE_BG_COL = "rgb(200,200,200)";
+var ALPHA_TEXT_COL = "rgba(255,255,255, 0.8)";
 //var MAX_DURATION = 8;
 //var MIN_DURATION = MAX_DURATION/2;
 //
@@ -128,32 +132,45 @@ function displayData(_data, _parent, _lvl){
         var endQ_Str = "Q"+endQ;
         //
         var dateStr = startY+small(startQ_Str);
-		//dateStr +=  "-"+ endY+small(endQ_Str);
         var dateSpan = addElt("SPAN", newSubDiv, dateStr);
-        dateSpan.style.marginRight = "8px";
+        dateSpan.style.marginRight = DATE_MARGIN; //"8px";
 		//
-		var totalW = 50;
-		var maxQ = 8;
+		var totalW = 1.7; // 50;
+		var maxQ = 10;
 		var durationStr = "";
 		durationStr += dates.duration + small("Q");
 		var durationSpan1 = addElt("SPAN", newSubDiv, durationStr);
-		durationSpan1.style.color = "rgba(255,255,255, 0.8)";
+		durationSpan1.style.color = ALPHA_TEXT_COL;
 		// durationSpan1.style.fontSize = "90%";	
 		//durationSpan1.style.opacity = dates.duration/8;	
 		durationSpan1.style.display = "inline-block";
-		durationSpan1.style.width = (totalW*dates.duration/maxQ)+"px";
-        durationSpan1.style.backgroundColor = "rgb(200,200,200)";
+		durationSpan1.style.width = (totalW*dates.duration/maxQ)+"em"; //"px";
+        durationSpan1.style.backgroundColor = DATE_BG_COL;
 		//
 		var durationSpan2 = addElt("SPAN", newSubDiv, "&nbsp");
 		durationSpan2.style.display = "inline-block";
-        durationSpan2.style.width = (totalW*(maxQ-dates.duration)/maxQ)+"px";
+        durationSpan2.style.width = (totalW*(maxQ-dates.duration)/maxQ)+"em";
 		durationSpan2.style.backgroundColor = "rgba(150,150,150, 0.5)";
+		//durationSpan2.style.marginRight = DATE_MARGIN;
+		//
+		//
+		var endDateStr =  endY+small(endQ_Str);
+		var dateSpan2 = addElt("SPAN", newSubDiv, endDateStr);
+		dateSpan2.style.marginRight = DATE_MARGIN;
+		dateSpan2.style.fontSize = DATE2_FONT_SIZE;
+		dateSpan2.style.opacity = 0.4;
       }
 	  //
 	  if(subDiv.region){
-		  var regionTxt = "["+subDiv.region+"] ";
+		  var regionTxt = subDiv.region;  //"["+subDiv.region+"] ";
 		  var regionSpan = addElt("SPAN", newSubDiv, regionTxt);
+		  regionSpan.style.marginRight = DATE_MARGIN;
+		  regionSpan.style.color = ALPHA_TEXT_COL;
 		  regionSpan.style.fontSize = REGION_FONT_SIZE;		  
+		  regionSpan.style.display = "inline-block";
+		  regionSpan.style.width = "7em";
+		  regionSpan.style.textAlign = "center";
+		  regionSpan.style.backgroundColor = DATE_BG_COL;
 	  }
       //
       var tagDiv = subDiv.tagDiv;
