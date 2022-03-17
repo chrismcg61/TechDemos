@@ -450,7 +450,7 @@ var liveProjsData = {
           title:{txt:"Projects [Live]", classes:["maintTitle"]},
         },
         {
-          tagDiv:{title:"GPU-AI++"+small(" (M-Learning++, Traffic/Pathing++, ImageAI)"), tags:[ ]},
+          tagDiv:{title:"GPU-AI++"+small(" (M-Learning++, Traffic/Pathing++, Image-AI)"), tags:[ ]},
 		  subDivs:[
 			{
 			  hidden:true,
@@ -688,14 +688,14 @@ var aiSkills = [];
 {
 addTableTag( aiSkills, "Generic", {
 	rating:85,
-	tagDiv:{title:"AI-Generic"+small(" (Bots Behavior/Sync)"), tags:[ ]},
+	tagDiv:{title:"AI-Generic"+small(" (Bots Behaviour/Sync)"), tags:[ ]},
 	subDivs:[
 		{
 			hidden:true,
 			subDivs:[
 				{
 					rating:85,
-					tagDiv:{title:"Bots: ", tags:[ "Idle/Aggro Behavior", "Team Sync AI" ]},
+					tagDiv:{title:"Bots: ", tags:[ "Idle/Aggro Behaviour", "Team Sync AI" ]},
 				},				
 			]
 		}
@@ -1351,108 +1351,108 @@ var missionsByDate = {
       type:"OTHER",
       dates:getDate(2),
 	  region:"London",
-      tagDiv:{title:"Holomatix"+small("[WebAds]"), tags:[ ]},
+      tagDiv:{title:"Holomatix"+small(" [WebAds]"), tags:[ ]},
     },
 	{
       dates:getDate(7),
+	  tagDiv:{title:"", tags:[ ]},
     },
 	
     { 
       type:"Embed",
       dates:getDate(3),
 	  region:"Istres",
-      tagDiv:{title:"Dassault Aviat°", tags:[ ]},
+      tagDiv:{title:"Dassault"+small(" [Aviat°]"), tags:[ ]},
     },
     { 
 	  //classes:["hilightHi"],
       type:"GameDev",
       dates:getDate(4),
-	  region:"Lyon"+"&nbsp&nbsp",
-      tagDiv:{title:"Ubi/EtrangesLib"+"<sup><i>ul</i></sup>", tags:[ ]},
+	  region:"Lyon",  // +"&nbsp&nbsp"
+      tagDiv:{title:"Ubisoft/Etranges-Lib"+"<sup><i>ul</i></sup>", tags:[ ]},
 	  url:"https://en.wikipedia.org/wiki/%C3%89tranges_Libellules",
     },
 	{ 
       type:"GameDev",
       dates:getDate(8),
-	  region:"Lyon"+"&nbsp&nbsp",
-      tagDiv:{title:"Ubi/Phoenix", tags:[ ]},
+	  region:"Lyon",
+      tagDiv:{title:"Ubisoft/Phoenix", tags:[ ]},
 	  url:"https://fr.wikipedia.org/wiki/Phoenix_Studio",
     },
 	{
       type:"OTHER",
       dates:getDate(1),
-	  region:"Lyon"+"&nbsp&nbsp",
-      tagDiv:{title:"Sword"+small("[Web]"), tags:[ ]},
+	  region:"Lyon",
+      tagDiv:{title:"Sword"+small(" [Web]"), tags:[ ]},
     },
 	{
       type:"Embed",
       dates:getDate(2),
-	  region:"Paris"+"&nbsp",
+	  region:"Paris"+small("[SSII]"),
       tagDiv:{title:"NeoPost", tags:[ ]},
     },
 	{
       type:"Embed",
       dates:getDate(2),
-	  region:"Paris"+"&nbsp",
+	  region:"Paris"+small("[SSII]"),
       tagDiv:{title:"Nagra/Canal+", tags:[ ]},
     },
 	{
       type:"STB",
       dates:getDate(5),
-	  region:"Paris"+"&nbsp",
+	  region:"Paris"+small("[SSII]"),
       tagDiv:{title:"Orange/Soft@Home", tags:[ ]},
     },
 	{
       type:"OTHER",
       dates:getDate(1),
-	  region:"Paris"+"&nbsp",
+	  region:"Paris"+small("[SSII]"),
       tagDiv:{title:"Technicolor", tags:[ ]},
     },
 	{
       type:"OTHER",
       dates:getDate(1),
-	  region:"Paris"+"&nbsp",
+	  region:"Paris"+small("[SSII]"),
       tagDiv:{title:"SagemCom", tags:[ ]},
     },
 	{
       type:"STB",
       dates:getDate(4),
-	  region:"Paris"+"&nbsp",
-      tagDiv:{title:"BouyguesTel", tags:[ ]},
+	  region:"Paris"+small("[SSII]"),
+      tagDiv:{title:"Bouygues"+small(" [Telecom]"), tags:[ ]},
     },
 	{
       type:"OTHER",
       dates:getDate(1),
-	  region:"Paris"+"&nbsp",
-      tagDiv:{title:"Parrot"+small("[Drones]"), tags:[ ]},
+	  region:"Paris"+small("[SSII]"),
+      tagDiv:{title:"Parrot"+small(" [Drones]"), tags:[ ]},
     },
 	{
       type:"STB",
       dates:getDate(5),
-	  region:"Paris"+"&nbsp",
-      tagDiv:{title:"Cisco"+small("[TV]"), tags:[ ]},
+	  region:"Paris"+small("[SSII]"),
+      tagDiv:{title:"Cisco"+small(" [TV]"), tags:[ ]},
     },	
 	{
       type:"GameDev",
-      dates:getDate(6),
-	  region:"Paris"+"&nbsp",
-      tagDiv:{title:"MyProj[NextGen-Game]", tags:[ ]},
+      dates:getDate(8),
+	  region:"Paris",
+      tagDiv:{title:"Indie-Project"+small(" [NextGen-Game]"), tags:[ ]},  // MyProj
     },
 	{
-      dates:getDate(6),
+      dates:getDate(8),
+	  tagDiv:{title:"", tags:[ ]},
     },
 	{
       type:"WebApp++",
-      dates:getDate(6),
-	  region:"Norm'dy",
-      tagDiv:{title:"MyProj[WebApp++]", tags:[ ]},
+      dates:getDate(8),
+	  region:"Normandy",
+      tagDiv:{title:"Indie-Project"+small(" [WebApp++]"), tags:[ ]},
     },
-	// {
-      // type:"WebApp++",
-      // dates:getDate(1),
-	  // region:"Norm'dy",
-      // tagDiv:{title:"Now", tags:[ ]},
-    // },	
+	{
+      dates:getDate(1),
+	  tagDiv:{title:"", tags:[ ]},
+    },	
   ],  
 }
 
@@ -1477,7 +1477,7 @@ var missionsByType = {
 	  title:{txt:"WebApp++", classes:["title"]},
       subDivs:[
         {
-		  classes:["backColHi"],
+		  classes:["backColHi3"],
           subDivs:getMissionsByType("WebApp++", missionsByDate.subDivs),
         },
 		{
@@ -1509,7 +1509,7 @@ var missionsByType = {
 	  title:{txt:"GameDev", classes:["title"]},
       subDivs:[
         {
-		  classes:["backColHi"],
+		  classes:["backColHi2"],
           subDivs:getMissionsByType("GameDev", missionsByDate.subDivs),
         },
 		{
@@ -1577,7 +1577,7 @@ var missionsByType = {
       title:{txt:"Embedded Dev", classes:["title"]},
       subDivs:[
         {
-		  classes:["backColLo"],
+		  classes:["backColLo2"],
           subDivs:getMissionsByType("Embed", missionsByDate.subDivs),
         },
 		{
