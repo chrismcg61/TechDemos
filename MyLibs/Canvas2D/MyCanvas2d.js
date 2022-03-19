@@ -43,7 +43,8 @@ function initGUI( updateCallback ) {
       newFolder.add( hiddenParamFolders[folderKey].Params, key);    
     } 
   }
-
+  
+  return gui;
 }
 
 function initStats(){
