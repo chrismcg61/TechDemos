@@ -57,6 +57,55 @@ function onGuiChange(){
 
 
 /*** PARTICLE Shaders ***/
+var sprite0 = new THREE.TextureLoader().load("https://cdn.rawgit.com/mrdoob/three.js/r138/examples/textures/sprites/disc.png");
+var shaderUniforms0 = {
+  time: {value:0},
+  alpha: {value:0.5},
+  size: {value:4},
+  pointTexture: { value:sprite0 },
+  useTexturePosition: {value:0},
+  texturePosition: {value:null},
+};
+var vShader0, fShader0;
+{
+  vShader0 = `
+    uniform float useTexturePosition;
+    uniform sampler2D texturePosition;
+    //
+    uniform float size;
+    uniform float time;
+    attribute vec3 color;
+    varying vec3 vColor;
+    void main() {
+      vColor = color;
+      vec3 tmpPos = position * (1.0 + sin(time*0.002));
+      if(useTexturePosition>0.0) tmpPos = texture2D( texturePosition, uv ).xyz;
+      vec4 mvPosition = modelViewMatrix * vec4( tmpPos, 1.0 );
+      //
+      gl_PointSize = ( size / -mvPosition.z );
+      gl_Position = projectionMatrix * mvPosition;
+    }
+    `;   
+  fShader0 = `
+    uniform sampler2D pointTexture;
+    uniform float alpha;
+    varying vec3 vColor;
+    void main() {
+      gl_FragColor = vec4( vColor,  alpha ) * texture2D( pointTexture, gl_PointCoord );
+    }
+    `;
+}
+var shaderMaterial0 = new THREE.ShaderMaterial( {
+  uniforms: shaderUniforms0,
+  vertexShader: vShader0,
+  fragmentShader: fShader0,
+  transparent:true,
+  //alphaTest: 0.9,
+  depthTest:false,
+  blending:THREE.AdditiveBlending,
+} );
+
+
 var vShaderRain, fShaderRain;
 initRainShader(1);
 function initRainShader(nbLights)
