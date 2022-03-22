@@ -57,12 +57,11 @@ function onGuiChange(){
 
 
 /*** PARTICLE Shaders ***/
-var sprite0 = new THREE.TextureLoader().load("https://cdn.rawgit.com/mrdoob/three.js/r138/examples/textures/sprites/disc.png");
 var shaderUniforms0 = {
   time: {value:0},
   alpha: {value:0.5},
   size: {value:4},
-  pointTexture: { value:sprite0 },
+  pointTexture: { value:null },
   useTexturePosition: {value:0},
   texturePosition: {value:null},
 };
