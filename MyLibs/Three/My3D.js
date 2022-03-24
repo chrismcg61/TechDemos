@@ -34,20 +34,19 @@ MY3D.onWindowResize = function(){
 
 
 /*** GUI ***/
-MY3D.addGuiParams = function(_folder, _params){
+MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
   for(var key in _params){
     var param = _params[key];
-    var max = 10.0;
-    if(param>=1)  max = 100*param;
-
+    // var max = 10.0;
+    // if(param>=1)  max = 100*param;
     if( typeof(param) === 'object') {
       var subFolder = _folder.addFolder(key);
-      MY3D.addGuiParams(subFolder, param);
+      if(_open) subFolder.open();
+      MY3D.addGuiParams(subFolder, param, _open, _max, _delta);
     }
-    else if(param>0xffff) {
-      _folder.addColor( _params, key, );
-    }
-    else _folder.add( _params, key, 0.0,max).onChange(onGuiChange);
+    else if(param>0xffff) _folder.addColor( _params, key ).onChange(onGuiChange);
+    else if(_max>0) _folder.add( _params, key, 0.0,_max,_delta).onChange(onGuiChange);
+    else _folder.add( _params, key ).onChange(onGuiChange);
   }
 }
 function onGuiChange(){
