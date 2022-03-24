@@ -58,7 +58,7 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
       MY3D.addGuiParams(subFolder, param, _open, _max, _delta);
     }
     else if(param>0xffff) _folder.addColor( _params, key ).onChange(onGuiChange);
-    else if(_max>0) _folder.add( _params, key, 0.0,_max,_delta).onChange(onGuiChange);
+    else if(_max>0 && key.includes('Pos')) _folder.add( _params, key, -_max,_max,_delta).onChange(onGuiChange);
     else _folder.add( _params, key ).onChange(onGuiChange);
   }
 }
