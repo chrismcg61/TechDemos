@@ -33,6 +33,19 @@ MY3D.onWindowResize = function(){
 
 
 
+/*** Bloom ***/
+MY3D.initBloom = function(_bloom, _radius, _threshold){    
+  var renderPass = new THREE.RenderPass( scene, camera );
+  var bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), _bloom, _radius, _threshold );
+  bloomPass.renderToScreen = true;
+  composer = new THREE.EffectComposer( renderer );
+  composer.setSize( window.innerWidth, window.innerHeight );
+  composer.addPass( renderPass );
+  composer.addPass( bloomPass );
+}
+
+
+
 /*** GUI ***/
 MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
   for(var key in _params){
