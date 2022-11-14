@@ -1,5 +1,1207 @@
 ( function () {
 
+	/**
+ * Gamma Correction Shader
+ * http://en.wikipedia.org/wiki/gamma_correction
+ */
+	const GammaCorrectionShader = {
+		uniforms: {
+			'tDiffuse': {
+				value: null
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader:
+  /* glsl */
+  `
+
+		uniform sampler2D tDiffuse;
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vec4 tex = texture2D( tDiffuse, vUv );
+
+			gl_FragColor = LinearTosRGB( tex );
+
+		}`
+	};
+
+	THREE.GammaCorrectionShader = GammaCorrectionShader;
+
+} )();
+
+
+
+( function () {
+
+	/**
+ * Vignette shader
+ * based on PaintEffect postprocess from ro.me
+ * http://code.google.com/p/3-dreams-of-black/source/browse/deploy/js/effects/PaintEffect.js
+ */
+	const VignetteShader = {
+		uniforms: {
+			'tDiffuse': {
+				value: null
+			},
+			'offset': {
+				value: 1.0
+			},
+			'darkness': {
+				value: 1.0
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader:
+  /* glsl */
+  `
+
+		uniform float offset;
+		uniform float darkness;
+
+		uniform sampler2D tDiffuse;
+
+		varying vec2 vUv;
+
+		void main() {
+
+			// Eskil's vignette
+
+			vec4 texel = texture2D( tDiffuse, vUv );
+			vec2 uv = ( vUv - vec2( 0.5 ) ) * vec2( offset );
+			gl_FragColor = vec4( mix( texel.rgb, vec3( 1.0 - darkness ), dot( uv, uv ) ), texel.a );
+
+		}`
+	};
+
+	THREE.VignetteShader = VignetteShader;
+
+} )();
+
+
+
+( function () {
+
+	/**
+ * Sepia tone shader
+ * based on glfx.js sepia shader
+ * https://github.com/evanw/glfx.js
+ */
+	const SepiaShader = {
+		uniforms: {
+			'tDiffuse': {
+				value: null
+			},
+			'amount': {
+				value: 1.0
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader:
+  /* glsl */
+  `
+
+		uniform float amount;
+
+		uniform sampler2D tDiffuse;
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vec4 color = texture2D( tDiffuse, vUv );
+			vec3 c = color.rgb;
+
+			color.r = dot( c, vec3( 1.0 - 0.607 * amount, 0.769 * amount, 0.189 * amount ) );
+			color.g = dot( c, vec3( 0.349 * amount, 1.0 - 0.314 * amount, 0.168 * amount ) );
+			color.b = dot( c, vec3( 0.272 * amount, 0.534 * amount, 1.0 - 0.869 * amount ) );
+
+			gl_FragColor = vec4( min( vec3( 1.0 ), color.rgb ), color.a );
+
+		}`
+	};
+
+	THREE.SepiaShader = SepiaShader;
+
+} )();
+
+
+
+( function () {
+
+	/**
+ * Two pass Gaussian blur filter (horizontal and vertical blur shaders)
+ * - see http://www.cake23.de/traveling-wavefronts-lit-up.html
+ *
+ * - 9 samples per pass
+ * - standard deviation 2.7
+ * - "h" and "v" parameters should be set to "1 / width" and "1 / height"
+ */
+	const HorizontalBlurShader = {
+		uniforms: {
+			'tDiffuse': {
+				value: null
+			},
+			'h': {
+				value: 1.0 / 512.0
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader:
+  /* glsl */
+  `
+
+		uniform sampler2D tDiffuse;
+		uniform float h;
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vec4 sum = vec4( 0.0 );
+
+			sum += texture2D( tDiffuse, vec2( vUv.x - 4.0 * h, vUv.y ) ) * 0.051;
+			sum += texture2D( tDiffuse, vec2( vUv.x - 3.0 * h, vUv.y ) ) * 0.0918;
+			sum += texture2D( tDiffuse, vec2( vUv.x - 2.0 * h, vUv.y ) ) * 0.12245;
+			sum += texture2D( tDiffuse, vec2( vUv.x - 1.0 * h, vUv.y ) ) * 0.1531;
+			sum += texture2D( tDiffuse, vec2( vUv.x, vUv.y ) ) * 0.1633;
+			sum += texture2D( tDiffuse, vec2( vUv.x + 1.0 * h, vUv.y ) ) * 0.1531;
+			sum += texture2D( tDiffuse, vec2( vUv.x + 2.0 * h, vUv.y ) ) * 0.12245;
+			sum += texture2D( tDiffuse, vec2( vUv.x + 3.0 * h, vUv.y ) ) * 0.0918;
+			sum += texture2D( tDiffuse, vec2( vUv.x + 4.0 * h, vUv.y ) ) * 0.051;
+
+			gl_FragColor = sum;
+
+		}`
+	};
+
+	THREE.HorizontalBlurShader = HorizontalBlurShader;
+
+} )();
+
+
+
+( function () {
+
+	/**
+ * Film grain & scanlines shader
+ *
+ * - ported from HLSL to WebGL / GLSL
+ * https://web.archive.org/web/20210226214859/http://www.truevision3d.com/forums/showcase/staticnoise_colorblackwhite_scanline_shaders-t18698.0.html
+ *
+ * Screen Space Static Postprocessor
+ *
+ * Produces an analogue noise overlay similar to a film grain / TV static
+ *
+ * Original implementation and noise algorithm
+ * Pat 'Hawthorne' Shearon
+ *
+ * Optimized scanlines + noise version with intensity scaling
+ * Georg 'Leviathan' Steinrohder
+ *
+ * This version is provided under a Creative Commons Attribution 3.0 License
+ * http://creativecommons.org/licenses/by/3.0/
+ */
+	const FilmShader = {
+		uniforms: {
+			'tDiffuse': {
+				value: null
+			},
+			'time': {
+				value: 0.0
+			},
+			'nIntensity': {
+				value: 0.5
+			},
+			'sIntensity': {
+				value: 0.05
+			},
+			'sCount': {
+				value: 4096
+			},
+			'grayscale': {
+				value: 1
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader:
+  /* glsl */
+  `
+
+		#include <common>
+
+		// control parameter
+		uniform float time;
+
+		uniform bool grayscale;
+
+		// noise effect intensity value (0 = no effect, 1 = full effect)
+		uniform float nIntensity;
+
+		// scanlines effect intensity value (0 = no effect, 1 = full effect)
+		uniform float sIntensity;
+
+		// scanlines effect count value (0 = no effect, 4096 = full effect)
+		uniform float sCount;
+
+		uniform sampler2D tDiffuse;
+
+		varying vec2 vUv;
+
+		void main() {
+
+		// sample the source
+			vec4 cTextureScreen = texture2D( tDiffuse, vUv );
+
+		// make some noise
+			float dx = rand( vUv + time );
+
+		// add noise
+			vec3 cResult = cTextureScreen.rgb + cTextureScreen.rgb * clamp( 0.1 + dx, 0.0, 1.0 );
+
+		// get us a sine and cosine
+			vec2 sc = vec2( sin( vUv.y * sCount ), cos( vUv.y * sCount ) );
+
+		// add scanlines
+			cResult += cTextureScreen.rgb * vec3( sc.x, sc.y, sc.x ) * sIntensity;
+
+		// interpolate between source and result by intensity
+			cResult = cTextureScreen.rgb + clamp( nIntensity, 0.0,1.0 ) * ( cResult - cTextureScreen.rgb );
+
+		// convert to grayscale if desired
+			if( grayscale ) {
+
+				cResult = vec3( cResult.r * 0.3 + cResult.g * 0.59 + cResult.b * 0.11 );
+
+			}
+
+			gl_FragColor =  vec4( cResult, cTextureScreen.a );
+
+		}`
+	};
+
+	THREE.FilmShader = FilmShader;
+
+} )();
+
+
+
+( function () {
+
+	/**
+ * Dot screen shader
+ * based on glfx.js sepia shader
+ * https://github.com/evanw/glfx.js
+ */
+
+	const DotScreenShader = {
+		uniforms: {
+			'tDiffuse': {
+				value: null
+			},
+			'tSize': {
+				value: new THREE.Vector2( 256, 256 )
+			},
+			'center': {
+				value: new THREE.Vector2( 0.5, 0.5 )
+			},
+			'angle': {
+				value: 1.57
+			},
+			'scale': {
+				value: 1.0
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader:
+  /* glsl */
+  `
+
+		uniform vec2 center;
+		uniform float angle;
+		uniform float scale;
+		uniform vec2 tSize;
+
+		uniform sampler2D tDiffuse;
+
+		varying vec2 vUv;
+
+		float pattern() {
+
+			float s = sin( angle ), c = cos( angle );
+
+			vec2 tex = vUv * tSize - center;
+			vec2 point = vec2( c * tex.x - s * tex.y, s * tex.x + c * tex.y ) * scale;
+
+			return ( sin( point.x ) * sin( point.y ) ) * 4.0;
+
+		}
+
+		void main() {
+
+			vec4 color = texture2D( tDiffuse, vUv );
+
+			float average = ( color.r + color.g + color.b ) / 3.0;
+
+			gl_FragColor = vec4( vec3( average * 10.0 - 5.0 + pattern() ), color.a );
+
+		}`
+	};
+
+	THREE.DotScreenShader = DotScreenShader;
+
+} )();
+
+
+
+( function () {
+
+	/**
+ * Afterimage shader
+ * I created this effect inspired by a demo on codepen:
+ * https://codepen.io/brunoimbrizi/pen/MoRJaN?page=1&
+ */
+	const AfterimageShader = {
+		uniforms: {
+			'damp': {
+				value: 0.96
+			},
+			'tOld': {
+				value: null
+			},
+			'tNew': {
+				value: null
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader:
+  /* glsl */
+  `
+
+		uniform float damp;
+
+		uniform sampler2D tOld;
+		uniform sampler2D tNew;
+
+		varying vec2 vUv;
+
+		vec4 when_gt( vec4 x, float y ) {
+
+			return max( sign( x - y ), 0.0 );
+
+		}
+
+		void main() {
+
+			vec4 texelOld = texture2D( tOld, vUv );
+			vec4 texelNew = texture2D( tNew, vUv );
+
+			texelOld *= damp * when_gt( texelOld, 0.1 );
+
+			gl_FragColor = max(texelNew, texelOld);
+
+		}`
+	};
+
+	THREE.AfterimageShader = AfterimageShader;
+
+} )();
+
+
+
+( function () {
+
+	/**
+ * NVIDIA FXAA by Timothy Lottes
+ * https://developer.download.nvidia.com/assets/gamedev/files/sdk/11/FXAA_WhitePaper.pdf
+ * - WebGL port by @supereggbert
+ * http://www.glge.org/demos/fxaa/
+ * Further improved by Daniel Sturk
+ */
+
+	const FXAAShader = {
+		uniforms: {
+			'tDiffuse': {
+				value: null
+			},
+			'resolution': {
+				value: new THREE.Vector2( 1 / 1024, 1 / 512 )
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader: `
+	precision highp float;
+
+	uniform sampler2D tDiffuse;
+
+	uniform vec2 resolution;
+
+	varying vec2 vUv;
+
+	// FXAA 3.11 implementation by NVIDIA, ported to WebGL by Agost Biro (biro@archilogic.com)
+
+	//----------------------------------------------------------------------------------
+	// File:        es3-kepler\FXAA\assets\shaders/FXAA_DefaultES.frag
+	// SDK Version: v3.00
+	// Email:       gameworks@nvidia.com
+	// Site:        http://developer.nvidia.com/
+	//
+	// Copyright (c) 2014-2015, NVIDIA CORPORATION. All rights reserved.
+	//
+	// Redistribution and use in source and binary forms, with or without
+	// modification, are permitted provided that the following conditions
+	// are met:
+	//  * Redistributions of source code must retain the above copyright
+	//    notice, this list of conditions and the following disclaimer.
+	//  * Redistributions in binary form must reproduce the above copyright
+	//    notice, this list of conditions and the following disclaimer in the
+	//    documentation and/or other materials provided with the distribution.
+	//  * Neither the name of NVIDIA CORPORATION nor the names of its
+	//    contributors may be used to endorse or promote products derived
+	//    from this software without specific prior written permission.
+	//
+	// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ''AS IS'' AND ANY
+	// EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+	// PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+	// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+	// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+	// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+	// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+	// OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	//
+	//----------------------------------------------------------------------------------
+
+	#ifndef FXAA_DISCARD
+			//
+			// Only valid for PC OpenGL currently.
+			// Probably will not work when FXAA_GREEN_AS_LUMA = 1.
+			//
+			// 1 = Use discard on pixels which don't need AA.
+			//     For APIs which enable concurrent TEX+ROP from same surface.
+			// 0 = Return unchanged color on pixels which don't need AA.
+			//
+			#define FXAA_DISCARD 0
+	#endif
+
+	/*--------------------------------------------------------------------------*/
+	#define FxaaTexTop(t, p) texture2D(t, p, -100.0)
+	#define FxaaTexOff(t, p, o, r) texture2D(t, p + (o * r), -100.0)
+	/*--------------------------------------------------------------------------*/
+
+	#define NUM_SAMPLES 5
+
+	// assumes colors have premultipliedAlpha, so that the calculated color contrast is scaled by alpha
+	float contrast( vec4 a, vec4 b ) {
+			vec4 diff = abs( a - b );
+			return max( max( max( diff.r, diff.g ), diff.b ), diff.a );
+	}
+
+	/*============================================================================
+
+									FXAA3 QUALITY - PC
+
+	============================================================================*/
+
+	/*--------------------------------------------------------------------------*/
+	vec4 FxaaPixelShader(
+			vec2 posM,
+			sampler2D tex,
+			vec2 fxaaQualityRcpFrame,
+			float fxaaQualityEdgeThreshold,
+			float fxaaQualityinvEdgeThreshold
+	) {
+			vec4 rgbaM = FxaaTexTop(tex, posM);
+			vec4 rgbaS = FxaaTexOff(tex, posM, vec2( 0.0, 1.0), fxaaQualityRcpFrame.xy);
+			vec4 rgbaE = FxaaTexOff(tex, posM, vec2( 1.0, 0.0), fxaaQualityRcpFrame.xy);
+			vec4 rgbaN = FxaaTexOff(tex, posM, vec2( 0.0,-1.0), fxaaQualityRcpFrame.xy);
+			vec4 rgbaW = FxaaTexOff(tex, posM, vec2(-1.0, 0.0), fxaaQualityRcpFrame.xy);
+			// . S .
+			// W M E
+			// . N .
+
+			bool earlyExit = max( max( max(
+					contrast( rgbaM, rgbaN ),
+					contrast( rgbaM, rgbaS ) ),
+					contrast( rgbaM, rgbaE ) ),
+					contrast( rgbaM, rgbaW ) )
+					< fxaaQualityEdgeThreshold;
+			// . 0 .
+			// 0 0 0
+			// . 0 .
+
+			#if (FXAA_DISCARD == 1)
+					if(earlyExit) FxaaDiscard;
+			#else
+					if(earlyExit) return rgbaM;
+			#endif
+
+			float contrastN = contrast( rgbaM, rgbaN );
+			float contrastS = contrast( rgbaM, rgbaS );
+			float contrastE = contrast( rgbaM, rgbaE );
+			float contrastW = contrast( rgbaM, rgbaW );
+
+			float relativeVContrast = ( contrastN + contrastS ) - ( contrastE + contrastW );
+			relativeVContrast *= fxaaQualityinvEdgeThreshold;
+
+			bool horzSpan = relativeVContrast > 0.;
+			// . 1 .
+			// 0 0 0
+			// . 1 .
+
+			// 45 deg edge detection and corners of objects, aka V/H contrast is too similar
+			if( abs( relativeVContrast ) < .3 ) {
+					// locate the edge
+					vec2 dirToEdge;
+					dirToEdge.x = contrastE > contrastW ? 1. : -1.;
+					dirToEdge.y = contrastS > contrastN ? 1. : -1.;
+					// . 2 .      . 1 .
+					// 1 0 2  ~=  0 0 1
+					// . 1 .      . 0 .
+
+					// tap 2 pixels and see which ones are "outside" the edge, to
+					// determine if the edge is vertical or horizontal
+
+					vec4 rgbaAlongH = FxaaTexOff(tex, posM, vec2( dirToEdge.x, -dirToEdge.y ), fxaaQualityRcpFrame.xy);
+					float matchAlongH = contrast( rgbaM, rgbaAlongH );
+					// . 1 .
+					// 0 0 1
+					// . 0 H
+
+					vec4 rgbaAlongV = FxaaTexOff(tex, posM, vec2( -dirToEdge.x, dirToEdge.y ), fxaaQualityRcpFrame.xy);
+					float matchAlongV = contrast( rgbaM, rgbaAlongV );
+					// V 1 .
+					// 0 0 1
+					// . 0 .
+
+					relativeVContrast = matchAlongV - matchAlongH;
+					relativeVContrast *= fxaaQualityinvEdgeThreshold;
+
+					if( abs( relativeVContrast ) < .3 ) { // 45 deg edge
+							// 1 1 .
+							// 0 0 1
+							// . 0 1
+
+							// do a simple blur
+							return mix(
+									rgbaM,
+									(rgbaN + rgbaS + rgbaE + rgbaW) * .25,
+									.4
+							);
+					}
+
+					horzSpan = relativeVContrast > 0.;
+			}
+
+			if(!horzSpan) rgbaN = rgbaW;
+			if(!horzSpan) rgbaS = rgbaE;
+			// . 0 .      1
+			// 1 0 1  ->  0
+			// . 0 .      1
+
+			bool pairN = contrast( rgbaM, rgbaN ) > contrast( rgbaM, rgbaS );
+			if(!pairN) rgbaN = rgbaS;
+
+			vec2 offNP;
+			offNP.x = (!horzSpan) ? 0.0 : fxaaQualityRcpFrame.x;
+			offNP.y = ( horzSpan) ? 0.0 : fxaaQualityRcpFrame.y;
+
+			bool doneN = false;
+			bool doneP = false;
+
+			float nDist = 0.;
+			float pDist = 0.;
+
+			vec2 posN = posM;
+			vec2 posP = posM;
+
+			int iterationsUsed = 0;
+			int iterationsUsedN = 0;
+			int iterationsUsedP = 0;
+			for( int i = 0; i < NUM_SAMPLES; i++ ) {
+					iterationsUsed = i;
+
+					float increment = float(i + 1);
+
+					if(!doneN) {
+							nDist += increment;
+							posN = posM + offNP * nDist;
+							vec4 rgbaEndN = FxaaTexTop(tex, posN.xy);
+							doneN = contrast( rgbaEndN, rgbaM ) > contrast( rgbaEndN, rgbaN );
+							iterationsUsedN = i;
+					}
+
+					if(!doneP) {
+							pDist += increment;
+							posP = posM - offNP * pDist;
+							vec4 rgbaEndP = FxaaTexTop(tex, posP.xy);
+							doneP = contrast( rgbaEndP, rgbaM ) > contrast( rgbaEndP, rgbaN );
+							iterationsUsedP = i;
+					}
+
+					if(doneN || doneP) break;
+			}
+
+
+			if ( !doneP && !doneN ) return rgbaM; // failed to find end of edge
+
+			float dist = min(
+					doneN ? float( iterationsUsedN ) / float( NUM_SAMPLES - 1 ) : 1.,
+					doneP ? float( iterationsUsedP ) / float( NUM_SAMPLES - 1 ) : 1.
+			);
+
+			// hacky way of reduces blurriness of mostly diagonal edges
+			// but reduces AA quality
+			dist = pow(dist, .5);
+
+			dist = 1. - dist;
+
+			return mix(
+					rgbaM,
+					rgbaN,
+					dist * .5
+			);
+	}
+
+	void main() {
+			const float edgeDetectionQuality = .2;
+			const float invEdgeDetectionQuality = 1. / edgeDetectionQuality;
+
+			gl_FragColor = FxaaPixelShader(
+					vUv,
+					tDiffuse,
+					resolution,
+					edgeDetectionQuality, // [0,1] contrast needed, otherwise early discard
+					invEdgeDetectionQuality
+			);
+
+	}
+	`
+	};
+
+	THREE.FXAAShader = FXAAShader;
+
+} )();
+
+
+
+( function () {
+
+	/**
+ * Convolution shader
+ * ported from o3d sample to WebGL / GLSL
+ */
+
+	const ConvolutionShader = {
+		defines: {
+			'KERNEL_SIZE_FLOAT': '25.0',
+			'KERNEL_SIZE_INT': '25'
+		},
+		uniforms: {
+			'tDiffuse': {
+				value: null
+			},
+			'uImageIncrement': {
+				value: new THREE.Vector2( 0.001953125, 0.0 )
+			},
+			'cKernel': {
+				value: []
+			}
+		},
+		vertexShader:
+  /* glsl */
+  `
+
+		uniform vec2 uImageIncrement;
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv - ( ( KERNEL_SIZE_FLOAT - 1.0 ) / 2.0 ) * uImageIncrement;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`,
+		fragmentShader:
+  /* glsl */
+  `
+
+		uniform float cKernel[ KERNEL_SIZE_INT ];
+
+		uniform sampler2D tDiffuse;
+		uniform vec2 uImageIncrement;
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vec2 imageCoord = vUv;
+			vec4 sum = vec4( 0.0, 0.0, 0.0, 0.0 );
+
+			for( int i = 0; i < KERNEL_SIZE_INT; i ++ ) {
+
+				sum += texture2D( tDiffuse, imageCoord ) * cKernel[ i ];
+				imageCoord += uImageIncrement;
+
+			}
+
+			gl_FragColor = sum;
+
+		}`,
+		buildKernel: function ( sigma ) {
+
+			// We lop off the sqrt(2 * pi) * sigma term, since we're going to normalize anyway.
+			const kMaxKernelSize = 25;
+			let kernelSize = 2 * Math.ceil( sigma * 3.0 ) + 1;
+			if ( kernelSize > kMaxKernelSize ) kernelSize = kMaxKernelSize;
+			const halfWidth = ( kernelSize - 1 ) * 0.5;
+			const values = new Array( kernelSize );
+			let sum = 0.0;
+
+			for ( let i = 0; i < kernelSize; ++ i ) {
+
+				values[ i ] = gauss( i - halfWidth, sigma );
+				sum += values[ i ];
+
+			} // normalize the kernel
+
+
+			for ( let i = 0; i < kernelSize; ++ i ) values[ i ] /= sum;
+
+			return values;
+
+		}
+	};
+
+	function gauss( x, sigma ) {
+
+		return Math.exp( - ( x * x ) / ( 2.0 * sigma * sigma ) );
+
+	}
+
+	THREE.ConvolutionShader = ConvolutionShader;
+
+} )();
+
+
+
+( function () {
+
+	class FilmPass extends THREE.Pass {
+
+		constructor( noiseIntensity, scanlinesIntensity, scanlinesCount, grayscale ) {
+
+			super();
+			if ( THREE.FilmShader === undefined ) console.error( 'THREE.FilmPass relies on THREE.FilmShader' );
+			const shader = THREE.FilmShader;
+			this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+			this.material = new THREE.ShaderMaterial( {
+				uniforms: this.uniforms,
+				vertexShader: shader.vertexShader,
+				fragmentShader: shader.fragmentShader
+			} );
+			if ( grayscale !== undefined ) this.uniforms.grayscale.value = grayscale;
+			if ( noiseIntensity !== undefined ) this.uniforms.nIntensity.value = noiseIntensity;
+			if ( scanlinesIntensity !== undefined ) this.uniforms.sIntensity.value = scanlinesIntensity;
+			if ( scanlinesCount !== undefined ) this.uniforms.sCount.value = scanlinesCount;
+			this.fsQuad = new THREE.FullScreenQuad( this.material );
+
+		}
+
+		render( renderer, writeBuffer, readBuffer, deltaTime
+			/*, maskActive */
+		) {
+
+			this.uniforms[ 'tDiffuse' ].value = readBuffer.texture;
+			this.uniforms[ 'time' ].value += deltaTime;
+
+			if ( this.renderToScreen ) {
+
+				renderer.setRenderTarget( null );
+				this.fsQuad.render( renderer );
+
+			} else {
+
+				renderer.setRenderTarget( writeBuffer );
+				if ( this.clear ) renderer.clear();
+				this.fsQuad.render( renderer );
+
+			}
+
+		}
+
+	}
+
+	THREE.FilmPass = FilmPass;
+
+} )();
+
+
+
+( function () {
+
+	class DotScreenPass extends THREE.Pass {
+
+		constructor( center, angle, scale ) {
+
+			super();
+			if ( THREE.DotScreenShader === undefined ) console.error( 'THREE.DotScreenPass relies on THREE.DotScreenShader' );
+			const shader = THREE.DotScreenShader;
+			this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+			if ( center !== undefined ) this.uniforms[ 'center' ].value.copy( center );
+			if ( angle !== undefined ) this.uniforms[ 'angle' ].value = angle;
+			if ( scale !== undefined ) this.uniforms[ 'scale' ].value = scale;
+			this.material = new THREE.ShaderMaterial( {
+				uniforms: this.uniforms,
+				vertexShader: shader.vertexShader,
+				fragmentShader: shader.fragmentShader
+			} );
+			this.fsQuad = new THREE.FullScreenQuad( this.material );
+
+		}
+
+		render( renderer, writeBuffer, readBuffer
+			/*, deltaTime, maskActive */
+		) {
+
+			this.uniforms[ 'tDiffuse' ].value = readBuffer.texture;
+			this.uniforms[ 'tSize' ].value.set( readBuffer.width, readBuffer.height );
+
+			if ( this.renderToScreen ) {
+
+				renderer.setRenderTarget( null );
+				this.fsQuad.render( renderer );
+
+			} else {
+
+				renderer.setRenderTarget( writeBuffer );
+				if ( this.clear ) renderer.clear();
+				this.fsQuad.render( renderer );
+
+			}
+
+		}
+
+	}
+
+	THREE.DotScreenPass = DotScreenPass;
+
+} )();
+
+
+
+( function () {
+
+	class AfterimagePass extends THREE.Pass {
+
+		constructor( damp = 0.96 ) {
+
+			super();
+			if ( THREE.AfterimageShader === undefined ) console.error( 'THREE.AfterimagePass relies on THREE.AfterimageShader' );
+			this.shader = THREE.AfterimageShader;
+			this.uniforms = THREE.UniformsUtils.clone( this.shader.uniforms );
+			this.uniforms[ 'damp' ].value = damp;
+			this.textureComp = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, {
+				magFilter: THREE.NearestFilter
+			} );
+			this.textureOld = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, {
+				magFilter: THREE.NearestFilter
+			} );
+			this.shaderMaterial = new THREE.ShaderMaterial( {
+				uniforms: this.uniforms,
+				vertexShader: this.shader.vertexShader,
+				fragmentShader: this.shader.fragmentShader
+			} );
+			this.compFsQuad = new THREE.FullScreenQuad( this.shaderMaterial );
+			const material = new THREE.MeshBasicMaterial();
+			this.copyFsQuad = new THREE.FullScreenQuad( material );
+
+		}
+
+		render( renderer, writeBuffer, readBuffer
+			/*, deltaTime, maskActive*/
+		) {
+
+			this.uniforms[ 'tOld' ].value = this.textureOld.texture;
+			this.uniforms[ 'tNew' ].value = readBuffer.texture;
+			renderer.setRenderTarget( this.textureComp );
+			this.compFsQuad.render( renderer );
+			this.copyFsQuad.material.map = this.textureComp.texture;
+
+			if ( this.renderToScreen ) {
+
+				renderer.setRenderTarget( null );
+				this.copyFsQuad.render( renderer );
+
+			} else {
+
+				renderer.setRenderTarget( writeBuffer );
+				if ( this.clear ) renderer.clear();
+				this.copyFsQuad.render( renderer );
+
+			} // Swap buffers.
+
+
+			const temp = this.textureOld;
+			this.textureOld = this.textureComp;
+			this.textureComp = temp; // Now textureOld contains the latest image, ready for the next frame.
+
+		}
+
+		setSize( width, height ) {
+
+			this.textureComp.setSize( width, height );
+			this.textureOld.setSize( width, height );
+
+		}
+
+	}
+
+	THREE.AfterimagePass = AfterimagePass;
+
+} )();
+
+
+
+( function () {
+
+	class TexturePass extends THREE.Pass {
+
+		constructor( map, opacity ) {
+
+			super();
+			if ( THREE.CopyShader === undefined ) console.error( 'THREE.TexturePass relies on THREE.CopyShader' );
+			const shader = THREE.CopyShader;
+			this.map = map;
+			this.opacity = opacity !== undefined ? opacity : 1.0;
+			this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+			this.material = new THREE.ShaderMaterial( {
+				uniforms: this.uniforms,
+				vertexShader: shader.vertexShader,
+				fragmentShader: shader.fragmentShader,
+				depthTest: false,
+				depthWrite: false
+			} );
+			this.needsSwap = false;
+			this.fsQuad = new THREE.FullScreenQuad( null );
+
+		}
+
+		render( renderer, writeBuffer, readBuffer
+			/*, deltaTime, maskActive */
+		) {
+
+			const oldAutoClear = renderer.autoClear;
+			renderer.autoClear = false;
+			this.fsQuad.material = this.material;
+			this.uniforms[ 'opacity' ].value = this.opacity;
+			this.uniforms[ 'tDiffuse' ].value = this.map;
+			this.material.transparent = this.opacity < 1.0;
+			renderer.setRenderTarget( this.renderToScreen ? null : readBuffer );
+			if ( this.clear ) renderer.clear();
+			this.fsQuad.render( renderer );
+			renderer.autoClear = oldAutoClear;
+
+		}
+
+	}
+
+	THREE.TexturePass = TexturePass;
+
+} )();
+
+
+
+( function () {
+
+	class MaskPass extends THREE.Pass {
+
+		constructor( scene, camera ) {
+
+			super();
+			this.scene = scene;
+			this.camera = camera;
+			this.clear = true;
+			this.needsSwap = false;
+			this.inverse = false;
+
+		}
+
+		render( renderer, writeBuffer, readBuffer
+			/*, deltaTime, maskActive */
+		) {
+
+			const context = renderer.getContext();
+			const state = renderer.state; // don't update color or depth
+
+			state.buffers.color.setMask( false );
+			state.buffers.depth.setMask( false ); // lock buffers
+
+			state.buffers.color.setLocked( true );
+			state.buffers.depth.setLocked( true ); // set up stencil
+
+			let writeValue, clearValue;
+
+			if ( this.inverse ) {
+
+				writeValue = 0;
+				clearValue = 1;
+
+			} else {
+
+				writeValue = 1;
+				clearValue = 0;
+
+			}
+
+			state.buffers.stencil.setTest( true );
+			state.buffers.stencil.setOp( context.REPLACE, context.REPLACE, context.REPLACE );
+			state.buffers.stencil.setFunc( context.ALWAYS, writeValue, 0xffffffff );
+			state.buffers.stencil.setClear( clearValue );
+			state.buffers.stencil.setLocked( true ); // draw into the stencil buffer
+
+			renderer.setRenderTarget( readBuffer );
+			if ( this.clear ) renderer.clear();
+			renderer.render( this.scene, this.camera );
+			renderer.setRenderTarget( writeBuffer );
+			if ( this.clear ) renderer.clear();
+			renderer.render( this.scene, this.camera ); // unlock color and depth buffer for subsequent rendering
+
+			state.buffers.color.setLocked( false );
+			state.buffers.depth.setLocked( false ); // only render where stencil is set to 1
+
+			state.buffers.stencil.setLocked( false );
+			state.buffers.stencil.setFunc( context.EQUAL, 1, 0xffffffff ); // draw if == 1
+
+			state.buffers.stencil.setOp( context.KEEP, context.KEEP, context.KEEP );
+			state.buffers.stencil.setLocked( true );
+
+		}
+
+	}
+
+	class ClearMaskPass extends THREE.Pass {
+
+		constructor() {
+
+			super();
+			this.needsSwap = false;
+
+		}
+
+		render( renderer
+			/*, writeBuffer, readBuffer, deltaTime, maskActive */
+		) {
+
+			renderer.state.buffers.stencil.setLocked( false );
+			renderer.state.buffers.stencil.setTest( false );
+
+		}
+
+	}
+
+	THREE.ClearMaskPass = ClearMaskPass;
+	THREE.MaskPass = MaskPass;
+
+} )();
+
+
+
+
+( function () {
+
 	class EffectComposer {
 
 		constructor( renderer, renderTarget ) {
