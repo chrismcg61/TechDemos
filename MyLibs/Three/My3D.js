@@ -1,27 +1,39 @@
-var camera, scene, renderer;
-
+var THREE;
 var MY3D = {};
 MY3D.camFov = 50;
 MY3D.camFar = 900000;
+//
+var now, camera, scene, renderer, composer;
+var enableShadows = true;
+const concreteMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/Concrete.jpg");
+//
+var scene0;
+var composerScene0;
+//
+var sceneOrtho;
+var sceneOrtho_BG;
+var composerOrtho;
+var cameraOrtho;
+//
+var ssrPass;
+var ssrGroundReflector;
+var ssrMeshes = [];
 
-var THREE;
-MY3D.preInit = function(_THREE) {
-  THREE=_THREE;
-  //
-  document.body.style.margin = 0; 
-  document.body.style.overflow = "hidden"; 
-  //
-  renderer = new THREE.WebGLRenderer( { antialias: false } );
-  //renderer.toneMapping = THREE.ReinhardToneMapping;
-  document.body.appendChild( renderer.domElement );  
-  //
+
+function rand(max){
+  return Math.random()*max;
+}
+
+MY3D.reinitScene = function(){
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera( MY3D.camFov, window.innerWidth/window.innerHeight, 0.01, MY3D.camFar );
-  camera.position.z = 2;
   scene.add(camera);
-  //
+  scene0 = new THREE.Scene();
+}
+MY3D.ReInit0 = function(){
+  MY3D.reinitScene();
+  // rtTexture = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight );
+  MY3D.myInitPostFx();
   MY3D.onWindowResize();
-  window.addEventListener( 'resize', MY3D.onWindowResize, false );
 }
 
 MY3D.onWindowResize = function(){
@@ -29,41 +41,164 @@ MY3D.onWindowResize = function(){
   camera.updateProjectionMatrix();
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
+  //
+  cameraOrtho.left = -window.innerWidth/2;
+  cameraOrtho.right = window.innerWidth/2;
+  cameraOrtho.top = window.innerHeight/2;
+  cameraOrtho.bottom = -window.innerHeight/2;
+  cameraOrtho.updateProjectionMatrix();
+  sceneOrtho_BG.scale.set( window.innerWidth, window.innerHeight, 1 );
+  //
+  ssrGroundReflector.getRenderTarget().setSize( window.innerWidth, window.innerHeight );
+  ssrGroundReflector.resolution.set( window.innerWidth, window.innerHeight );
+}
+MY3D.preInit = function(_THREE) {
+  THREE=_THREE;
+  //
+  document.body.style.margin = 0; 
+  document.body.style.overflow = "hidden"; 
+  //
+  renderer = new THREE.WebGLRenderer( { antialias: false } );
+  renderer.toneMapping = THREE.ReinhardToneMapping;
+  renderer.autoClear = false;
+  renderer.setScissorTest( true );    
+  document.body.appendChild( renderer.domElement );
+  //
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;   //PCFSoftShadowMap   //BasicShadowMap
+  if(enableShadows) renderer.shadowMap.enabled = true;
+  else  renderer.shadowMap.enabled = false;
+  //
+  camera = new THREE.PerspectiveCamera( MY3D.camFov, window.innerWidth/window.innerHeight, 0.01, MY3D.camFar );
+  camera.position.z = 4;
+  //
+  // scene0 = new THREE.Scene();  scene = new THREE.Scene();  scene.add(camera);
+  MY3D.reinitScene();
+  //
+  sceneOrtho = new THREE.Scene();
+  sceneOrtho_BG = new THREE.Mesh( new THREE.PlaneGeometry( 1, 1 ), new THREE.MeshBasicMaterial( {map:concreteMap} ) );
+  sceneOrtho_BG.position.z = - 500;
+  sceneOrtho_BG.scale.set( window.innerWidth, window.innerHeight, 1 );    
+  sceneOrtho.add( sceneOrtho_BG );
+  cameraOrtho = new THREE.OrthographicCamera( -window.innerWidth,window.innerWidth,window.innerHeight,-window.innerHeight, -10000, 10000 );
+  cameraOrtho.position.z = 100;  
+  //
+  // MY3D.onWindowResize();
+  window.addEventListener( 'resize', MY3D.onWindowResize, false );
 }
 
 
-
-/*** Bloom ***/
-MY3D.initBloom = function(_bloom, _radius, _threshold){    
+/*** PostFX ***/
+MY3D.myInitPostFx = function(){
   var renderPass = new THREE.RenderPass( scene, camera );
-  var bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), _bloom, _radius, _threshold );
-  bloomPass.renderToScreen = true;
+  var renderPassScene0 = new THREE.RenderPass( scene0, camera );
+  var renderPassOrtho = new THREE.RenderPass( sceneOrtho, cameraOrtho );
+  //
+  var filmBW = false;
+  var unrealBloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), bloomParams.intensity, bloomParams.radius, bloomParams.threshold );
+  // bloomPass.renderToScreen = true;
+  //
+  const effectVignette = new THREE.ShaderPass( THREE.VignetteShader )
+  effectVignette.uniforms[ 'offset' ].value = 1.2;
+  effectVignette.uniforms[ 'darkness' ].value = 1.2;
+  //
+  ssrGroundReflector = new THREE.ReflectorForSSRPass( new THREE.PlaneGeometry( 10, 10 ), {
+    clipBias: 0.0003,
+    textureWidth: window.innerWidth,
+    textureHeight: window.innerHeight,
+    color: 0x888888,
+    useDepthTexture: true,
+  } );
+  ssrGroundReflector.material.depthWrite = false;
+  ssrGroundReflector.rotation.x = - Math.PI / 2;
+  ssrGroundReflector.visible = false;
+  ssrGroundReflector.maxDistance = 3;
+  ssrGroundReflector.thickness = 0.9;
+  ssrGroundReflector.distanceAttenuation = true;
+  ssrGroundReflector.fresnel = true;
+  ssrGroundReflector.opacity = 0.9;
+  //
+  ssrMeshes = [];
+  ssrPass = new THREE.SSRPass( {
+    renderer,
+    scene,
+    camera,
+    width: window.innerWidth,
+    height: window.innerHeight,
+    groundReflector: ssrGroundReflector,
+    selects: ssrMeshes,
+  } );
+  ssrPass.maxDistance = 0.9;
+  ssrPass.thickness = 0.9;
+  ssrPass.distanceAttenuation = true;
+  ssrPass.fresnel = true;
+  ssrPass.opacity = 0.9;
+  //
   composer = new THREE.EffectComposer( renderer );
   composer.setSize( window.innerWidth, window.innerHeight );
   composer.addPass( renderPass );
-  composer.addPass( bloomPass );
+  if(fxParams.ssr) {composer.addPass( ssrPass );  scene.add( ssrGroundReflector ); }
+  if(fxParams.gamma) composer.addPass( new THREE.ShaderPass( THREE.GammaCorrectionShader ) );
+  if(fxParams.bloom) composer.addPass( unrealBloomPass );
+  if(fxParams.vignette) composer.addPass( effectVignette );
+  if(fxParams.sepia) composer.addPass( new THREE.ShaderPass( THREE.SepiaShader ) );
+  if(fxParams.film) composer.addPass( new THREE.FilmPass( 0.8, 0.04, 128, filmBW ) );
+  if(fxParams.dotScreen) composer.addPass( new THREE.DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 ) );
+  if(fxParams.afterImage) composer.addPass( new THREE.AfterimagePass() );
+  if(fxParams.hblur) composer.addPass( new THREE.ShaderPass( THREE.HorizontalBlurShader ) );
+  if(fxParams.fxaa) composer.addPass( new THREE.ShaderPass( THREE.FXAAShader ) );
+  //
+  composerScene0 = new THREE.EffectComposer( renderer );
+  composerScene0.renderToScreen = false;
+  composerScene0.setSize( window.innerWidth, window.innerHeight );
+  composerScene0.addPass( renderPassScene0 );
+  // composerScene0.addPass( unrealBloomPass );
+  //
+  composerOrtho = new THREE.EffectComposer( renderer );
+  composerOrtho.setSize( window.innerWidth, window.innerHeight );
+  composerOrtho.addPass( renderPassOrtho );  
+}
+MY3D.addSsrMesh = function(){
+  const mesh = new THREE.Mesh( new THREE.SphereGeometry( 0.5, 8,8 ),  new THREE.MeshStandardMaterial({roughness:0.5,metlaness:0.5})  );
+  mesh.position.set(rand(2),0.5,rand(1))
+  scene.add( mesh );
+  ssrMeshes.push( mesh );    // ssrPass.selects
 }
 
 
+MY3D.addMirrorSimplePlane = function(){
+  var mirror = new THREE.Reflector( new THREE.PlaneGeometry( 90,90 ),  {
+    clipBias: 0.003,
+    textureWidth: window.innerWidth * window.devicePixelRatio,
+    textureHeight: window.innerHeight * window.devicePixelRatio,
+    color: 0x222222
+  } );
+  mirror.rotation.x = -Math.PI/2;
+  scene.add( mirror );  
+}
+
 
 /*** GUI ***/
+function onGuiChange(){
+  //init();  
+}
 MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
   for(var key in _params){
     var param = _params[key];
     // var max = 10.0;
     // if(param>=1)  max = 100*param;
     if( typeof(param) === 'object') {
-      var subFolder = _folder.addFolder(key);
-      if(_open) subFolder.open();
-      MY3D.addGuiParams(subFolder, param, _open, _max, _delta);
+      if(key.includes('Modes'))  _folder.add( _params, key, param ).onChange(onGuiChange).listen();
+      else{
+        var subFolder = _folder.addFolder(key);
+        if(_open) subFolder.open();
+        MY3D.addGuiParams(subFolder, param, _open, _max, _delta);
+      }
     }
     else if(param>0xffff) _folder.addColor( _params, key ).onChange(onGuiChange);
     else if(_max>0 && key.includes('Pos')) _folder.add( _params, key, -_max,_max,_delta).onChange(onGuiChange);
+    else if(key.includes('Factor')) _folder.add( _params, key, 0,1,_delta).onChange(onGuiChange);
     else _folder.add( _params, key ).onChange(onGuiChange);
   }
-}
-function onGuiChange(){
-  //init();  
 }
 
 
