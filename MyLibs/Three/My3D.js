@@ -202,7 +202,11 @@ MY3D.render = function(){
     renderer.setScissor( 0,0,   window.innerWidth/4,window.innerHeight/2 );
     renderer.render( scene, camera );
   }
+  else if(gParams.RenderModes == RenderModes.OrthoSceneStatic) {
+    composerOrtho.render();
+  }
   else if(gParams.RenderModes == RenderModes.OrthoScene) {
+    composer.render();
     composerOrtho.render();
   }
 }
@@ -212,6 +216,9 @@ MY3D.updateScene0 = function(){
   renderer.toneMappingExposure = Math.pow( gParams.exposeFactor*10, 4.0 );
   scene.background = new THREE.Color( params.fogCol );
   scene.fog = new THREE.FogExp2( params.fogCol, params.fogDensity*0.01 );
+  for ( i=0; i<shaderUniformList.length; i++ ) {
+    shaderUniformList[i].time.value += 1.0;
+  }
 }
 
 
@@ -239,6 +246,101 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
     else _folder.add( _params, key ).onChange(onGuiChange);
   }
 }
+
+
+
+/*** Default Shader Material ***/
+{
+  MY3D.vShader = `
+  varying vec2 vUv;
+  void main()
+  {
+      vUv = uv;
+      vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+      gl_Position = projectionMatrix * mvPosition;
+  }`;
+  MY3D.fShader = `
+  uniform float time;
+  uniform float speed;
+  uniform float amplitude;
+  uniform vec4 uColor;
+  uniform sampler2D tex0;
+  uniform sampler2D tex1;
+  uniform sampler2D texA;
+  varying vec2 vUv;
+  void main(void)
+  {
+      vec4 vColor0 = texture2D(tex0, vUv);
+      vec4 vColor1 = texture2D(tex1, vUv);
+      vec4 vColorA = texture2D(texA, vUv);
+      //
+      float aa = 0.5; 
+      // aa = 0.5 + amplitude*sin(time*speed); 
+      aa = amplitude*sin(time*speed)*(vColorA.x);  //pow(vColorA.x,2.0)
+      if(aa>1.0) aa=1.0;
+      if(aa<0.0) aa=0.0;
+      gl_FragColor = vec4( (1.0-aa)*vColor0.xyz + aa*vColor1.xyz,    vColor0.a );
+  }`;
+}
+MY3D.initShaderMaterial = function(){
+  var shaderUniforms = {
+    time: { value: 0.0 },
+    speed: { value: 0.03  },
+    amplitude: { value: 0.3 },
+    uColor: { value: new THREE.Vector4(1,1,1, 1) },
+    tex0: { value: composer.readBuffer.texture },
+    tex1: { value: composerScene0.readBuffer.texture },
+    texA: { value: concreteMap },
+  };
+  var shaderMaterial = new THREE.ShaderMaterial( { 
+    side:THREE.DoubleSide,                                                    
+    uniforms:shaderUniforms, vertexShader:MY3D.vShader, fragmentShader:MY3D.fShader,
+  } );
+  shaderUniformList.push( shaderUniforms );  
+  return shaderMaterial;
+}
+
+
+
+/*** Texture Canvas (Font) ***/
+MY3D.addTexture = function(_ww){
+  var texCanvas = document.createElement( 'canvas' );
+  texCanvas.width = texCanvas.height = _ww; 
+  var newTexture = new THREE.Texture( texCanvas );
+  newTexture.texCanvas = texCanvas;
+  newTexture.anisotropy = 8;
+  //newTexture.magFilter = THREE.NearestFilter;
+  // newTexture.wrapS = newTexture.wrapT = THREE.RepeatWrapping;
+  // newTexture.repeat.set( 1, 1 );
+  // newTexture.offset.set( 0, 0 );
+  MY3D.initTexture_Text(newTexture, _ww*0.1, 'rgba(0,0,0, 0.1)', 'rgba(255,255,255, 1)',
+    "TITLE_TITLE",  ["A","B","C","D","E","F","g","H","I","j", ] );
+  return newTexture;
+}
+MY3D.initTexture_Text = function(texture, _fontSize, col0, col1, title, txtLines){
+  var ctx = texture.texCanvas.getContext( '2d' );
+  var ww = texture.texCanvas.width;
+  ctx.clearRect( 0, 0, ww,ww );  
+  ctx.fillStyle = col0;
+  ctx.fillRect( 0, 0, ww,ww );  
+  ctx.fillStyle = col1;
+  ctx.textAlign = "center";
+  var titleSize = _fontSize*1.5;
+  var yPos = titleSize;
+  ctx.font = "bold "+ (titleSize) +"px Verdana";
+  ctx.fillText(title, ww*0.5,yPos);  
+  // ctx.lineWidth = 8;  
+  ctx.font = "bold "+ (_fontSize) +"px Verdana";
+  yPos += _fontSize*0.5;
+  for ( var i=0; i<txtLines.length; i++ ) {
+    yPos += _fontSize;
+    var txt = txtLines[i];
+    ctx.fillText(txt, ww*0.5, yPos );          
+  }  
+  // ctx.strokeText("A", ww*0.5,ww*0.35);  
+  texture.needsUpdate = true;
+}
+
 
 
 
@@ -496,51 +598,6 @@ function initTextShaderMaterial(textTexture){
   shaderUniformList.push( textShaderUniforms );  
   return textShaderMaterial;
 }
-
-
-
-/*** Texture ***/
-function addTexture(_ww) {
-  var texCanvas = document.createElement( 'canvas' );
-  texCanvas.width = texCanvas.height = _ww; 
-  var newTexture = new THREE.Texture( texCanvas );
-  newTexture.texCanvas = texCanvas;
-  newTexture.anisotropy = 8;
-  //newTexture.magFilter = THREE.NearestFilter;
-  // newTexture.wrapS = newTexture.wrapT = THREE.RepeatWrapping;
-  // newTexture.repeat.set( 1, 1 );
-  // newTexture.offset.set( 0, 0 );
-  initTexture_Text(newTexture, _ww*0.1, "TITLE_TITLE", 
-    ["A","B","C","D","E","F","g","H","I","j", ] );
-  return newTexture;
-}
-function initTexture_Text(texture, _fontSize, title, txtLines) {  
-  var ctx = texture.texCanvas.getContext( '2d' );
-  var ww = texture.texCanvas.width;
-  ctx.clearRect( 0, 0, ww,ww );  
-  ctx.fillStyle = 'rgba(0,0,0, 0.1)';
-  ctx.fillRect( 0, 0, ww,ww );  
-  ctx.fillStyle = 'rgba(255,255,255, 1)';
-  ctx.textAlign = "center";
-  var titleSize = _fontSize*1.5;
-  var yPos = titleSize;
-  ctx.font = "bold "+ (titleSize) +"px Verdana";
-  ctx.fillText(title, ww*0.5,yPos);  
-  // ctx.lineWidth = 8;  
-  ctx.font = "bold "+ (_fontSize) +"px Verdana";
-  yPos += _fontSize*0.5;
-  for ( var i=0; i<txtLines.length; i++ ) {
-    yPos += _fontSize;
-    var txt = txtLines[i];
-    ctx.fillText(txt, ww*0.5, yPos );          
-  }  
-  // ctx.strokeText("A", ww*0.5,ww*0.35);  
-  texture.needsUpdate = true;
-}
-
-
-
-
 
 
 
