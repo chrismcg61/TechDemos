@@ -177,6 +177,45 @@ MY3D.addMirrorSimplePlane = function(){
 }
 
 
+/*** RENDER ***/
+MY3D.render = function(){
+  renderer.clear();
+  renderer.setViewport( 0,0,  window.innerWidth,window.innerHeight );
+  renderer.setScissor( 0,0,   window.innerWidth,window.innerHeight );
+  
+  if(gParams.scene0)  composerScene0.render();
+  
+  if(gParams.RenderModes == RenderModes.PostFx)  composer.render();
+  else if(gParams.RenderModes == RenderModes.NoPostFx)   renderer.render( scene, camera );
+  else if(gParams.RenderModes == RenderModes.SplitScreen) {
+    var scissorPosX = window.innerWidth/2;
+    renderer.setScissor( 0,0, scissorPosX,window.innerHeight );
+    renderer.render( scene, camera );
+    //
+    renderer.setScissor( scissorPosX,0, window.innerWidth,window.innerHeight );
+    composer.render();
+  }
+  else if(gParams.RenderModes == RenderModes.PiP) {
+    composer.render();
+    //
+    renderer.setViewport( 0,0,  window.innerWidth/4,window.innerHeight/2 );
+    renderer.setScissor( 0,0,   window.innerWidth/4,window.innerHeight/2 );
+    renderer.render( scene, camera );
+  }
+  else if(gParams.RenderModes == RenderModes.OrthoScene) {
+    composerOrtho.render();
+  }
+}
+MY3D.updateScene0 = function(){
+  now = Date.now()*0.001;
+  camera.position.set(params.camPosX,params.camPosY,params.camPosZ);
+  renderer.toneMappingExposure = Math.pow( gParams.exposeFactor*10, 4.0 );
+  scene.background = new THREE.Color( params.fogCol );
+  scene.fog = new THREE.FogExp2( params.fogCol, params.fogDensity*0.01 );
+}
+
+
+
 /*** GUI ***/
 function onGuiChange(){
   //init();  
