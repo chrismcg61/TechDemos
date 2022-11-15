@@ -7,17 +7,15 @@ var now, camera, scene, renderer, composer;
 var enableShadows = true;
 const concreteMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/Concrete.jpg");
 //
-var scene0;
-var composerScene0;
+var scene0, composerScene0;
+var sceneOrtho, sceneOrtho_BG, cameraOrtho, composerOrtho;
+var scene2, camera2, composerScene2;
+var sceneNoPostFx, cameraNoPostFx;
 //
-var sceneOrtho;
-var sceneOrtho_BG;
-var composerOrtho;
-var cameraOrtho;
-//
-var ssrPass;
-var ssrGroundReflector;
+var ssrPass, ssrGroundReflector;
 var ssrMeshes = [];
+var filmBW = false;
+var effectVignette, unrealBloomPass;
 
 
 function rand(max){
@@ -28,6 +26,7 @@ MY3D.reinitScene = function(){
   scene = new THREE.Scene();
   scene.add(camera);
   scene0 = new THREE.Scene();
+  scene2 = new THREE.Scene();
 }
 MY3D.ReInit0 = function(){
   MY3D.reinitScene();
@@ -60,6 +59,7 @@ MY3D.preInit = function(_THREE) {
   //
   renderer = new THREE.WebGLRenderer( { antialias: false } );
   renderer.toneMapping = THREE.ReinhardToneMapping;
+  renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.autoClear = false;
   renderer.setScissorTest( true );    
   document.body.appendChild( renderer.domElement );
@@ -70,6 +70,12 @@ MY3D.preInit = function(_THREE) {
   //
   camera = new THREE.PerspectiveCamera( MY3D.camFov, window.innerWidth/window.innerHeight, 0.01, MY3D.camFar );
   camera.position.z = 4;
+  camera2 = new THREE.PerspectiveCamera( MY3D.camFov, window.innerWidth/window.innerHeight, 0.01, MY3D.camFar );
+  camera2.position.z = 4;
+  //
+  sceneNoPostFx = new THREE.Scene();
+  cameraNoPostFx = new THREE.PerspectiveCamera( MY3D.camFov, window.innerWidth/window.innerHeight, 0.01, MY3D.camFar );
+  cameraNoPostFx.position.z = 3;
   //
   // scene0 = new THREE.Scene();  scene = new THREE.Scene();  scene.add(camera);
   MY3D.reinitScene();
@@ -90,17 +96,51 @@ MY3D.preInit = function(_THREE) {
 /*** PostFX ***/
 MY3D.myInitPostFx = function(){
   var renderPass = new THREE.RenderPass( scene, camera );
+  renderPass.renderToScreen = false;
   var renderPassScene0 = new THREE.RenderPass( scene0, camera );
-  var renderPassOrtho = new THREE.RenderPass( sceneOrtho, cameraOrtho );
+  // var renderPassOrtho = new THREE.RenderPass( sceneOrtho, cameraOrtho );
   //
-  var filmBW = false;
-  var unrealBloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), bloomParams.intensity, bloomParams.radius, bloomParams.threshold );
-  // bloomPass.renderToScreen = true;
+  unrealBloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), bloomParams.intensity, bloomParams.radius, bloomParams.threshold );
+  unrealBloomPass.renderToScreen = false;
   //
-  const effectVignette = new THREE.ShaderPass( THREE.VignetteShader )
+  effectVignette = new THREE.ShaderPass( THREE.VignetteShader )
+  effectVignette.renderToScreen = false;
   effectVignette.uniforms[ 'offset' ].value = 1.2;
   effectVignette.uniforms[ 'darkness' ].value = 1.2;
   //
+  initSsr();  
+  //
+  const rtParameters = {
+    type:THREE.FloatType,
+    encoding:THREE.sRGBEncoding,
+    stencilBuffer:true,
+    magFilter:THREE.NearestFilter,
+    minFilter:THREE.NearestFilter,
+  };
+  composer = new THREE.EffectComposer( renderer, new THREE.WebGLRenderTarget( window.innerWidth,window.innerHeight, rtParameters ) );
+  composer.renderToScreen = false;
+  composer.setSize( window.innerWidth, window.innerHeight );
+  composer.addPass( renderPass );
+  if(fxParams.ssr) {composer.addPass( ssrPass );  scene.add( ssrGroundReflector ); }
+  setCommonPasses(composer);
+  //
+  composerScene0 = new THREE.EffectComposer( renderer );
+  composerScene0.renderToScreen = false;
+  composerScene0.setSize( window.innerWidth, window.innerHeight );
+  composerScene0.addPass( renderPassScene0 );
+  //
+  // composerOrtho = new THREE.EffectComposer( renderer );
+  // composerOrtho.setSize( window.innerWidth, window.innerHeight );
+  // composerOrtho.addPass( renderPassOrtho );
+  //
+  var renderPassScene2 = new THREE.RenderPass( scene2, camera2 );
+  composerScene2 = new THREE.EffectComposer( renderer );
+  composerScene2.renderToScreen = false;
+  composerScene2.setSize( window.innerWidth, window.innerHeight );
+  composerScene2.addPass( renderPassScene2 );
+  setCommonPasses(composerScene2);
+}
+function initSsr(){
   ssrGroundReflector = new THREE.ReflectorForSSRPass( new THREE.PlaneGeometry( 10, 10 ), {
     clipBias: 0.0003,
     textureWidth: window.innerWidth,
@@ -111,52 +151,36 @@ MY3D.myInitPostFx = function(){
   ssrGroundReflector.material.depthWrite = false;
   ssrGroundReflector.rotation.x = - Math.PI / 2;
   ssrGroundReflector.visible = false;
-  ssrGroundReflector.maxDistance = 3;
-  ssrGroundReflector.thickness = 0.9;
-  ssrGroundReflector.distanceAttenuation = true;
-  ssrGroundReflector.fresnel = true;
-  ssrGroundReflector.opacity = 0.9;
+  initSsrParams(ssrGroundReflector);
   //
   ssrMeshes = [];
-  ssrPass = new THREE.SSRPass( {
-    renderer,
-    scene,
-    camera,
-    width: window.innerWidth,
-    height: window.innerHeight,
-    groundReflector: ssrGroundReflector,
-    selects: ssrMeshes,
-  } );
-  ssrPass.maxDistance = 0.9;
-  ssrPass.thickness = 0.9;
-  ssrPass.distanceAttenuation = true;
-  ssrPass.fresnel = true;
-  ssrPass.opacity = 0.9;
-  //
-  composer = new THREE.EffectComposer( renderer );
-  composer.setSize( window.innerWidth, window.innerHeight );
-  composer.addPass( renderPass );
-  if(fxParams.ssr) {composer.addPass( ssrPass );  scene.add( ssrGroundReflector ); }
-  if(fxParams.gamma) composer.addPass( new THREE.ShaderPass( THREE.GammaCorrectionShader ) );
-  if(fxParams.bloom) composer.addPass( unrealBloomPass );
-  if(fxParams.vignette) composer.addPass( effectVignette );
-  if(fxParams.sepia) composer.addPass( new THREE.ShaderPass( THREE.SepiaShader ) );
-  if(fxParams.film) composer.addPass( new THREE.FilmPass( 0.8, 0.04, 128, filmBW ) );
-  if(fxParams.dotScreen) composer.addPass( new THREE.DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 ) );
-  if(fxParams.afterImage) composer.addPass( new THREE.AfterimagePass() );
-  if(fxParams.hblur) composer.addPass( new THREE.ShaderPass( THREE.HorizontalBlurShader ) );
-  if(fxParams.fxaa) composer.addPass( new THREE.ShaderPass( THREE.FXAAShader ) );
-  //
-  composerScene0 = new THREE.EffectComposer( renderer );
-  composerScene0.renderToScreen = false;
-  composerScene0.setSize( window.innerWidth, window.innerHeight );
-  composerScene0.addPass( renderPassScene0 );
-  // composerScene0.addPass( unrealBloomPass );
-  //
-  composerOrtho = new THREE.EffectComposer( renderer );
-  composerOrtho.setSize( window.innerWidth, window.innerHeight );
-  composerOrtho.addPass( renderPassOrtho );  
+  ssrPass = new THREE.SSRPass( { renderer,scene,camera, width:window.innerWidth,height:window.innerHeight,
+    groundReflector:ssrGroundReflector,  selects:ssrMeshes, } );
+  ssrPass.renderToScreen = false;
+  initSsrParams(ssrPass);
 }
+function initSsrParams(_ssrObj){
+  _ssrObj.maxDistance = 3;
+  _ssrObj.thickness = 0.9;
+  _ssrObj.distanceAttenuation = true;
+  _ssrObj.fresnel = true;
+  _ssrObj.opacity = 0.9;  
+}
+function setCommonPasses(_composer){
+  if(fxParams.bloom) _composer.addPass( unrealBloomPass );
+  if(fxParams.sepia) _composer.addPass( new THREE.ShaderPass( THREE.SepiaShader ) );
+  if(fxParams.film) _composer.addPass( new THREE.FilmPass( 0.4, 0.05, 256, filmBW ) );
+  if(fxParams.dotScreen) _composer.addPass( new THREE.DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 ) );
+  if(fxParams.vignette) _composer.addPass( effectVignette );
+  if(fxParams.afterImage) _composer.addPass( new THREE.AfterimagePass() );
+  if(fxParams.hblur) _composer.addPass( new THREE.ShaderPass( THREE.HorizontalBlurShader ) );
+  if(fxParams.fxaa) _composer.addPass( new THREE.ShaderPass( THREE.FXAAShader ) );
+  // _composer.addPass( new THREE.ClearMaskPass() );
+  // _composer.addPass( new THREE.MaskPass( scene, camera ) );
+  if(fxParams.gamma) _composer.addPass( new THREE.ShaderPass( THREE.GammaCorrectionShader ) );
+}
+
+
 MY3D.addSsrMesh = function(){
   const mesh = new THREE.Mesh( new THREE.SphereGeometry( 0.5, 8,8 ),  new THREE.MeshStandardMaterial({roughness:0.5,metlaness:0.5})  );
   mesh.position.set(rand(2),0.5,rand(1))
@@ -183,19 +207,29 @@ MY3D.render = function(){
   renderer.setViewport( 0,0,  window.innerWidth,window.innerHeight );
   renderer.setScissor( 0,0,   window.innerWidth,window.innerHeight );
   
-  if(gParams.scene0)  composerScene0.render();
+  if(gParams.scene0){ 
+    // composerScene0.render();  
+    composerScene2.render();  
+  }
   
-  if(gParams.RenderModes == RenderModes.PostFx)  composer.render();
-  else if(gParams.RenderModes == RenderModes.NoPostFx)   renderer.render( scene, camera );
+  composer.renderToScreen = false;
+  
+  if(gParams.RenderModes == RenderModes.NoPostFx)   renderer.render( scene, camera );
+  else if(gParams.RenderModes == RenderModes.PostFx)  {
+    composer.renderToScreen = true;  
+    composer.render();
+  }
   else if(gParams.RenderModes == RenderModes.SplitScreen) {
     var scissorPosX = window.innerWidth/2;
     renderer.setScissor( 0,0, scissorPosX,window.innerHeight );
     renderer.render( scene, camera );
     //
     renderer.setScissor( scissorPosX,0, window.innerWidth,window.innerHeight );
+    composer.renderToScreen = true;  
     composer.render();
   }
   else if(gParams.RenderModes == RenderModes.PiP) {
+    composer.renderToScreen = true;  
     composer.render();
     //
     renderer.setViewport( 0,0,  window.innerWidth/4,window.innerHeight/2 );
@@ -203,19 +237,33 @@ MY3D.render = function(){
     renderer.render( scene, camera );
   }
   else if(gParams.RenderModes == RenderModes.OrthoSceneStatic) {
-    composerOrtho.render();
+    // composerOrtho.render();
+    renderer.render( sceneOrtho, cameraOrtho );
   }
   else if(gParams.RenderModes == RenderModes.OrthoScene) {
     composer.render();
-    composerOrtho.render();
+    // composerOrtho.render();
+    renderer.render( sceneOrtho, cameraOrtho );
+  }
+  else if(gParams.RenderModes == RenderModes.SceneComposite) {
+    composer.render();
+    // renderer.toneMappingExposure = 1.0;
+    renderer.render( sceneNoPostFx, cameraNoPostFx );  //cameraNoPostFx_Ortho
+    // renderer.render( sceneOrtho, cameraOrtho );
   }
 }
-MY3D.updateScene0 = function(){
+MY3D.updateSceneCommon = function(){
   now = Date.now()*0.001;
   camera.position.set(params.camPosX,params.camPosY,params.camPosZ);
   renderer.toneMappingExposure = Math.pow( gParams.exposeFactor*10, 4.0 );
-  scene.background = new THREE.Color( params.fogCol );
-  scene.fog = new THREE.FogExp2( params.fogCol, params.fogDensity*0.01 );
+  {
+    scene.background = new THREE.Color( params.fogCol );
+    scene.fog = new THREE.FogExp2( params.fogCol, params.fogDensity*0.01 );
+  }
+  {
+    scene2.background = new THREE.Color( params.fogCol );
+    scene2.fog = new THREE.FogExp2( params.fogCol, params.fogDensity*0.01 );
+  }
   for ( i=0; i<shaderUniformList.length; i++ ) {
     shaderUniformList[i].time.value += 1.0;
   }
@@ -263,6 +311,7 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
   uniform float time;
   uniform float speed;
   uniform float amplitude;
+  uniform float deltaFactor;
   uniform vec4 uColor;
   uniform sampler2D tex0;
   uniform sampler2D tex1;
@@ -275,21 +324,22 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
       vec4 vColorA = texture2D(texA, vUv);
       //
       float aa = 0.5; 
-      // aa = 0.5 + amplitude*sin(time*speed); 
-      aa = amplitude*sin(time*speed)*(vColorA.x);  //pow(vColorA.x,2.0)
+      float delta = 0.5 - vColorA.x;
+      aa = 0.5 + deltaFactor*delta + amplitude*sin(time*speed);
       if(aa>1.0) aa=1.0;
       if(aa<0.0) aa=0.0;
-      gl_FragColor = vec4( (1.0-aa)*vColor0.xyz + aa*vColor1.xyz,    vColor0.a );
+      gl_FragColor = vec4( (1.0-aa)*vColor0.xyz + aa*vColor1.xyz,    uColor.a );
   }`;
 }
 MY3D.initShaderMaterial = function(){
   var shaderUniforms = {
     time: { value: 0.0 },
     speed: { value: 0.03  },
-    amplitude: { value: 0.3 },
+    amplitude: { value: 2 },
+    deltaFactor: { value: 2 },
     uColor: { value: new THREE.Vector4(1,1,1, 1) },
     tex0: { value: composer.readBuffer.texture },
-    tex1: { value: composerScene0.readBuffer.texture },
+    tex1: { value: composerScene2.readBuffer.texture },
     texA: { value: concreteMap },
   };
   var shaderMaterial = new THREE.ShaderMaterial( { 
