@@ -15,7 +15,7 @@ var sceneNoPostFx, cameraNoPostFx;
 var ssrPass, ssrGroundReflector;
 var ssrMeshes = [];
 var filmBW = false;
-var effectVignette, unrealBloomPass;
+var effectVignette, unrealBloomPass, effectBloom, effectTM;
 
 
 function rand(max){
@@ -40,6 +40,12 @@ MY3D.onWindowResize = function(){
   camera.updateProjectionMatrix();
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
+  //
+  camera2.aspect = window.innerWidth / window.innerHeight;
+  camera2.updateProjectionMatrix();
+  //  
+  cameraNoPostFx.aspect = window.innerWidth / window.innerHeight;
+  cameraNoPostFx.updateProjectionMatrix();
   //
   cameraOrtho.left = -window.innerWidth/2;
   cameraOrtho.right = window.innerWidth/2;
@@ -103,6 +109,14 @@ MY3D.myInitPostFx = function(){
   unrealBloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), bloomParams.intensity, bloomParams.radius, bloomParams.threshold );
   unrealBloomPass.renderToScreen = false;
   //
+  effectBloom = new THREE.BloomPass( 1.9, 1.5, 0.1, 512 );
+  effectBloom.combineUniforms[ 'strength' ].value = 1.3;
+  effectBloom.convolutionUniforms[ 'cKernel' ].value = THREE.ConvolutionShader.buildKernel( 0.1 );
+  effectBloom.materialConvolution.defines = {
+    'KERNEL_SIZE_FLOAT': (1.5).toFixed( 1 ),
+    'KERNEL_SIZE_INT': (1.5).toFixed( 0 )
+  };
+  //
   effectVignette = new THREE.ShaderPass( THREE.VignetteShader )
   effectVignette.renderToScreen = false;
   effectVignette.uniforms[ 'offset' ].value = 1.2;
@@ -111,11 +125,8 @@ MY3D.myInitPostFx = function(){
   initSsr();  
   //
   const rtParameters = {
-    type:THREE.FloatType,
-    encoding:THREE.sRGBEncoding,
-    stencilBuffer:true,
-    magFilter:THREE.NearestFilter,
-    minFilter:THREE.NearestFilter,
+    format: THREE.RGBAFormat,    
+    // type:THREE.FloatType, encoding:THREE.sRGBEncoding, stencilBuffer:true, magFilter:THREE.NearestFilter,minFilter:THREE.NearestFilter,
   };
   composer = new THREE.EffectComposer( renderer, new THREE.WebGLRenderTarget( window.innerWidth,window.innerHeight, rtParameters ) );
   composer.renderToScreen = false;
@@ -140,6 +151,27 @@ MY3D.myInitPostFx = function(){
   composerScene2.addPass( renderPassScene2 );
   setCommonPasses(composerScene2);
 }
+function setCommonPasses(_composer){
+  if(fxParams.sepia) _composer.addPass( new THREE.ShaderPass( THREE.SepiaShader ) );
+  if(fxParams.film) _composer.addPass( new THREE.FilmPass( 0.4, 0.05, 256, filmBW ) );
+  if(fxParams.dotScreen) _composer.addPass( new THREE.DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 ) );
+  if(fxParams.vignette) _composer.addPass( effectVignette );
+  if(fxParams.afterImage) _composer.addPass( new THREE.AfterimagePass() );
+  if(fxParams.hblur) _composer.addPass( new THREE.ShaderPass( THREE.HorizontalBlurShader ) );
+  if(fxParams.fxaa) _composer.addPass( new THREE.ShaderPass( THREE.FXAAShader ) );
+  // _composer.addPass( new THREE.MaskPass( scene, camera ) );  //ClearMaskPass()
+  if(fxParams.bloom) _composer.addPass( unrealBloomPass );
+  // if(fxParams.bloom) _composer.addPass( effectBloom );
+  //
+  effectTM = new THREE.ShaderPass( THREE.ACESFilmicToneMappingShader );  //AdaptiveToneMappingPass
+  effectTM.uniforms.exposure.value = gParams.exposeFactor*10;
+  if(fxParams.toneMap) _composer.addPass( effectTM );
+  //
+  var gammaPass = new THREE.ShaderPass( THREE.GammaCorrectionShader );
+  gammaPass.renderToScreen = false;
+  if(fxParams.gamma) _composer.addPass( gammaPass );
+}
+
 function initSsr(){
   ssrGroundReflector = new THREE.ReflectorForSSRPass( new THREE.PlaneGeometry( 10, 10 ), {
     clipBias: 0.0003,
@@ -166,20 +198,6 @@ function initSsrParams(_ssrObj){
   _ssrObj.fresnel = true;
   _ssrObj.opacity = 0.9;  
 }
-function setCommonPasses(_composer){
-  if(fxParams.bloom) _composer.addPass( unrealBloomPass );
-  if(fxParams.sepia) _composer.addPass( new THREE.ShaderPass( THREE.SepiaShader ) );
-  if(fxParams.film) _composer.addPass( new THREE.FilmPass( 0.4, 0.05, 256, filmBW ) );
-  if(fxParams.dotScreen) _composer.addPass( new THREE.DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 ) );
-  if(fxParams.vignette) _composer.addPass( effectVignette );
-  if(fxParams.afterImage) _composer.addPass( new THREE.AfterimagePass() );
-  if(fxParams.hblur) _composer.addPass( new THREE.ShaderPass( THREE.HorizontalBlurShader ) );
-  if(fxParams.fxaa) _composer.addPass( new THREE.ShaderPass( THREE.FXAAShader ) );
-  // _composer.addPass( new THREE.ClearMaskPass() );
-  // _composer.addPass( new THREE.MaskPass( scene, camera ) );
-  if(fxParams.gamma) _composer.addPass( new THREE.ShaderPass( THREE.GammaCorrectionShader ) );
-}
-
 
 MY3D.addSsrMesh = function(){
   const mesh = new THREE.Mesh( new THREE.SphereGeometry( 0.5, 8,8 ),  new THREE.MeshStandardMaterial({roughness:0.5,metlaness:0.5})  );
@@ -187,7 +205,6 @@ MY3D.addSsrMesh = function(){
   scene.add( mesh );
   ssrMeshes.push( mesh );    // ssrPass.selects
 }
-
 
 MY3D.addMirrorSimplePlane = function(){
   var mirror = new THREE.Reflector( new THREE.PlaneGeometry( 90,90 ),  {
@@ -299,14 +316,23 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
 
 /*** Default Shader Material ***/
 {
-  MY3D.vShader = `
-  varying vec2 vUv;
-  void main()
-  {
-      vUv = uv;
-      vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-      gl_Position = projectionMatrix * mvPosition;
-  }`;
+  MY3D.vShader = `  
+        varying vec2 vUv;
+        varying vec3 vPos;
+        varying float vFogDepth;
+        void main()
+        {
+          vUv = uv;
+          vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+          #ifdef USE_INSTANCING
+            mvPosition = viewMatrix * modelMatrix * instanceMatrix * vec4(position, 1.0);
+          #endif
+          vPos = mvPosition.xyz;
+          gl_Position = projectionMatrix * mvPosition;          
+
+          vFogDepth = - mvPosition.z;
+        }
+    `;
   MY3D.fShader = `
   uniform float time;
   uniform float speed;
@@ -330,6 +356,52 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
       if(aa<0.0) aa=0.0;
       gl_FragColor = vec4( (1.0-aa)*vColor0.xyz + aa*vColor1.xyz,    uColor.a );
   }`;
+  MY3D.fShader_Noise = `
+    uniform float time;
+    uniform float speed;
+    uniform float amplitude;
+    uniform float deltaFactor;
+    uniform vec4 uColor;
+    uniform sampler2D tex0;
+    uniform sampler2D tex1;
+    uniform sampler2D texA;
+    uniform sampler2D texXZ;
+    uniform float scaleXZ;
+    uniform float alphaXZ;
+    uniform sampler2D texNoise;
+    uniform float scaleNoise;
+    //
+    varying vec2 vUv;
+    varying vec3 vPos;
+    varying float vFogDepth;
+    uniform vec3 fogColor;
+    uniform float fogDensity;
+    void main(void)
+    {
+        vec4 vColor0 = texture2D(tex0, vUv);
+        vec4 vColor1 = texture2D(tex1, vUv);
+        vec4 vColorA = texture2D(texA, vUv);
+        vec2 vUvPos = vec2(0.5,0.5) + vPos.xy/scaleXZ;        
+        vec4 vColorXZ = texture2D(texXZ,  vUvPos);
+        vUvPos = vec2(0.5,0.5) + vPos.xy/scaleNoise;
+        vUvPos = mod( vUvPos,   vec2(1.0,1.0) );
+        vec4 vColorNoise = texture2D(texNoise,  vUvPos);        
+        //
+        float aa = 0.5; 
+        float delta = 0.5 - vColorA.x;
+        aa = 0.5 + deltaFactor*delta + amplitude*sin(time*speed);
+        if(aa>1.0) aa=1.0;
+        if(aa<0.0) aa=0.0;
+        float noise = 0.5 + 0.5*sin(time*speed * vColorNoise.r);
+        //
+        gl_FragColor = vec4( (1.0-aa)*vColor0.xyz + aa*vColor1.xyz,    uColor.a );
+        gl_FragColor = gl_FragColor * noise;
+        gl_FragColor = gl_FragColor * ( (1.0-alphaXZ)*vec4(1.0) + alphaXZ*vColorXZ);
+        //
+        float fogDensityBis = fogDensity*0.1;
+        float fogFactor = 1.0 - exp( - fogDensityBis*fogDensityBis * vFogDepth*vFogDepth );	
+        gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
+    }`;
 }
 MY3D.initShaderMaterial = function(){
   var shaderUniforms = {
@@ -341,9 +413,16 @@ MY3D.initShaderMaterial = function(){
     tex0: { value: composer.readBuffer.texture },
     tex1: { value: composerScene2.readBuffer.texture },
     texA: { value: concreteMap },
+    texXZ: { value: concreteMap },
+    scaleXZ: { value: 4.0 },
+    alphaXZ: { value: 1.0 },
+    texNoise: { value: concreteMap },    
+    scaleNoise: { value: 4.0 },
+    fogColor: {value:new THREE.Color( params.fogCol )},
+    fogDensity: {value:params.fogDensity},
   };
   var shaderMaterial = new THREE.ShaderMaterial( { 
-    side:THREE.DoubleSide,                                                    
+    side:THREE.DoubleSide, 
     uniforms:shaderUniforms, vertexShader:MY3D.vShader, fragmentShader:MY3D.fShader,
   } );
   shaderUniformList.push( shaderUniforms );  
