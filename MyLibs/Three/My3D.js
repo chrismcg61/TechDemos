@@ -273,7 +273,11 @@ MY3D.render = function(){
 MY3D.updateSceneCommon = function(){
   now = Date.now()*0.001;
   camera.position.set(params.camPosX,params.camPosY,params.camPosZ);
+  camera.rotation.x = params.camRotX;
   renderer.toneMappingExposure = Math.pow( gParams.exposeFactor*10, 4.0 );
+  unrealBloomPass.threshold = bloomParams.threshold;
+  unrealBloomPass.strength = bloomParams.intensity;
+  unrealBloomPass.radius = bloomParams.radius;
   {
     scene.background = new THREE.Color( params.fogCol );
     scene.fog = new THREE.FogExp2( params.fogCol, params.fogDensity*0.01 );
@@ -284,6 +288,10 @@ MY3D.updateSceneCommon = function(){
   }
   for ( i=0; i<shaderUniformList.length; i++ ) {
     shaderUniformList[i].time.value += 1.0;
+    if(shaderUniformList[i].fogColor){      
+      shaderUniformList[i].fogColor.value = new THREE.Color( params.fogCol );
+      shaderUniformList[i].fogDensity.value = params.fogDensity;      
+    }
   }
 }
 
@@ -392,9 +400,9 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
 MY3D.initShaderMaterial = function(){
   var shaderUniforms = {
     time: { value: 0.0 },
-    speed: { value: 0.03  },
+    speed: { value: 0.007  },
     amplitude: { value: 2 },
-    deltaFactor: { value: 2 },
+    deltaFactor: { value: 3 },
     uColor: { value: new THREE.Vector4(1,1,1, 1) },
     tex0: { value: composer.readBuffer.texture },
     tex1: { value: composerScene2.readBuffer.texture },
