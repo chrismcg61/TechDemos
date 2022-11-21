@@ -12,6 +12,7 @@ var scene0, composerScene0;
 var sceneOrtho, sceneOrtho_BG, cameraOrtho, composerOrtho;
 var scene2, camera2, composerScene2;
 var sceneNoPostFx, cameraNoPostFx;
+var dirLight_Scene1, dirLight_Scene2;
 //
 var ssrPass, ssrGroundReflector;
 var ssrMeshes = [];
@@ -24,10 +25,17 @@ function rand(max){
 }
 
 MY3D.reinitScene = function(){
+  scene0 = new THREE.Scene();
+  //
   scene = new THREE.Scene();
   scene.add(camera);
-  scene0 = new THREE.Scene();
   scene2 = new THREE.Scene();
+  //
+  dirLight_Scene1 = new THREE.DirectionalLight( params.dirLightCol, 1.9 );
+  dirLight_Scene1.position.set(1,1,0);
+  scene.add( dirLight_Scene1 );
+  dirLight_Scene2 = dirLight_Scene1.clone();
+  scene2.add( dirLight_Scene2 );
 }
 MY3D.ReInit0 = function(){
   MY3D.reinitScene();
@@ -274,6 +282,8 @@ MY3D.updateSceneCommon = function(){
   now = Date.now()*0.001;
   camera.position.set(params.camPosX,params.camPosY,params.camPosZ);
   camera.rotation.x = params.camRotX;
+  dirLight_Scene1.color = new THREE.Color( params.dirLightCol );
+  dirLight_Scene2.color = new THREE.Color( params.dirLightCol );
   renderer.toneMappingExposure = Math.pow( gParams.exposeFactor*10, 4.0 );
   unrealBloomPass.threshold = bloomParams.threshold;
   unrealBloomPass.strength = bloomParams.intensity;
