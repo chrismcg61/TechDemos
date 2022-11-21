@@ -1,3 +1,4 @@
+const SHADOW_ARRAY_SIZE = 32;
 var THREE;
 var MY3D = {};
 MY3D.camFov = 50;
@@ -305,12 +306,13 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
         MY3D.addGuiParams(subFolder, param, _open, _max, _delta);
       }
     }
-    else if(param>0xffff) _folder.addColor( _params, key ).onChange(onGuiChange);
-    else if(_max>0 && key.includes('Pos')) _folder.add( _params, key, -_max,_max,_delta).onChange(onGuiChange);
-    else if(key.includes('Factor')) _folder.add( _params, key, 0,1,_delta).onChange(onGuiChange);
-    else _folder.add( _params, key ).onChange(onGuiChange);
+    else if(param>0xffff) _folder.addColor( _params, key ).onChange(onGuiChange).listen();
+    else if(_max>0 && key.includes('Pos')) _folder.add( _params, key, -_max,_max,_delta).onChange(onGuiChange).listen();
+    else if(key.includes('Factor')) _folder.add( _params, key, 0,1,_delta).onChange(onGuiChange); //.listen();
+    else _folder.add( _params, key ).onChange(onGuiChange);  //.listen();
   }
 }
+
 
 
 
@@ -329,34 +331,10 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
           #endif
           vPos = mvPosition.xyz;
           gl_Position = projectionMatrix * mvPosition;          
-
           vFogDepth = - mvPosition.z;
         }
     `;
   MY3D.fShader = `
-  uniform float time;
-  uniform float speed;
-  uniform float amplitude;
-  uniform float deltaFactor;
-  uniform vec4 uColor;
-  uniform sampler2D tex0;
-  uniform sampler2D tex1;
-  uniform sampler2D texA;
-  varying vec2 vUv;
-  void main(void)
-  {
-      vec4 vColor0 = texture2D(tex0, vUv);
-      vec4 vColor1 = texture2D(tex1, vUv);
-      vec4 vColorA = texture2D(texA, vUv);
-      //
-      float aa = 0.5; 
-      float delta = 0.5 - vColorA.x;
-      aa = 0.5 + deltaFactor*delta + amplitude*sin(time*speed);
-      if(aa>1.0) aa=1.0;
-      if(aa<0.0) aa=0.0;
-      gl_FragColor = vec4( (1.0-aa)*vColor0.xyz + aa*vColor1.xyz,    uColor.a );
-  }`;
-  MY3D.fShader_Noise = `
     uniform float time;
     uniform float speed;
     uniform float amplitude;
@@ -365,11 +343,14 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
     uniform sampler2D tex0;
     uniform sampler2D tex1;
     uniform sampler2D texA;
+    //
+    uniform float useNoise;
+    uniform sampler2D texNoise;
+    uniform float scaleNoise;
+    uniform float strNoise;
     uniform sampler2D texXZ;
     uniform float scaleXZ;
     uniform float alphaXZ;
-    uniform sampler2D texNoise;
-    uniform float scaleNoise;
     //
     varying vec2 vUv;
     varying vec3 vPos;
@@ -381,26 +362,31 @@ MY3D.addGuiParams = function(_folder, _params, _open, _max, _delta){
         vec4 vColor0 = texture2D(tex0, vUv);
         vec4 vColor1 = texture2D(tex1, vUv);
         vec4 vColorA = texture2D(texA, vUv);
-        vec2 vUvPos = vec2(0.5,0.5) + vPos.xy/scaleXZ;        
-        vec4 vColorXZ = texture2D(texXZ,  vUvPos);
-        vUvPos = vec2(0.5,0.5) + vPos.xy/scaleNoise;
-        vUvPos = mod( vUvPos,   vec2(1.0,1.0) );
-        vec4 vColorNoise = texture2D(texNoise,  vUvPos);        
         //
         float aa = 0.5; 
         float delta = 0.5 - vColorA.x;
         aa = 0.5 + deltaFactor*delta + amplitude*sin(time*speed);
         if(aa>1.0) aa=1.0;
         if(aa<0.0) aa=0.0;
-        float noise = 0.5 + 0.5*sin(time*speed * vColorNoise.r);
         //
-        gl_FragColor = vec4( (1.0-aa)*vColor0.xyz + aa*vColor1.xyz,    uColor.a );
-        gl_FragColor = gl_FragColor * noise;
-        gl_FragColor = gl_FragColor * ( (1.0-alphaXZ)*vec4(1.0) + alphaXZ*vColorXZ);
-        //
-        float fogDensityBis = fogDensity*0.1;
-        float fogFactor = 1.0 - exp( - fogDensityBis*fogDensityBis * vFogDepth*vFogDepth );	
-        gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
+        gl_FragColor = vec4( (1.0-aa)*vColor0.xyz + aa*vColor1.xyz,    1.0 );
+        gl_FragColor = gl_FragColor*uColor;
+        
+        if(useNoise>0.0){
+          vec2 vUvPos = vec2(0.5,0.5) + vPos.xy/scaleXZ;        
+          vec4 vColorXZ = texture2D(texXZ,  vUvPos);
+          vUvPos = vec2(0.5,0.5) + vPos.xy/scaleNoise;
+          vUvPos = mod( vUvPos,   vec2(1.0,1.0) );
+          vec4 vColorNoise = texture2D(texNoise,  vUvPos);
+          float noise = 0.9 + strNoise*cos(time*speed * vColorNoise.r);
+          //
+          gl_FragColor = gl_FragColor * noise;
+          gl_FragColor = gl_FragColor * ( (1.0-alphaXZ)*vec4(1.0) + alphaXZ*vColorXZ);
+          //
+          float fogDensityBis = fogDensity*0.1;
+          float fogFactor = 1.0 - exp( - fogDensityBis*fogDensityBis * vFogDepth*vFogDepth );	
+          gl_FragColor.rgb = mix( gl_FragColor.rgb, fogColor, fogFactor );
+        }
     }`;
 }
 MY3D.initShaderMaterial = function(){
@@ -413,11 +399,14 @@ MY3D.initShaderMaterial = function(){
     tex0: { value: composer.readBuffer.texture },
     tex1: { value: composerScene2.readBuffer.texture },
     texA: { value: concreteMap },
+    //
+    useNoise: { value: 0 },
     texXZ: { value: concreteMap },
     scaleXZ: { value: 4.0 },
     alphaXZ: { value: 1.0 },
     texNoise: { value: concreteMap },    
     scaleNoise: { value: 4.0 },
+    strNoise: { value: 0.9 },
     fogColor: {value:new THREE.Color( params.fogCol )},
     fogDensity: {value:params.fogDensity},
   };
@@ -428,6 +417,7 @@ MY3D.initShaderMaterial = function(){
   shaderUniformList.push( shaderUniforms );  
   return shaderMaterial;
 }
+
 
 
 
@@ -474,56 +464,145 @@ MY3D.initTexture_Text = function(texture, _fontSize, col0, col1, title, txtLines
 
 
 /*** PARTICLE Shaders ***/
-var sprite0, shaderUniforms0, shaderMaterial0, vShader0,fShader0;
-function initShader0(){
-  sprite0 = new THREE.TextureLoader().load("https://cdn.rawgit.com/mrdoob/three.js/r138/examples/textures/sprites/disc.png");
-  
-  shaderUniforms0 = {
-    time: {value:0},
-    alpha: {value:0.5},
-    size: {value:4},
-    pointTexture: { value:sprite0 },
-    useTexturePosition: {value:0},
-    texturePosition: {value:null},
-  };
-  {
-    vShader0 = `
+var sprite0;  //shaderUniforms0, shaderMaterial0, vShader0,fShader0;
+{
+  MY3D.vShaderParticles = `
+      uniform float useSinePos;
       uniform float useTexturePosition;
       uniform sampler2D texturePosition;
       //
       uniform float size;
       uniform float time;
+      uniform float speed;
+      uniform vec2 minMaxY;
+      //
+      // uniform vec3 vPosShadow;
+      uniform float shadowSize;
+      uniform vec3 vPosLight;
+      uniform float shadowArraySize;
+      uniform sampler2D shadowPosArray;
+      //
       attribute vec3 color;
       varying vec3 vColor;
+      //
+      varying vec3 viewPos;
+      varying vec3 worldPos;
       void main() {
         vColor = color;
-        vec3 tmpPos = position * (1.0 + sin(time*0.002));
+        vec3 tmpPos = position;
+        tmpPos.y = tmpPos.y + time*speed;
+        tmpPos.y = minMaxY.x + mod(tmpPos.y, minMaxY.y);
+        //
+        if(useSinePos>0.0) tmpPos = position * (1.0 + sin(time*speed));
         if(useTexturePosition>0.0) tmpPos = texture2D( texturePosition, uv ).xyz;
         vec4 mvPosition = modelViewMatrix * vec4( tmpPos, 1.0 );
         //
         gl_PointSize = ( size / -mvPosition.z );
         gl_Position = projectionMatrix * mvPosition;
-      }
-      `;   
-    fShader0 = `
-      uniform sampler2D pointTexture;
-      uniform float alpha;
-      varying vec3 vColor;
-      void main() {
-        gl_FragColor = vec4( vColor,  alpha ) * texture2D( pointTexture, gl_PointCoord );
+
+        viewPos = mvPosition.xyz;
+        worldPos = tmpPos;
+        //
+        for ( float y = 0.0; y < shadowArraySize; y++ ) {
+          for ( float x = 0.0; x < shadowArraySize; x++ ) {
+            vec2 uv = vec2(x/shadowArraySize, y/shadowArraySize);
+            vec4 newShadowPos = texture2D( shadowPosArray, uv );
+            if(newShadowPos.w>0.0) {
+              vec3 dirLightShadow = normalize( vPosLight - newShadowPos.xyz );
+              vec3 dirShadowVertex = normalize(  newShadowPos.xyz - worldPos );
+              if( distance( dirShadowVertex, dirLightShadow) < shadowSize )  vColor = 0.0*vColor;            
+            }
+          }
+        }
       }
       `;
-  }
-  shaderMaterial0 = new THREE.ShaderMaterial( {
-    uniforms: shaderUniforms0,
-    vertexShader: vShader0,
-    fragmentShader: fShader0,
-    transparent:true,
-    //alphaTest: 0.9,
-    depthTest:false,
-    blending:THREE.AdditiveBlending,
-  } );  
+  MY3D.fShaderParticles = `
+      uniform sampler2D pointTexture;
+      uniform float alpha;
+      //
+      uniform float useTexXZ;
+      uniform sampler2D texXZ;
+      uniform float scaleXZ;
+      uniform float alphaXZ;
+      //
+      varying vec3 vColor;
+      varying vec3 viewPos;
+      varying vec3 worldPos;
+      void main() {
+        vec2 vUvPos = vec2(0.5,0.5) + viewPos.xy/scaleXZ;
+        vUvPos = vec2(0.5,0.5) + worldPos.xy/scaleXZ;
+        vec4 vColorXZ = texture2D(texXZ,  vUvPos);
+        //
+        vec4 texCol = texture2D( pointTexture, gl_PointCoord );
+        float aa = texCol.x + texCol.y + texCol.z;
+        //
+        if(aa<0.1) discard;
+        gl_FragColor = texCol;
+        gl_FragColor = gl_FragColor * vec4( vColor,  alpha );
+
+        if(useTexXZ>0.0) {
+          gl_FragColor = gl_FragColor * ( (1.0-alphaXZ)*vec4(1.0) + alphaXZ*vColorXZ);
+        }
+      }
+      `;
 }
+// function initShader0(){
+MY3D.initShaderParticles = function(){
+  sprite0 = new THREE.TextureLoader().load("https://cdn.rawgit.com/mrdoob/three.js/r138/examples/textures/sprites/disc.png");
+    
+  var newShaderUniformsParticles = {
+    time: {value:0},
+    speed: {value:0.005},
+    minMaxY: {value: new THREE.Vector2(-1,1)},
+    alpha: {value:0.9},
+    size: {value:4},
+    pointTexture: { value:sprite0 },
+    useSinePos: {value:0},
+    useTexturePosition: {value:0},
+    texturePosition: {value:null},
+    //
+    useTexXZ: {value:0},
+    texXZ: { value: concreteMap },
+    scaleXZ: { value: 4.0 },
+    alphaXZ: { value: 1.0 },
+    //
+    // vPosShadow: {value: new THREE.Vector3(-1,0,0)},
+    shadowArraySize: { value: 0 }, //SHADOW_ARRAY_SIZE
+    shadowSize: { value: 0.03 },
+    vPosLight: {value: new THREE.Vector3(-2,0,0)},    
+    shadowPosArray: {value: new THREE.DataTexture( new Float32Array( SHADOW_ARRAY_SIZE*SHADOW_ARRAY_SIZE * 4 ),  SHADOW_ARRAY_SIZE,SHADOW_ARRAY_SIZE, THREE.RGBAFormat, THREE.FloatType ) },
+  };  
+  var newShaderMaterialParticles = new THREE.ShaderMaterial( {
+    uniforms:newShaderUniformsParticles,  vertexShader:MY3D.vShaderParticles, fragmentShader:MY3D.fShaderParticles,
+    transparent:true,  //alphaTest: 0.9,
+    depthTest:true,  depthWrite:false,
+    blending:THREE.AdditiveBlending,
+  } );
+  return newShaderMaterialParticles;
+}
+MY3D.initParticleObj = function(_NB, _pos, _size){
+  const positions = [];
+  const colors = [];
+  for ( var i = 0, l = _NB; i < l; i ++ ) {    
+    positions.push( _pos.x-_size.x/2+rand(_size.x), _pos.y-_size.y/2+rand(_size.y), _pos.z-_size.z/2+rand(_size.z) );
+    var aa = 0.7;  //rand(0.5);
+    colors.push( aa+rand(0.5),aa+rand(0.5),aa+rand(0.5) );
+  }
+  var geometry = new THREE.BufferGeometry();
+  geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
+  geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+  //
+  var newShaderMaterialParticles = MY3D.initShaderParticles();
+  // shaderMaterialParticles0.depthTest = true;
+  // shaderUniformsParticles0.pointTexture.value = new THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/CloudParticle.jpg");
+  shaderUniformList.push( newShaderMaterialParticles.uniforms );
+  //
+  var particles = new THREE.Points( geometry, newShaderMaterialParticles );
+  return particles;
+}
+
+
+
 
 
 var vShaderRain, fShaderRain;
