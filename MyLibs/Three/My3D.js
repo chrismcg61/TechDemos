@@ -31,7 +31,7 @@ MY3D.reinitScene = function(){
   scene.add(camera);
   scene2 = new THREE.Scene();
   //
-  dirLight_Scene1 = new THREE.DirectionalLight( params.dirLightCol, 1.9 );
+  dirLight_Scene1 = new THREE.DirectionalLight( 0x0, 1.9 );
   dirLight_Scene1.position.set(1,1,0);
   scene.add( dirLight_Scene1 );
   dirLight_Scene2 = dirLight_Scene1.clone();
