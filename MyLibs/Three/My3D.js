@@ -581,7 +581,7 @@ var sprite0;  //shaderUniforms0, shaderMaterial0, vShader0,fShader0;
         vec2 vUvPos = vec2(0.5,0.5) + viewPos.xy/scaleXZ;
         vUvPos = vec2(0.5,0.5) + worldPos.xy/scaleXZ;
         vec4 vColorXZ = texture2D(texXZ,  vUvPos);
-        if(useNegative>0.0) vColorXZ.xyz = 1.0 - vColorXZ.xyz;
+        if(useNegative>0.0) vColorXZ.xyz = 1.0 - vec3( vColorXZ.x );  // 1.0 - vColorXZ.xyz
         //
         vec4 texCol = texture2D( pointTexture, gl_PointCoord );
         float aa = texCol.x + texCol.y + texCol.z;
