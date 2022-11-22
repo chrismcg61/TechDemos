@@ -48,6 +48,19 @@ MY3D.ReInit0 = function(){
   // rtTexture = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight );
   MY3D.myInitPostFx();
   MY3D.onWindowResize();
+  //
+  MY3D.initNoPostFxScene();  
+}
+MY3D.initNoPostFxScene = function(){
+  var screenNoPostFx1 = new THREE.Mesh( new THREE.PlaneGeometry( 2,1 ),   new THREE.MeshBasicMaterial( { map:composer.renderTarget2.texture,  } )   ); //composer.writeBuffer.texture
+  screenNoPostFx1.position.set(-1.3,0,1.5);
+  sceneNoPostFx.add( screenNoPostFx1 );
+  // screenNoPostFx1.scale.set( window.innerWidth, window.innerHeight, 1 ); 
+  var screenNoPostFx2 = new THREE.Mesh( new THREE.PlaneGeometry( 2,1 ),   new THREE.MeshBasicMaterial( { map:composer.readBuffer.texture,  } )   );
+  screenNoPostFx2.position.set(1.3,0,1.5);
+  sceneNoPostFx.add( screenNoPostFx2 );
+  screenNoPostFx2.material = MY3D.initShaderMaterial();
+  screenNoPostFx2.material.uniforms.tex1.value = composer.readBuffer.texture;  
 }
 
 MY3D.onWindowResize = function(){
@@ -650,7 +663,7 @@ MY3D.init_GpuCompute_Particles = function(){
   var vPos = new THREE.Vector3(0,0,0);
   var vSize = new THREE.Vector3(1,1,1);
   physicalParticles = MY3D.initParticleObj( TEX_WW*TEX_WW, vPos, vSize, new THREE.Vector4( 1,0,0, 0.1 ) );    
-  scene2.add( physicalParticles );
+  scene.add( physicalParticles );
   physicalParticles.material.uniforms.useTexturePosition.value = 1;
   //
   MY3D.init_GpuCompute();
