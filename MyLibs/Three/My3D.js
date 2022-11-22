@@ -18,10 +18,16 @@ var ssrPass, ssrGroundReflector;
 var ssrMeshes = [];
 var filmBW = false;
 var effectVignette, unrealBloomPass, effectBloom, effectTM;
+//
+const TEX_WW = 512;
+var physicalParticles;
 
 
 function rand(max){
   return Math.random()*max;
+}
+function sRand(max){
+  return -max+2*Math.random()*max;
 }
 
 MY3D.reinitScene = function(){
@@ -233,12 +239,8 @@ MY3D.render = function(){
   renderer.setViewport( 0,0,  window.innerWidth,window.innerHeight );
   renderer.setScissor( 0,0,   window.innerWidth,window.innerHeight );
   
-  if(gParams.scene0){ 
-    // composerScene0.render();  
-    composerScene2.render();  
-  }
-  
   composer.renderToScreen = false;
+  composerScene2.renderToScreen = false;
   
   if(gParams.RenderModes == RenderModes.NoPostFx)   renderer.render( scene, camera );
   else if(gParams.RenderModes == RenderModes.PostFx)  {
@@ -263,11 +265,13 @@ MY3D.render = function(){
     renderer.render( scene, camera );
   }
   else if(gParams.RenderModes == RenderModes.OrthoSceneStatic) {
+    composerScene2.render();  
     // composerOrtho.render();
     renderer.render( sceneOrtho, cameraOrtho );
   }
   else if(gParams.RenderModes == RenderModes.OrthoScene) {
     composer.render();
+    composerScene2.render();  
     // composerOrtho.render();
     renderer.render( sceneOrtho, cameraOrtho );
   }
@@ -276,6 +280,10 @@ MY3D.render = function(){
     // renderer.toneMappingExposure = 1.0;
     renderer.render( sceneNoPostFx, cameraNoPostFx );  //cameraNoPostFx_Ortho
     // renderer.render( sceneOrtho, cameraOrtho );
+  }
+  else if(gParams.RenderModes == RenderModes.Scene2) {
+    composerScene2.renderToScreen = true;  
+    composerScene2.render();  
   }
 }
 MY3D.updateSceneCommon = function(){
@@ -486,8 +494,10 @@ var sprite0;  //shaderUniforms0, shaderMaterial0, vShader0,fShader0;
 {
   MY3D.vShaderParticles = `
       uniform float useSinePos;
+      uniform float velocityLightFactor;
       uniform float useTexturePosition;
       uniform sampler2D texturePosition;
+      uniform sampler2D textureVel;
       //
       uniform float size;
       uniform float time;
@@ -517,7 +527,7 @@ var sprite0;  //shaderUniforms0, shaderMaterial0, vShader0,fShader0;
         //
         gl_PointSize = ( size / -mvPosition.z );
         gl_Position = projectionMatrix * mvPosition;
-
+        
         viewPos = mvPosition.xyz;
         worldPos = tmpPos;
         //
@@ -532,6 +542,13 @@ var sprite0;  //shaderUniforms0, shaderMaterial0, vShader0,fShader0;
             }
           }
         }
+        //
+        if(velocityLightFactor > 0.0){
+          vec3 tmpVel = texture2D( textureVel, uv ).xyz;
+          vec3 dirVel = normalize( tmpVel );
+          float dirVelViewDist = distance( dirVel, vec3(0.0,0.0,1.0) );
+          vColor *=  (1.0 - velocityLightFactor*dirVelViewDist);               
+        }
       }
       `;
   MY3D.fShaderParticles = `
@@ -539,6 +556,7 @@ var sprite0;  //shaderUniforms0, shaderMaterial0, vShader0,fShader0;
       uniform float alpha;
       //
       uniform float useTexXZ;
+      uniform float useNegative;
       uniform sampler2D texXZ;
       uniform float scaleXZ;
       uniform float alphaXZ;
@@ -550,6 +568,7 @@ var sprite0;  //shaderUniforms0, shaderMaterial0, vShader0,fShader0;
         vec2 vUvPos = vec2(0.5,0.5) + viewPos.xy/scaleXZ;
         vUvPos = vec2(0.5,0.5) + worldPos.xy/scaleXZ;
         vec4 vColorXZ = texture2D(texXZ,  vUvPos);
+        if(useNegative>0.0) vColorXZ.xyz = 1.0 - vColorXZ.xyz;
         //
         vec4 texCol = texture2D( pointTexture, gl_PointCoord );
         float aa = texCol.x + texCol.y + texCol.z;
@@ -557,7 +576,6 @@ var sprite0;  //shaderUniforms0, shaderMaterial0, vShader0,fShader0;
         if(aa<0.1) discard;
         gl_FragColor = texCol;
         gl_FragColor = gl_FragColor * vec4( vColor,  alpha );
-
         if(useTexXZ>0.0) {
           gl_FragColor = gl_FragColor * ( (1.0-alphaXZ)*vec4(1.0) + alphaXZ*vColorXZ);
         }
@@ -572,14 +590,18 @@ MY3D.initShaderParticles = function(){
     time: {value:0},
     speed: {value:0.005},
     minMaxY: {value: new THREE.Vector2(-1,1)},
-    alpha: {value:0.9},
-    size: {value:4},
+    alpha: {value:0.99},
+    size: {value:3},
     pointTexture: { value:sprite0 },
     useSinePos: {value:0},
+    velocityLightFactor: {value:0},
+    //
     useTexturePosition: {value:0},
     texturePosition: {value:null},
+    textureVel: {value:null},
     //
     useTexXZ: {value:0},
+    useNegative: {value:0},
     texXZ: { value: concreteMap },
     scaleXZ: { value: 4.0 },
     alphaXZ: { value: 1.0 },
@@ -598,17 +620,19 @@ MY3D.initShaderParticles = function(){
   } );
   return newShaderMaterialParticles;
 }
-MY3D.initParticleObj = function(_NB, _pos, _size){
-  const positions = [];
-  const colors = [];
+MY3D.initParticleObj = function(_NB, _pos, _size, _col){
+  var positions = [];  var colors = [];  var uvs = [];
   for ( var i = 0, l = _NB; i < l; i ++ ) {    
     positions.push( _pos.x-_size.x/2+rand(_size.x), _pos.y-_size.y/2+rand(_size.y), _pos.z-_size.z/2+rand(_size.z) );
-    var aa = 0.7;  //rand(0.5);
-    colors.push( aa+rand(0.5),aa+rand(0.5),aa+rand(0.5) );
+    var aa = _col.w;
+    colors.push( _col.x+rand(aa), _col.y+rand(aa), _col.z+rand(aa) );
+    var uv = new THREE.Vector2( i%TEX_WW, Math.floor(i/TEX_WW) );    //uv.multiplyScalar( 1/TEX_WW );
+    uvs.push( uv.x/TEX_WW, uv.y/TEX_WW );
   }
   var geometry = new THREE.BufferGeometry();
   geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( positions, 3 ) );
   geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+  geometry.setAttribute( 'uv', new THREE.Float32BufferAttribute( uvs, 2 ) );
   //
   var newShaderMaterialParticles = MY3D.initShaderParticles();
   // shaderMaterialParticles0.depthTest = true;
@@ -621,8 +645,120 @@ MY3D.initParticleObj = function(_NB, _pos, _size){
 
 
 
+/*** GpuCompute PARTICLES  ***/
+MY3D.init_GpuCompute_Particles = function(){
+  var vPos = new THREE.Vector3(0,0,0);
+  var vSize = new THREE.Vector3(1,1,1);
+  physicalParticles = MY3D.initParticleObj( TEX_WW*TEX_WW, vPos, vSize, new THREE.Vector4( 1,0,0, 0.1 ) );    
+  scene2.add( physicalParticles );
+  physicalParticles.material.uniforms.useTexturePosition.value = 1;
+  //
+  MY3D.init_GpuCompute();
+}
+MY3D.init_GpuCompute = function(){
+  gpuCompute = new THREE.GPUComputationRenderer( TEX_WW,TEX_WW, renderer );
+  var texPos = gpuCompute.createTexture();
+  var texVel = gpuCompute.createTexture();
+  var texPosData = texPos.image.data;
+  var texVelData = texVel.image.data;
+  for ( var i = 0; i < texPosData.length; i += 4 ) {
+    var tt = rand(600);
+    var vVel = new THREE.Vector3(sRand(1),sRand(1),sRand(1));
+    vVel.normalize().multiplyScalar( rand(0.02) );
+    texPosData[i+0] = 0;
+    texPosData[i+1] = 0;
+    texPosData[i+2] = 0;
+    texPosData[i+3] = tt;
+    //
+    texVelData[i+0] = vVel.x;
+    texVelData[i+1] = vVel.y;
+    texVelData[i+2] = vVel.z;
+    // texVelData[i+3] = tt;
+  }
+  positionVariable = gpuCompute.addVariable( "texturePosition", MY3D.GPUC_fShaderPos, texPos );
+  velocityVariable = gpuCompute.addVariable( "textureVel", MY3D.GPUC_fShaderVel, texVel );
+  gpuCompute.setVariableDependencies( positionVariable, [ positionVariable, velocityVariable ] );
+  gpuCompute.setVariableDependencies( velocityVariable, [ positionVariable, velocityVariable ] );
+  //
+  gpuCompute.init();  
+  {
+    // var texPos0 = new THREE.DataTexture( texPos,  TEX_WW,TEX_WW, THREE.RGBAFormat, THREE.FloatType );  texPos0.needsUpdate = true;
+    const duration = 0;
+    posUniforms = positionVariable.material.uniforms;
+    posUniforms[ 'texturePos0' ] = { value: texPos };
+    posUniforms[ 'duration' ] = { value: duration };    
+    velocityUniforms = velocityVariable.material.uniforms;
+    velocityUniforms[ 'texturePos0' ] = { value: texPos };
+    velocityUniforms[ 'textureVel0' ] = { value: texVel };
+    velocityUniforms[ 'gravPos' ] = { value: new THREE.Vector3(0,0,0) };    
+    velocityUniforms[ 'gravity' ] = { value: 0.1 };        
+    velocityUniforms[ 'duration' ] = { value: duration }; 
+  }
+}
+MY3D.update_GpuCompute = function(){
+  gpuCompute.compute();
+  physicalParticles.material.uniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
+  physicalParticles.material.uniforms.textureVel.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
+}
+{
+  MY3D.GPUC_fShaderPos = `
+      uniform float duration;
+      uniform sampler2D texturePos0;
+      void main() {
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        vec4 tmpPos = texture2D( texturePosition, uv );
+        vec4 tmpVel = texture2D( textureVel, uv );
+        vec4 tmpPos0 = texture2D( texturePos0, uv );
+
+        tmpPos += tmpVel;
+        //if(tmpPos.w==0.0) tmpPos *= 0.0;        
+
+        if(duration > 0.0){
+          tmpPos.w += 1.0;
+          if( mod(tmpPos.w, duration) <= 10.0 ) {
+            tmpPos.xyz = tmpPos0.xyz;        
+          }
+        }
+
+        gl_FragColor = tmpPos;
+      }
+    `;
+  MY3D.GPUC_fShaderVel = `
+      uniform float duration;
+      uniform float gravity;
+      uniform vec3 gravPos;
+      uniform sampler2D texturePos0;
+      uniform sampler2D textureVel0;
+      void main() {
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        vec3 tmpVel = texture2D( textureVel, uv ).xyz;
+        vec4 tmpPos = texture2D( texturePosition, uv );
+        vec4 tmpPos0 = texture2D( texturePos0, uv );
+        vec4 tmpVel0 = texture2D( textureVel0, uv );
+
+        vec3 dPos = gravPos - tmpPos.xyz;
+        float distance = 0.1 + length( dPos );
+        //if(distance<0.1) distance=0.1;            
+        vec3 gravityVel = gravity * 0.0001 * normalize(dPos) / pow(distance, 2.0);
+
+        //tmpVel *= drag;
+        tmpVel += gravityVel;
+
+        if(duration > 0.0){
+          if( mod(tmpPos.w, duration) <= 10.0 ) {
+            tmpVel = tmpVel0.xyz;       
+          }
+        }
+
+        gl_FragColor = vec4( tmpVel, 0.0);
+      }
+    `;
+}
 
 
+
+
+/*** Other Shaders ***/
 var vShaderRain, fShaderRain;
 initRainShader(1);
 function initRainShader(nbLights)
