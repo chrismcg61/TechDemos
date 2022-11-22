@@ -19,7 +19,7 @@ var ssrMeshes = [];
 var filmBW = false;
 var effectVignette, unrealBloomPass, effectBloom, effectTM;
 //
-const TEX_WW = 512;
+var TEX_WW = 512;
 var physicalParticles;
 
 
@@ -659,27 +659,29 @@ MY3D.initParticleObj = function(_NB, _pos, _size, _col){
 
 
 /*** GpuCompute PARTICLES  ***/
-MY3D.init_GpuCompute_Particles = function(){
+MY3D.init_GpuCompute_Particles = function(_speed){
   var vPos = new THREE.Vector3(0,0,0);
   var vSize = new THREE.Vector3(1,1,1);
   physicalParticles = MY3D.initParticleObj( TEX_WW*TEX_WW, vPos, vSize, new THREE.Vector4( 1,0,0, 0.1 ) );    
   scene.add( physicalParticles );
   physicalParticles.material.uniforms.useTexturePosition.value = 1;
   //
-  MY3D.init_GpuCompute();
+  MY3D.init_GpuCompute(_speed);
 }
-MY3D.init_GpuCompute = function(){
+MY3D.init_GpuCompute = function(_speed){
   gpuCompute = new THREE.GPUComputationRenderer( TEX_WW,TEX_WW, renderer );
   var texPos = gpuCompute.createTexture();
   var texVel = gpuCompute.createTexture();
   var texPosData = texPos.image.data;
   var texVelData = texVel.image.data;
   for ( var i = 0; i < texPosData.length; i += 4 ) {
-    var tt = rand(600);
+    var tt = rand(60*10);
     var vVel = new THREE.Vector3(sRand(1),sRand(1),sRand(1));
-    vVel.normalize().multiplyScalar( rand(0.02) );
+    vVel.normalize().multiplyScalar( rand(_speed) );
     texPosData[i+0] = 0;
     texPosData[i+1] = 0;
+    // if( rand(1)<0.5 ) texPosData[i+1] = -0.5;
+    // else texPosData[i+1] = 0.5;
     texPosData[i+2] = 0;
     texPosData[i+3] = tt;
     //
@@ -708,6 +710,8 @@ MY3D.init_GpuCompute = function(){
     velocityUniforms[ 'duration' ] = { value: duration }; 
   }
 }
+
+
 MY3D.update_GpuCompute = function(){
   gpuCompute.compute();
   physicalParticles.material.uniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
