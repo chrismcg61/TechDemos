@@ -96,6 +96,11 @@ MY3D_Basic.updateVars = function() {
   scene.background = new THREE.Color( sVars.fogCol );
   scene.fog = new THREE.FogExp2( sVars.fogCol, sVars.fogDensity*0.1 );
   camera.position.set( sVars.camPosX,sVars.camPosY,sVars.camPosZ );
+  //
+  if(typeof guiMeshes!=='undefined'  &&  guiMeshes.length>0){
+    guiMeshes[vars.MeshModes].position.x = vars.meshPosX
+    guiMeshes[vars.MeshModes].position.z = vars.meshPosZ
+  }
 }
 
 
@@ -175,7 +180,9 @@ function newQuadParticles_Instances(){
     dummy.updateMatrix();
     newInstancedMesh.setMatrixAt( ii, dummy.matrix );
   }
-  scene.add( newInstancedMesh ); 
+  scene.add( newInstancedMesh );
+  //
+  return newInstancedMesh;
 }
 function newQuadParticles_MergedMesh(){
   var geometries = [];
@@ -187,8 +194,10 @@ function newQuadParticles_MergedMesh(){
     setVertexAttribs(newGeo, 1.0, newPos);
   }
   var mergedGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries( geometries );
-  mergedMesh = new THREE.Mesh( mergedGeometry,   particleMat  );  // particleMat lambertMat
+  var mergedMesh = new THREE.Mesh( mergedGeometry,   particleMat  );  // particleMat lambertMat
   scene.add(mergedMesh);  
+  //
+  return mergedMesh;
 }
 
 function displaceVertex(geo, offset){
