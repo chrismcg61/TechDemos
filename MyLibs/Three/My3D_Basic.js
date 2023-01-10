@@ -165,16 +165,20 @@ function customizeMat(_mat){
 function setVertexAttribs(geo, aa, _pos){
   var facePositions = [];  //geo.attributes.position.array;
   var offsetPositions = [];
-  // aa *= rand(0.99);
+  var speeds = [];
+  aa *= rand(0.99);
   const nbVertex = geo.attributes.position.count;
   for ( let jj=0; jj<nbVertex; jj++ ) {
     facePositions.push( _pos.x,_pos.y,_pos.z );
     offsetPositions.push( 0,0,0 );
+    speeds.push( 0,aa+0.3,0 );
   }
   geo.setAttribute( 'facePos', new THREE.Float32BufferAttribute( facePositions, 3 ) );
   geo.setAttribute( 'offsetPos', new THREE.Float32BufferAttribute( offsetPositions, 3 ) );
+  geo.setAttribute( 'speed', new THREE.Float32BufferAttribute( speeds, 1 ) );
   geo.attributes.facePos.needsUpdate = true;
   geo.attributes.offsetPos.needsUpdate = true;
+  geo.attributes.speed.needsUpdate = true;
 }
 
 
