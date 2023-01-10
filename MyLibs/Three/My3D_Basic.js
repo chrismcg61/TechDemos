@@ -14,6 +14,7 @@ MY3D_Basic.initMain = function() {
   clock = new THREE.Clock();
   stats = new Stats();  document.body.appendChild( stats.dom );
 }
+//
 MY3D_Basic.initOptional = function() {
   renderer.shadowMap.enabled = true;   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -26,13 +27,15 @@ MY3D_Basic.initOptional = function() {
   style.textAlign = "center";  style.color = "#ffffff";  style.backgroundColor = "rgba(0,0,0, 0.7)";
   infoDiv.innerHTML = "TITLE";
 }
+//
 MY3D_Basic.onWindowResize = function() {
   width = window.innerWidth;  height = window.innerHeight;
   camera.aspect = width/height;
   camera.updateProjectionMatrix();
   renderer.setSize( width,height );
 }
-//
+
+
 MY3D_Basic.ReInitScene = function() {
   if(scene) scene.clear();
   scene = new THREE.Scene();
@@ -43,6 +46,7 @@ MY3D_Basic.ReInitScene = function() {
   if(vars.RenderModes==RenderModes.PostFx) MY3D_Basic.ReInitPostFX();  //postFx  vars.RenderModes==RenderModes.PostFx  
   ReInitSceneObjs();
 }
+//
 MY3D_Basic.ReInitPostFX = function() {
   // renderer.toneMapping = THREE.ReinhardToneMapping;    // renderer.toneMappingExposure = Math.pow( 1.1, 4.0 );
   var renderPass = new THREE.RenderPass( scene, camera );
@@ -75,7 +79,8 @@ MY3D_Basic.ReInitPostFX = function() {
   }
   if(sVars.gamma) composer.addPass( new THREE.ShaderPass( THREE.GammaCorrectionShader ) );
 }
-//
+
+
 MY3D_Basic.render = function() {
   MY3D_Basic.updateVars();
   animate();
@@ -105,12 +110,14 @@ MY3D_Basic.updateVars = function() {
 
 
 
+/*** Other Common FUNCS ***/
 MY3D_Basic.addSsrMesh = function() {
   var mesh = new THREE.Mesh( new THREE.SphereGeometry( 0.3, 32,32 ),  new THREE.MeshStandardMaterial({roughness:0.1,metalness:0.9})  );
   mesh.position.set(rand(2),0.5,rand(1))
   scene.add( mesh );
   ssrMeshes.push( mesh );    // ssrPass.selects
 }
+//
 MY3D_Basic.addMirrorFloor_Perf = function(){
   var mirrorFloor = new THREE.Reflector( new THREE.PlaneGeometry( 90,90 ),  {
     clipBias: 0.003,
@@ -126,8 +133,6 @@ MY3D_Basic.addMirrorFloor_Perf = function(){
   //
   return mirrorFloor;
 }
-
-
 
 function customizeMat(_mat){
   _mat.onBeforeCompile = function ( shader ) {
@@ -156,6 +161,7 @@ function customizeMat(_mat){
     _mat.userData.shader = shader;
   };
 }
+//
 function setVertexAttribs(geo, aa, _pos){
   var facePositions = [];  //geo.attributes.position.array;
   var offsetPositions = [];
@@ -170,7 +176,8 @@ function setVertexAttribs(geo, aa, _pos){
   geo.attributes.facePos.needsUpdate = true;
   geo.attributes.offsetPos.needsUpdate = true;
 }
-//
+
+
 function newQuadParticles_Instances(){
   const INSTANCES = 900;
   var newInstancedMesh = new THREE.InstancedMesh(  new THREE.PlaneGeometry( 0.03,0.03 ),  lambertMat,  INSTANCES );  // particleMat lambertMat
@@ -184,6 +191,7 @@ function newQuadParticles_Instances(){
   //
   return newInstancedMesh;
 }
+//
 function newQuadParticles_MergedMesh(){
   var geometries = [];
   for ( ii=0; ii<150000; ii++ ) {
@@ -208,6 +216,7 @@ function displaceVertex(geo, offset){
   geo.attributes.position.needsUpdate = true;
   geo.computeVertexNormals();
 }
+//
 function addReflectionCubeCam( texW ){
   const cubeRenderTarget = new THREE.WebGLCubeRenderTarget( texW );
   var cubeCamera = new THREE.CubeCamera( 0.05, 30, cubeRenderTarget );
@@ -225,7 +234,8 @@ function addReflectionCubeCam( texW ){
   //
   return cubeCamera;
 }
-//
+
+
 function initShaderMat(){
   var vertexShader = `
       uniform float time;
@@ -266,6 +276,7 @@ function initShaderMat(){
   } );
   return myPointMaterial;
 }
+//
 function myInitGpuCompute(){
   gpuCompute = new THREE.GPUComputationRenderer( 32,32, renderer );  
   var newTexturePosition = gpuCompute.createTexture();
