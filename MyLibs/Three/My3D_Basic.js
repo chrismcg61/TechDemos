@@ -154,12 +154,6 @@ MY3D_Basic.setVertexAttribs = function(geo, aa, _pos) {
 }
 
 
-
-
-
-
-
-
 MY3D_Basic.newQuadParticles_Instances = function( _partNb, _partSize ) {
   var newInstancedMesh = new THREE.InstancedMesh(  new THREE.PlaneGeometry( _partSize,_partSize ),  lambertMat,  _partNb );  // particleMat lambertMat
   for ( ii=0; ii<_partNb; ii++ ) {
@@ -173,7 +167,7 @@ MY3D_Basic.newQuadParticles_Instances = function( _partNb, _partSize ) {
   return newInstancedMesh;
 }
 //
-MY3D_Basic.newQuadParticles_MergedMesh = function( _partNb, _partSize ) {
+MY3D_Basic.newQuadParticles_MergedMesh = function( _partNb, _partSize, _autoAnim ) {
   var geometries = [];
   for ( ii=0; ii<_partNb; ii++ ) {
     var newGeo = new THREE.PlaneGeometry( _partSize,_partSize );
@@ -186,7 +180,7 @@ MY3D_Basic.newQuadParticles_MergedMesh = function( _partNb, _partSize ) {
   var mergedMesh = new THREE.Mesh( mergedGeometry,   particleMat  );  // particleMat lambertMat
   scene.add(mergedMesh);  
   //
-  mergedMesh.onBeforeRender = MY3D_Basic.animWorldParticles;
+  if(_autoAnim) mergedMesh.onBeforeRender = MY3D_Basic.animWorldParticles;
   return mergedMesh;
 }
 //
@@ -235,7 +229,7 @@ MY3D_Basic.addReflectionCubeCam = function( texW ){
   //
   var shinyPlane = new THREE.Mesh( new THREE.PlaneGeometry( 1,0.7, 30,30 ),   shinyMat  );
   cubeCamera.add( shinyPlane );
-  displaceVertex( shinyPlane.geometry, 0.01 );
+  MY3D_Basic.displaceVertex( shinyPlane.geometry, 0.01 );
   shinyPlane.rotation.x = -Math.PI/2;
   //
   return cubeCamera;
