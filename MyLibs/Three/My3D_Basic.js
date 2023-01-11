@@ -154,8 +154,8 @@ MY3D_Basic.setVertexAttribs = function(geo, aa, _pos) {
 }
 
 
-MY3D_Basic.newQuadParticles_Instances = function( _partNb, _partSize ) {
-  var newInstancedMesh = new THREE.InstancedMesh(  new THREE.PlaneGeometry( _partSize,_partSize ),  lambertMat,  _partNb );  // particleMat lambertMat
+MY3D_Basic.newQuadParticles_Instances = function( _partNb, _partSize, _mat ) {
+  var newInstancedMesh = new THREE.InstancedMesh(  new THREE.PlaneGeometry( _partSize,_partSize ),  _mat,  _partNb );  // particleMat lambertMat
   for ( ii=0; ii<_partNb; ii++ ) {
     var dummy = new THREE.Mesh( );   
     dummy.position.set( sRand(2),rand(2),sRand(1) );
@@ -167,7 +167,7 @@ MY3D_Basic.newQuadParticles_Instances = function( _partNb, _partSize ) {
   return newInstancedMesh;
 }
 //
-MY3D_Basic.newQuadParticles_MergedMesh = function( _partNb, _partSize, _autoAnim ) {
+MY3D_Basic.newQuadParticles_MergedMesh = function( _partNb, _partSize, _mat, _autoAnim ) {
   var geometries = [];
   for ( ii=0; ii<_partNb; ii++ ) {
     var newGeo = new THREE.PlaneGeometry( _partSize,_partSize );
@@ -177,7 +177,7 @@ MY3D_Basic.newQuadParticles_MergedMesh = function( _partNb, _partSize, _autoAnim
     MY3D_Basic.setVertexAttribs(newGeo, 1.0, newPos);
   }
   var mergedGeometry = THREE.BufferGeometryUtils.mergeBufferGeometries( geometries );
-  var mergedMesh = new THREE.Mesh( mergedGeometry,   particleMat  );  // particleMat lambertMat
+  var mergedMesh = new THREE.Mesh( mergedGeometry,   _mat  );  // particleMat lambertMat
   scene.add(mergedMesh);  
   //
   if(_autoAnim) mergedMesh.onBeforeRender = MY3D_Basic.animWorldParticles;
@@ -185,11 +185,11 @@ MY3D_Basic.newQuadParticles_MergedMesh = function( _partNb, _partSize, _autoAnim
 }
 //
 MY3D_Basic.animWorldParticles = function( ) {
-  var positions = mergedMesh.geometry.attributes.position.array;
-  var facePositions = mergedMesh.geometry.attributes.facePos.array;
-  var offsetPositions = mergedMesh.geometry.attributes.offsetPos.array;
-  var speeds = mergedMesh.geometry.attributes.speed.array;
-  for ( let jj=0; jj<mergedMesh.geometry.attributes.position.count*1; jj+=1 ) {
+  var positions = worldPoints.geometry.attributes.position.array;
+  var facePositions = worldPoints.geometry.attributes.facePos.array;
+  var offsetPositions = worldPoints.geometry.attributes.offsetPos.array;
+  var speeds = worldPoints.geometry.attributes.speed.array;
+  for ( let jj=0; jj<worldPoints.geometry.attributes.position.count*1; jj+=1 ) {
     var i3 = jj*3;
     var deltaY = 0.002*speeds[i3+1];
     positions[i3+1] += deltaY
@@ -202,10 +202,11 @@ MY3D_Basic.animWorldParticles = function( ) {
       offsetPositions[i3+2] = camera.position.z;
     }
   }
-  mergedMesh.geometry.attributes.facePos.needsUpdate = true;
-  mergedMesh.geometry.attributes.offsetPos.needsUpdate = true;
-  mergedMesh.geometry.attributes.position.needsUpdate = true;
+  worldPoints.geometry.attributes.facePos.needsUpdate = true;
+  worldPoints.geometry.attributes.offsetPos.needsUpdate = true;
+  worldPoints.geometry.attributes.position.needsUpdate = true;
 }
+
 
 
 MY3D_Basic.displaceVertex = function(geo, offset){
