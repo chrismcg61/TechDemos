@@ -461,9 +461,10 @@ MY3D.initShaderMaterial = function(){
 
 
 /*** Texture Canvas (Font) ***/
-MY3D.addTexture = function(_ww){
+MY3D.addTexture = function(_ww,_hh){
   var texCanvas = document.createElement( 'canvas' );
-  texCanvas.width = texCanvas.height = _ww; 
+  texCanvas.width = _ww; 
+  texCanvas.height = _hh;
   var newTexture = new THREE.Texture( texCanvas );
   newTexture.texCanvas = texCanvas;
   newTexture.anisotropy = 8;
@@ -475,7 +476,7 @@ MY3D.addTexture = function(_ww){
     "TITLE_TITLE",  ["A","B","C","D","E","F","g","H","I","j", ] );
   return newTexture;
 }
-MY3D.initTexture_Text = function(texture, _fontSize, col0, col1, title, txtLines){
+MY3D.initTexture_Text = function(texture, _fontSize, col0, col1, title, txtLines, nbCols, randCol){
   var ctx = texture.texCanvas.getContext( '2d' );
   var ww = texture.texCanvas.width;
   ctx.clearRect( 0, 0, ww,ww );  
@@ -484,20 +485,30 @@ MY3D.initTexture_Text = function(texture, _fontSize, col0, col1, title, txtLines
   ctx.fillStyle = col1;
   ctx.textAlign = "center";
   var titleSize = _fontSize*1.5;
-  var yPos = titleSize;
-  ctx.font = "bold "+ (titleSize) +"px Verdana";
-  ctx.fillText(title, ww*0.5,yPos);  
-  // ctx.lineWidth = 8;  
-  ctx.font = "bold "+ (_fontSize) +"px Verdana";
-  yPos += _fontSize*0.5;
-  for ( var i=0; i<txtLines.length; i++ ) {
-    yPos += _fontSize;
-    var txt = txtLines[i];
-    ctx.fillText(txt, ww*0.5, yPos );          
-  }  
+  //
+  for ( var jj=1; jj<=nbCols; jj++ ) {
+    var yPos = 0;
+    if(title!=''){
+      yPos += titleSize;
+      ctx.font = "bold "+ (titleSize) +"px Verdana";
+      ctx.fillText(title, ww*jj/(nbCols+1), yPos);  
+      // ctx.lineWidth = 8;      
+    }
+    ctx.font = "bold "+ (_fontSize) +"px Verdana";
+    for ( var i=0; i<txtLines.length; i++ ) {
+      yPos += _fontSize;
+      var txt = txtLines[i];
+      // ctx.fillStyle = 'rgba('+rand(255)+','+rand(255)+','+rand(255)+', 1)';  //col1
+      var aa = rand(randCol);
+      ctx.fillStyle = 'rgba('+aa*255+','+(1-aa)*255+',255, 1)';    
+      //
+      ctx.fillText(txt, ww*jj/(nbCols+1), yPos);  
+    }  
+  }
   // ctx.strokeText("A", ww*0.5,ww*0.35);  
   texture.needsUpdate = true;
 }
+
 
 
 
