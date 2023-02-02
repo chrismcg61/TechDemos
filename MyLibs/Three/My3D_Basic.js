@@ -330,6 +330,34 @@ MY3D_Basic.myInitGpuCompute = function(){
 }
 
 
+MY3D_Basic.addSpotlightGroup = function( _lightCol, _angle ){
+  var L_SIZE = 0.1
+  var lightL = new THREE.SpotLight( _lightCol, 1.9, 50, Math.PI*_angle, 0.2 );  
+  lightL.castShadow = true;  
+  //
+  var lightLMesh = new THREE.Mesh( new THREE.BoxGeometry( L_SIZE,L_SIZE,L_SIZE ),  new THREE.MeshBasicMaterial( { color:_lightCol,  } )  );
+  lightL.add( lightLMesh );
+  //
+  var lightLTarget = new THREE.Mesh( new THREE.SphereGeometry( L_SIZE/2 ),  new THREE.MeshBasicMaterial( { color:_lightCol, } )  );
+  lightL.add( lightLTarget );
+  lightLTarget.position.z = L_SIZE*1.5;
+  lightL.target = lightLTarget;  
+  //
+  return lightL;
+}
+MY3D_Basic.addRedBluSpotLights = function() {
+  var newDynSpotLight = MY3D_Basic.addSpotlightGroup( 0xff4488,0.3 );
+  scene.add( newDynSpotLight );
+  newDynSpotLight.position.set( 0,0.5,0 );
+  var dynSpotLightB = MY3D_Basic.addSpotlightGroup( 0x0088ff,0.3 );
+  newDynSpotLight.add( dynSpotLightB );
+  dynSpotLightB.position.set( 0,0,-0.1 );
+  dynSpotLightB.rotation.y = Math.PI;
+  return newDynSpotLight;
+}
+
+
+
 MY3D_Basic.customizeMat = function(_mat) {
   _mat.onBeforeCompile = function ( shader ) {
     shader.uniforms.time = { value: 0 };    
