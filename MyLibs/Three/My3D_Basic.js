@@ -69,31 +69,33 @@ MY3D_Basic.ReInitPostFX = function() {
     // console.log(filmPass);
   }
   {
-    unrealBloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width,height ), sVars.bloomFactor,0.2,0.9,  );
+    unrealBloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( width,height ), sVars.bloomFactor*2,0.2,0.9,  );
     if(sVars.bloomFactor>0) composer.addPass( unrealBloomPass );
   }
   {
     effectTM = new THREE.ShaderPass( THREE.ACESFilmicToneMappingShader );  //AdaptiveToneMappingPass
-    effectTM.uniforms.exposure.value = sVars.tmExposeFactor;
+    effectTM.uniforms.exposure.value = sVars.tmExposeFactor*4;
     if(sVars.tmExposeFactor>0) composer.addPass( effectTM );
   }
   if(sVars.gamma) composer.addPass( new THREE.ShaderPass( THREE.GammaCorrectionShader ) );
 }
 
 
+
 MY3D_Basic.render = function() {
   MY3D_Basic.updateVars();
   animate();
   if(composer && vars.RenderModes==RenderModes.PostFx) {
-    unrealBloomPass.strength  = sVars.bloomFactor;
+    unrealBloomPass.strength  = sVars.bloomFactor*2;
     filmPass.uniforms.nIntensity.value = sVars.filmFactor;
-    effectTM.uniforms.exposure.value = sVars.tmExposeFactor;
+    effectTM.uniforms.exposure.value = sVars.tmExposeFactor*4;
     composer.render();
   }
   else renderer.render( scene, camera );
   //
   requestAnimationFrame( MY3D_Basic.render );
 }
+
 MY3D_Basic.updateVars = function() {
   now = clock.getElapsedTime();
   stats.update();
@@ -167,11 +169,11 @@ MY3D_Basic.newQuadParticles_Instances = function( _partNb, _partSize, _mat ) {
   return newInstancedMesh;
 }
 //
-MY3D_Basic.newQuadParticles_MergedMesh = function( _partNb, _partSize, _mat, _autoAnim ) {
+MY3D_Basic.newQuadParticles_MergedMesh = function( _partNb, _partSize, _vSize, _mat, _autoAnim ) {
   var geometries = [];
   for ( ii=0; ii<_partNb; ii++ ) {
     var newGeo = new THREE.PlaneGeometry( _partSize,_partSize );
-    var newPos = new THREE.Vector3( sRand(2),rand(2),sRand(2) );  //.normalize();
+    var newPos = new THREE.Vector3( sRand(_vSize.x),rand(_vSize.y),sRand(_vSize.z) );  //.normalize();
     newGeo.translate( newPos.x,newPos.y,newPos.z );  
     geometries.push( newGeo );
     MY3D_Basic.setVertexAttribs(newGeo, 1.0, newPos);
