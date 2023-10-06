@@ -29,7 +29,7 @@ MY3D.initWebglRenderer = function(){
     directionalLight.shadow.mapSize.width = directionalLight.shadow.mapSize.height = 1024;   //directionalLight.shadow.camera.near=0.05;  //directionalLight.shadow.bias=-0.00005;
     scene.add( directionalLight );
     //
-    var ground = new THREE.Mesh( new THREE.PlaneGeometry(6,6, 512,512),  new THREE.MeshPhysicalMaterial({displacementMap:myBumpMap,displacementScale:0.3,}) );
+    var ground = new THREE.Mesh( new THREE.PlaneGeometry(6,6, 512,512),  new THREE.MeshPhysicalMaterial({displacementMap:waterBumpMap,displacementScale:0.3,}) );
     ground.position.y = -0.1
     ground.rotation.x = -Math.PI/2;
     ground.receiveShadow = true;
