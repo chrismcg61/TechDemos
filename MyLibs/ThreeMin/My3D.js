@@ -25,7 +25,7 @@ MY3D.initSceneBackground = function(_THREE){
   scene.background = new _THREE.Color( 0x000044 );
   {
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+    renderer.shadowMap.type = _THREE.PCFSoftShadowMap; // default _THREE.PCFShadowMap
     scene.add(camera)  
 
     directionalLight = new _THREE.DirectionalLight( 0xffffff, 5 );
