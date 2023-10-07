@@ -4,25 +4,28 @@ MY3D.HH = window.innerHeight
 
 let camera, scene, renderer;
 
-var concreteMap, waterBumpMap;
+var concreteMap, waterBumpMap, particleMap;
 var directionalLight, ground;
 MY3D.initWebglRenderer = function(_THREE){
+  particleMap = new _THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/CloudParticle.jpg")
   concreteMap = new _THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/Concrete.jpg")
   waterBumpMap = new _THREE.TextureLoader().load("https://cdn.rawgit.com/mrdoob/three.js/r156/examples/textures/water/Water_1_M_Normal.jpg")
   //waterBumpMap.repeat.set( 1,1 );  waterBumpMap.wrapS=waterBumpMap.wrapT=_THREE.RepeatWrapping; 
-
-  camera = new _THREE.PerspectiveCamera( 70, MY3D.WW/MY3D.HH, 0.01, 900 );
-  camera.position.set( 0,0.5,3 )
-  scene = new _THREE.Scene();  
-
+  
   renderer = new _THREE.WebGLRenderer( { antialias: true } );
   document.body.appendChild( renderer.domElement );  
   renderer.setSize( MY3D.WW,MY3D.HH );
-  // window.addEventListener( 'resize', onWindowResize );   //renderer.setPixelRatio( window.devicePixelRatio );
+  // window.addEventListener( 'resize', onWindowResize );   //renderer.setPixelRatio( window.devicePixelRatio );  
+}
+MY3D.initSceneBackground = function(_THREE){
+  camera = new _THREE.PerspectiveCamera( 70, MY3D.WW/MY3D.HH, 0.01, 900 );
+  camera.position.set( 0,0.5,3 )
+  scene = new _THREE.Scene();  
   
   scene.background = new _THREE.Color( 0x000044 );
   {
     renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
     scene.add(camera)  
 
     directionalLight = new _THREE.DirectionalLight( 0xffffff, 5 );
