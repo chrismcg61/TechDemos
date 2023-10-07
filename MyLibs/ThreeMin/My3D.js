@@ -15,7 +15,8 @@ MY3D.initWebglRenderer = function(_THREE){
   particleMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/CloudParticle.jpg")
   concreteMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/Concrete.jpg")
   waterBumpMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/mrdoob/three.js/r156/examples/textures/water/Water_1_M_Normal.jpg")
-  //waterBumpMap.repeat.set( 1,1 );  waterBumpMap.wrapS=waterBumpMap.wrapT=THREE.RepeatWrapping; 
+  concreteMap.repeat.set( 1,1 );  concreteMap.wrapS=concreteMap.wrapT=THREE.RepeatWrapping; 
+  waterBumpMap.repeat.set( 1,1 );  waterBumpMap.wrapS=waterBumpMap.wrapT=THREE.RepeatWrapping; 
   
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   document.body.appendChild( renderer.domElement );  
@@ -64,4 +65,26 @@ MY3D.initGui = function(_params, _gui){
     else if(key.includes('Select'))  folder.add(_params, key,  {Mode0:0,Mode1:1,Mode2:2,Mode3:3,Mode4:4,Mode5:5,} );  
     else folder.add(_params, key,  ); 
   }
+}
+
+//  CUSTOM PARTICLES MATERIAL :
+MY3D.customPointsMat_TexPos = function(_pointsMat){
+  _pointsMat.onBeforeCompile = function ( shader ) {
+    shader.uniforms.texturePosition = { value: null };
+    shader.vertexShader = 'uniform sampler2D texturePosition;\n' + shader.vertexShader;  
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      `
+      vec4 posTemp = texture2D( texturePosition, uv );
+      vec3 transformed = posTemp.xyz;       // transformed = vec3( position );      
+      `);
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <colorspace_fragment>',
+      `
+      gl_FragColor = linearToOutputTexel( gl_FragColor );
+      if ( length( gl_PointCoord - vec2( 0.5, 0.5 ) )  >  0.5 )   discard;
+      `);
+    _pointsMat.userData.shader = shader;
+    // console.log( shader.vertexShader )
+  };
 }
