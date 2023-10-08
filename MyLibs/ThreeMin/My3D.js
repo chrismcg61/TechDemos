@@ -25,34 +25,29 @@ MY3D.initWebglRenderer = function(_THREE){
 }
 //
 MY3D.initSceneBackground = function(){
-  camera = new THREE.PerspectiveCamera( 70, MY3D.WW/MY3D.HH, 0.01, 900 );
-  camera.position.set( 0,0.5,3 )
+  camera = new THREE.PerspectiveCamera( 70, MY3D.WW/MY3D.HH, 0.01, 900 );  //camera.position.set( 0,0.5,3 )
   scene = new THREE.Scene();  
 
   scene.background = new THREE.Color( 0x000044 );
   {
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+    renderer.shadowMap.enabled = true;   //renderer.shadowMap.type = THREE.PCFSoftShadowMap; //default THREE.PCFShadowMap
     scene.add(camera)  
 
     directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
     directionalLight.position.set( 1,1,1 );  
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = directionalLight.shadow.mapSize.height = 1024;   //directionalLight.shadow.camera.near=0.05;  //directionalLight.shadow.bias=-0.00005;
-    scene.add( directionalLight );
+    scene.add( directionalLight );    
     //
-    camPLight = new THREE.PointLight( 0xff8800, 5, 5 );
-    camPLight.castShadow = true;
-    camPLight.shadow.camera.near=0.01;  
-    camPLight.shadow.mapSize.width = camPLight.shadow.mapSize.height = 1024;   
-    camPLight.position.z = -0.6
+    ground = new THREE.Mesh( new THREE.PlaneGeometry(6,6, 1,1),  new THREE.MeshLambertMaterial()  );
+    ground.rotation.x = -Math.PI/2;  ground.receiveShadow = true;
+    scene.add( ground );  
+  }
+  {
+    camPLight = new THREE.PointLight( 0xff8800, 5, 5 );  //camPLight.position.z = -0.6
     camera.add( camPLight );
     //
-    ground = new THREE.Mesh( new THREE.PlaneGeometry(6,6, 512,512),  new THREE.MeshPhysicalMaterial({displacementMap:waterBumpMap,displacementScale:0.3,}) );
-    ground.position.y = -0.1
-    ground.rotation.x = -Math.PI/2;
-    ground.receiveShadow = true;
-    scene.add( ground );  
+    camPLight.myTorus = new THREE.Mesh( new THREE.TorusGeometry( 0.15,0.03, 5,8 ),  new THREE.MeshLambertMaterial()  );
+    camPLight.add( camPLight.myTorus );
+    camPLight.myTorus.castShadow = true;    
   }
 }
 //
