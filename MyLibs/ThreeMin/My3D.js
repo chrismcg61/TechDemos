@@ -21,7 +21,8 @@ MY3D.initWebglRenderer = function(_THREE){
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   document.body.appendChild( renderer.domElement );  
   renderer.setSize( MY3D.WW,MY3D.HH );
-  // window.addEventListener( 'resize', onWindowResize );   //renderer.setPixelRatio( window.devicePixelRatio );  
+  renderer.setPixelRatio( window.devicePixelRatio )
+  // window.addEventListener( 'resize', onWindowResize );
 }
 MY3D.initSceneBackground = function(){
   camera = new THREE.PerspectiveCamera( 70, MY3D.WW/MY3D.HH, 0.01, 900 );  //camera.position.set( 0,0.5,3 )
@@ -55,7 +56,7 @@ MY3D.initGui = function(_params, _gui){
     if(key.includes('Col'))  folder.addColor(_params, key,  );  
     else if(key.includes('Factor'))  folder.add(_params, key,   0,1,0.01 );  
     else if(key.includes('Pos'))     folder.add(_params, key,   -30,30,0.01 );  
-    else if(key.includes('Select'))  folder.add(_params, key,  {Mode0:0,Mode1:1,Mode2:2,Mode3:3,Mode4:4,Mode5:5,} );  
+    else if(key.includes('Select'))  folder.add(_params, key,  {Mode0:0,Mode1:1,Mode2:2,Mode3:3,Mode4:4,Mode5:5,Mode6:6,Mode7:7,Mode8:8,Mode9:9,Mode10:10,Mode11:11,Mode12:12,Mode13:13,Mode14:14});  
     else folder.add(_params, key,  ); 
   }
 }
