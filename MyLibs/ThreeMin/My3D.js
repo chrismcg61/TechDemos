@@ -23,44 +23,35 @@ MY3D.initWebglRenderer = function(_THREE){
   renderer.setSize( MY3D.WW,MY3D.HH );
   // window.addEventListener( 'resize', onWindowResize );   //renderer.setPixelRatio( window.devicePixelRatio );  
 }
-//
 MY3D.initSceneBackground = function(){
   camera = new THREE.PerspectiveCamera( 70, MY3D.WW/MY3D.HH, 0.01, 900 );  //camera.position.set( 0,0.5,3 )
-  scene = new THREE.Scene();  
+  scene = new THREE.Scene();
 
-  scene.background = new THREE.Color( 0x000044 );
-  {
-    renderer.shadowMap.enabled = true;   //renderer.shadowMap.type = THREE.PCFSoftShadowMap; //default THREE.PCFShadowMap
-    scene.add(camera)  
+  renderer.shadowMap.enabled = true;   //renderer.shadowMap.type = THREE.PCFSoftShadowMap; //default THREE.PCFShadowMap
+  scene.add(camera)
 
-    directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
-    directionalLight.position.set( 1,1,1 );  
-    scene.add( directionalLight );    
-    //
-    ground = new THREE.Mesh( new THREE.PlaneGeometry(6,6, 1,1),  new THREE.MeshLambertMaterial()  );
-    ground.rotation.x = -Math.PI/2;  ground.receiveShadow = true;
-    scene.add( ground );  
-  }
-  {
-    camPLight = new THREE.PointLight( 0xff8800, 5, 5 );  //camPLight.position.z = -0.6
-    camera.add( camPLight );
-    //
-    camPLight.myTorus = new THREE.Mesh( new THREE.TorusGeometry( 0.15,0.03, 5,8 ),  new THREE.MeshLambertMaterial()  );
-    camPLight.add( camPLight.myTorus );
-    camPLight.myTorus.castShadow = true;    
-  }
+  directionalLight = new THREE.DirectionalLight( 0xffffff, 5 );
+  directionalLight.position.set( 1,1,1 );  
+  scene.add( directionalLight );
+  //
+  ground = new THREE.Mesh( new THREE.PlaneGeometry(6,6, 1,1),  new THREE.MeshLambertMaterial( {displacementMap:waterBumpMap,displacementScale:0.1} )  );
+  ground.position.y = -0.01;  ground.rotation.x = -Math.PI/2;  ground.receiveShadow = true;
+  scene.add( ground );
+  //
+  camPLight = new THREE.PointLight( 0xff8800, 5, 5 );  //camPLight.position.z = -0.6
+  camera.add( camPLight );
+  //
+  camPLight.myTorus = new THREE.Mesh( new THREE.TorusGeometry( 0.15,0.03, 5,8 ),  new THREE.MeshLambertMaterial()  );
+  camPLight.add( camPLight.myTorus );
+  camPLight.myTorus.castShadow = true;
 }
-//
+
+// GUI :
 MY3D.initGui = function(_params, _gui){
-  // var gui = new GUI();  
   var folder = _gui
   for(var key in _params){  
-    if( key.includes('folder') ){
-      folder = _gui.addFolder(_params[key]); 
-      if( !key.includes('open') ) folder.close();
-      continue; 
-    }
-    //
+    if(key.includes('folder')){ folder=_gui.addFolder(_params[key]);  continue; }
+    // if( !key.includes('open') ) folder.close();
     if(key.includes('Col'))  folder.addColor(_params, key,  );  
     else if(key.includes('Factor'))  folder.add(_params, key,   0,1,0.01 );  
     else if(key.includes('Pos'))     folder.add(_params, key,   -30,30,0.01 );  
@@ -86,7 +77,6 @@ MY3D.customPointsMat_TexPos = function(_pointsMat){
       gl_FragColor = linearToOutputTexel( gl_FragColor );
       if ( length( gl_PointCoord - vec2( 0.5, 0.5 ) )  >  0.5 )   discard;
       `);
-    _pointsMat.userData.shader = shader;
-    // console.log( shader.vertexShader )
+    _pointsMat.userData.shader = shader;    // console.log( shader.vertexShader )
   };
 }
