@@ -72,12 +72,18 @@ MY3D.customPointsMat_TexPos = function(_pointsMat){
       vec4 posTemp = texture2D( texturePosition, uv );
       vec3 transformed = posTemp.xyz;       // transformed = vec3( position );      
       `);
+    shader.vertexShader = shader.vertexShader.replace(
+      'gl_PointSize = size;',
+      `
+        gl_PointSize = size * posTemp.w;
+      `); 
+    //
     shader.fragmentShader = shader.fragmentShader.replace(
       '#include <colorspace_fragment>',
       `
       gl_FragColor = linearToOutputTexel( gl_FragColor );
       if ( length( gl_PointCoord - vec2( 0.5, 0.5 ) )  >  0.5 )   discard;
       `);
-    _pointsMat.userData.shader = shader;    // console.log( shader.vertexShader )
+    _pointsMat.userData.shader = shader;    //console.log( shader.vertexShader )
   };
 }
