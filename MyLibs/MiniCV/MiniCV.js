@@ -9,7 +9,7 @@ var experiences = [
   {
     title:"McGARRY",titleExt:"(Teaching & Co)",
     display:"none",
-    backCol:"hsla(20, 80%, 70%, 0.9)",
+    // backCol:"hsla(20, 80%, 70%, 0.9)",
     duration:[1],
     subLines:[
       {title:"Info1",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
@@ -18,7 +18,7 @@ var experiences = [
   },
   {
     title:"McGARRY",titleExt:"(WebApp & Co)",
-    backCol:"hsla(70, 80%, 70%, 0.9)",
+    // backCol:"hsla(70, 80%, 70%, 0.9)",
     duration:[1,2],
     subLines:[
       {title:"Modular/Perf WebApps",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
@@ -27,7 +27,7 @@ var experiences = [
   },
   {
     title:"McGARRY",titleExt:"(GameDev)",
-    backCol:"hsla(120, 80%, 70%, 0.9)",
+    // backCol:"hsla(120, 80%, 70%, 0.9)",
     duration:[1,2],
     subLines:[
       {title:"Unity3D/WebGL Game Prototypes",titleExt:"(Procedural Generation)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
@@ -38,7 +38,7 @@ var experiences = [
   {
     title:"Orange/Bouygues/Cisco",titleExt:"(TV-STB Middleware)",
     // alternateTitle:"Alternate Title 1",
-    backCol:"hsla(170, 80%, 70%, 0.9)",
+    // backCol:"hsla(170, 80%, 70%, 0.9)",
     duration:[1,2,3,4,5],
     subLines:[
       {title:"STB-Middleware Dev",titleExt:"(Disk/GPU Drivers...)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
@@ -49,7 +49,7 @@ var experiences = [
   {
     title:"Technicolor/SagemCom & Co",titleExt:"",
     display:"none",
-    backCol:"hsla(220, 80%, 70%, 0.9)",
+    // backCol:"hsla(220, 80%, 70%, 0.9)",
     duration:[1,2],
     subLines:[
       {title:"Tools Dev",titleExt:"()",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
@@ -59,7 +59,7 @@ var experiences = [
   {
     title:"Ubisoft (Phoenix & ELB)",titleExt:"(Console GameDev)",
     // alternateTitle:"Alternate Title 1",
-    backCol:"hsla(270, 80%, 70%, 0.9)",
+    // backCol:"hsla(270, 80%, 70%, 0.9)",
     duration:[1,2,3],
     subLines:[
       {title:"Lead Gameplay Programmer",titleExt:"(AI,Controls,Menus...)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
