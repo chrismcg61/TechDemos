@@ -90,26 +90,3 @@ MY3D.customPointsMat_TexPos = function(_pointsMat){
     _pointsMat.userData.shader = shader;    //console.log( shader.vertexShader )
   };
 }
-
-// CUSTOM RENDER LOOP :
-MY3D.myRender_Advanced = function(_params){
-  {
-    renderer.setRenderTarget(null)
-    renderer.setScissorTest( true );  
-    renderer.setClearColor( 0x000066 );      
-  }
-  if(_params.Scene1Factor>0){
-    renderer.setViewport( 0,0, MY3D.WW*_params.Scene1Factor,MY3D.HH*_params.Scene1Factor );
-    renderer.setScissor( 0,0, MY3D.WW*_params.Scene1Factor,MY3D.HH*_params.Scene1Factor );
-    if(_params.RENDER_FX) composer.render();
-    else  renderer.render( scene, camera );
-  }  //
-  if(_params.Scene2Factor>0){
-    renderer.setViewport( 0,0, MY3D.WW*_params.Scene2Factor,MY3D.HH*_params.Scene2Factor );
-    renderer.setScissor( 0,0, MY3D.WW*_params.Scene2Factor,MY3D.HH*_params.Scene2Factor );
-    renderer.render( scene2, camera2 );
-  }
-  // RESET Viewport :
-  renderer.setViewport( 0,0, MY3D.WW*_params.Scene1Factor,MY3D.HH*_params.Scene1Factor );
-  renderer.setScissor( 0,0, MY3D.WW*_params.Scene1Factor,MY3D.HH*_params.Scene1Factor );
-}
