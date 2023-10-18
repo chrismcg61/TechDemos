@@ -12,27 +12,31 @@ var experiences = [
     // backCol:"hsla(20, 80%, 70%, 0.9)",
     duration:[1],
     subLines:[
-      {title:"Info1",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"Info1",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Info1",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Info1",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
     ]
   },
   {
     title:"McGARRY",titleExt:"(WebApp & Co)",
     // backCol:"hsla(70, 80%, 70%, 0.9)",
     duration:[1,2],
+    subSkills:["JS","C/C++/C#","WebGL","GLSL",],
     subLines:[
-      {title:"Modular/Perf WebApps",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"3D WebApp Prototypes",titleExt:"(Gamification/Ergonomy)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Product-Owner",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫2D/3D WebApp Architecture/Prototyping",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Gamification / Ergonomy",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
     ]
   },
   {
     title:"McGARRY",titleExt:"(GameDev)",
     // backCol:"hsla(120, 80%, 70%, 0.9)",
     duration:[1,2],
+    subSkills:["JS","C/C++/C#","WebGL","GLSL",],
     subLines:[
-      {title:"Unity3D/WebGL Game Prototypes",titleExt:"(Procedural Generation)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"Adaptive-AI & Custom Machine-Learning Lib",titleExt:"(Multi-Lang, Trial&Error)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"GPU/Parallel Prog",titleExt:"(Shaders, GPU-Accelerated Physics & M-Learning)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Product-Owner",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫GameDev Expert",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫AI/Machine-Learning Expert",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫GPU/Parallel Prog Expert",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
     ]
   },
   {
@@ -40,20 +44,32 @@ var experiences = [
     // alternateTitle:"Alternate Title 1",
     // backCol:"hsla(170, 80%, 70%, 0.9)",
     duration:[1,2,3,4,5],
+    subSkills:["JS","C/C++/C#","WebGL","GLSL",],
     subLines:[
-      {title:"STB-Middleware Dev",titleExt:"(Disk/GPU Drivers...)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"Embedded 2D/3D WebApp Dev​",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"Tools Dev",titleExt:"(AutoDocs, Perf/Quality Monitoring, StressTests)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Tech-Expert",titleExt:"(ScrumMaster)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Tools Expert",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Middleware Expert",titleExt:"(TV-STB MW)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Embedded 2D/3D WebApp Dev",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
     ]
   },
   {
-    title:"Technicolor/SagemCom & Co",titleExt:"",
+    title:"Technicolor / SagemCom / Nagra",titleExt:"(Network/VoIP/Secu)",
     display:"none",
     // backCol:"hsla(220, 80%, 70%, 0.9)",
-    duration:[1,2],
+    duration:[1,],
     subLines:[
-      {title:"Tools Dev",titleExt:"()",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"Tools Dev",titleExt:"()",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Tools Dev",titleExt:"()",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"()",titleExt:"()",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+    ]
+  },
+  {
+    title:"NeoPost / Parrot",titleExt:"(Embedded/TestBench)",
+    display:"none",
+    // backCol:"hsla(220, 80%, 70%, 0.9)",
+    duration:[1,],
+    subLines:[
+      {title:"▫Tools Dev",titleExt:"()",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"()",titleExt:"()",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
     ]
   },
   {
@@ -61,14 +77,39 @@ var experiences = [
     // alternateTitle:"Alternate Title 1",
     // backCol:"hsla(270, 80%, 70%, 0.9)",
     duration:[1,2,3],
+    subSkills:["JS","C/C++/C#","WebGL","GLSL",],
     subLines:[
-      {title:"Lead Gameplay Programmer",titleExt:"(AI,Controls,Menus...)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"Game Engine/MW Expert",titleExt:"(Disk,Audio,GPU Drivers...)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"Tools Expert",titleExt:"(Tests, Textures/BigFiles Mgt)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
-      {title:"3D-Editor Expert",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Team-Lead / Tech-Expert",titleExt:"(ScrumMaster)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Lead Gameplay Programmer",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Middleware Expert",titleExt:"(Game-Engine)",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫Tools Expert",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+      {title:"▫3D-Editor Expert",titleExt:"",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+    ]
+  },
+  {
+    title:"Dassault Aviation",titleExt:"(Embedded/TestBench)",
+    // alternateTitle:"Alternate Title 1",
+    // backCol:"hsla(270, 80%, 70%, 0.9)",
+    duration:[1,],
+    display:"none",
+    subSkills:["JS","C/C++/C#","WebGL","GLSL",],
+    subLines:[
+      {title:"()",titleExt:"()",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
+    ]
+  },
+  {
+    title:"Holomatix",titleExt:"",
+    // alternateTitle:"Alternate Title 1",
+    // backCol:"hsla(270, 80%, 70%, 0.9)",
+    duration:[1,],
+    display:"none",
+    subSkills:["JS","C/C++/C#","WebGL","GLSL",],
+    subLines:[
+      {title:"()",titleExt:"()",subLines:[ {title:"ExtraInfo1",},{title:"ExtraInfo2",} ]},
     ]
   },
 ];
+//
 var skills = [ 
   {
     title:"Prog Languages",titleExt:"",
@@ -103,6 +144,7 @@ var skills = [
     ]
   },
 ];
+
 // Auto-Fill "IDs" :
 autoFillIds(experiences)
 experiences.id = 0
@@ -118,7 +160,8 @@ function autoFillIds(_obj){
   }
 }
 //
-var startDate0 = 2008
+var startDate0 = 2006
+var startDate_ForXp = 2008
 var dynStartDate = startDate0
 autoFillDates( experiences )
 function autoFillDates(_obj){
