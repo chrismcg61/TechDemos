@@ -16,7 +16,7 @@ MY3D.initWebglRenderer = function(_THREE){
   concreteMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/Concrete.jpg")
   waterBumpMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/mrdoob/three.js/r156/examples/textures/water/Water_1_M_Normal.jpg")
   noiseMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/Noise.png")
-  noiseMap.repeat.set( 1,1 );  noiseMap.wrapS=noiseMap.wrapT=THREE.RepeatWrapping;
+  noiseMap.repeat.set( 1,1 );  noiseMap.wrapS=noiseMap.wrapT=THREE.RepeatWrapping; noiseMap.minFilter=noiseMap.magFilter=THREE.NearestFilter;
   concreteMap.repeat.set( 1,1 );  concreteMap.wrapS=concreteMap.wrapT=THREE.RepeatWrapping; 
   waterBumpMap.repeat.set( 1,1 );  waterBumpMap.wrapS=waterBumpMap.wrapT=THREE.RepeatWrapping; 
 
@@ -41,7 +41,7 @@ MY3D.initSceneBackground = function(){
   ground.position.y = -0.01;  ground.rotation.x = -Math.PI/2;  ground.receiveShadow = true;
   scene.add( ground );
   //
-  camPLight = new THREE.PointLight( 0xff8800, 5, 5 );  //camPLight.position.z = -0.6
+  camPLight = new THREE.PointLight( 0xff8800, 5, 8, 0.9 );  //camPLight.position.z = -0.6  
   camPLight.shadow.camera.near = 0.01;
   camera.add( camPLight );
   //
@@ -58,13 +58,13 @@ MY3D.initGui = function(_params, _gui, _selectObj){
     // if( !key.includes('open') ) folder.close();
     if(key.includes('Col'))  folder.addColor(_params, key,  );  
     else if(key.includes('Factor'))  folder.add(_params, key,   0,1,0.01 );  
-    else if(key.includes('Pos'))     folder.add(_params, key,   -30,30,0.01 );  
+    else if(key.includes('Pos'))     folder.add(_params, key,   -90,90,0.01 );  
     else if(key.includes('Select'))  folder.add(_params, key,  _selectObj);  
     else folder.add(_params, key,  ); 
   }
 }
 
-//  CUSTOM PARTICLES MATERIAL :
+// CUSTOM PARTICLES MATERIAL :
 MY3D.customPointsMat_TexPos = function(_pointsMat){
   _pointsMat.onBeforeCompile = function ( shader ) {
     shader.uniforms.texturePosition = { value: null };
@@ -75,18 +75,68 @@ MY3D.customPointsMat_TexPos = function(_pointsMat){
       vec4 posTemp = texture2D( texturePosition, uv );
       vec3 transformed = posTemp.xyz;       // transformed = vec3( position );      
       `);
-    shader.vertexShader = shader.vertexShader.replace(
-      'gl_PointSize = size;',
-      `
-        gl_PointSize = size * posTemp.w;
-      `); 
-    //
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <colorspace_fragment>',
-      `
-      gl_FragColor = linearToOutputTexel( gl_FragColor );
-      if ( length( gl_PointCoord - vec2( 0.5, 0.5 ) )  >  0.5 )   discard;
-      `);
     _pointsMat.userData.shader = shader;    //console.log( shader.vertexShader )
   };
+}
+
+// MY BASIC SHADER MATERIAL (MESH / POINTS) :
+MY3D.newShaderMaterial = function(){
+  var vShader,fShader;
+  {
+  vShader = 
+  `
+  varying vec2 vUv;
+  varying vec4 vPos;
+  uniform float texPosMode;
+  uniform sampler2D texturePosition;
+  void main(){
+   vUv = uv; 
+   vec4 posTemp = vec4( position, 1.0 );
+   if(texPosMode > 0.0)  posTemp = texture2D( texturePosition, uv );
+   vec4 mvPosition = modelViewMatrix * vec4( posTemp.xyz, 1.0 );   
+
+   gl_Position = projectionMatrix * mvPosition;
+   vPos = modelMatrix * posTemp;   //instanceMatrix
+
+   // POINTS :
+   // gl_PointSize = size / -mvPosition.z;
+   gl_PointSize = 2.0 / -mvPosition.z;
+   if(texPosMode > 0.0)  gl_PointSize *= posTemp.w;
+  }`;
+  fShader = 
+  `
+  varying vec2 vUv;
+  varying vec4 vPos;
+  uniform float time;
+  uniform float noiseScale;
+  uniform sampler2D noiseMap;
+  uniform sampler2D diffuseMap;
+  uniform sampler2D particleMap;  
+  void main()	{
+   vec4 colDiffuse = texture2D(diffuseMap,  vUv);
+   vec4 colNoise = texture2D(noiseMap,  noiseScale*vPos.xz);
+   
+   gl_FragColor = vec4( colDiffuse.rgb,  0.7 );
+   
+   if(noiseScale > 0.0) gl_FragColor *= colNoise;
+
+   // POINTS :
+   // gl_FragColor *= texture2D( particleMap, gl_PointCoord );
+   if( length(gl_PointCoord - vec2(0.5,0.5)) > 0.5 )  discard;
+  }`;
+  }
+  var myUniforms = {
+    texPosMode: { value: 0 },
+    texturePosition: { value: null },
+    noiseScale: { value: 0.01 },
+    noiseMap: { value: noiseMap },
+    time: { value: 0 },
+    diffuseMap: { value: concreteMap },
+    particleMap: { value: particleMap },
+  };
+  var newShaderMaterial = new THREE.ShaderMaterial( {
+    uniforms:myUniforms, vertexShader:vShader, fragmentShader:fShader,
+    transparent:true,opacity:0.9,blending:THREE.AdditiveBlending, //depthTest:true,depthWrite:true,
+  } );
+  return newShaderMaterial;
 }
