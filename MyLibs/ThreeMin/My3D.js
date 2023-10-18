@@ -64,7 +64,22 @@ MY3D.initGui = function(_params, _gui, _selectObj){
   }
 }
 
-// CUSTOM PARTICLES MATERIAL :
+// CUSTOM GEOMETRY :
+MY3D.addGeoAttributes = function(_geo){
+  const positionAttribute = _geo.getAttribute( 'position' );  //positionAttribute.array
+  // for ( let i = 0; i < positionAttribute.count; i ++ ) positionAttribute.setXYZ( i, x, y, z );  
+  var colors = [];
+  var sizes = [];
+  for( var ii=0; ii<positionAttribute.count; ii++) {
+    // const myCol = new THREE.Color().setHSL( rand(1),1,0.5 )
+    colors.push( rand(1),rand(1),rand(1) );
+    sizes.push( 1 );
+  }
+  _geo.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+  _geo.setAttribute( 'size', new THREE.Float32BufferAttribute( sizes, 1 ) );
+}
+
+// CUSTOM "PointsMaterial" :
 MY3D.customPointsMat_TexPos = function(_pointsMat){
   _pointsMat.onBeforeCompile = function ( shader ) {
     shader.uniforms.texturePosition = { value: null };
@@ -85,29 +100,39 @@ MY3D.newShaderMaterial = function(){
   {
   vShader = 
   `
+  attribute float size;
+  attribute vec3 color;
+  //
   varying vec2 vUv;
+  varying vec3 vColor;
   varying vec4 vPos;
-  uniform float texPosMode;
   uniform sampler2D texturePosition;
   void main(){
    vUv = uv; 
+   vColor = color; 
    vec4 posTemp = vec4( position, 1.0 );
-   if(texPosMode > 0.0)  posTemp = texture2D( texturePosition, uv );
+   #if defined( USE_TEX_POS )
+    posTemp = texture2D( texturePosition, uv );
+   #endif
    vec4 mvPosition = modelViewMatrix * vec4( posTemp.xyz, 1.0 );   
 
    gl_Position = projectionMatrix * mvPosition;
-   vPos = modelMatrix * posTemp;   //instanceMatrix
+   vPos = modelMatrix * posTemp;            //*instanceMatrix
 
    // POINTS :
-   // gl_PointSize = size / -mvPosition.z;
-   gl_PointSize = 2.0 / -mvPosition.z;
-   if(texPosMode > 0.0)  gl_PointSize *= posTemp.w;
+   gl_PointSize = 1.0 / -mvPosition.z;   //*size
+   #if defined( USE_TEX_POS )
+     gl_PointSize *= posTemp.w;
+   #endif
   }`;
   fShader = 
   `
   varying vec2 vUv;
+  varying vec3 vColor;
   varying vec4 vPos;
+  //
   uniform float time;
+  uniform float opacity;
   uniform float noiseScale;
   uniform sampler2D noiseMap;
   uniform sampler2D diffuseMap;
@@ -116,17 +141,26 @@ MY3D.newShaderMaterial = function(){
    vec4 colDiffuse = texture2D(diffuseMap,  vUv);
    vec4 colNoise = texture2D(noiseMap,  noiseScale*vPos.xz);
    
-   gl_FragColor = vec4( colDiffuse.rgb,  0.7 );
+   gl_FragColor = vec4( 1.0,1.0,1.0,  opacity );
+   #if defined( USE_VERTEX_COL )
+    gl_FragColor.rgb *= vColor;
+   #endif
+   #if defined( USE_DIFFUSE_MAP )
+    gl_FragColor.rgb *= colDiffuse.rgb;
+   #endif
    
-   if(noiseScale > 0.0) gl_FragColor *= colNoise;
+   if(noiseScale > 0.0) gl_FragColor.rgb *= colNoise.rgb;
 
    // POINTS :
-   // gl_FragColor *= texture2D( particleMap, gl_PointCoord );
-   if( length(gl_PointCoord - vec2(0.5,0.5)) > 0.5 )  discard;
+   #if defined( USE_PARTICLE_MAP )
+    gl_FragColor *= texture2D( particleMap, gl_PointCoord );
+   #else
+    if( length(gl_PointCoord - vec2(0.5,0.5)) > 0.5 )  discard;
+   #endif
   }`;
   }
   var myUniforms = {
-    texPosMode: { value: 0 },
+    opacity: { value: 0.7 },
     texturePosition: { value: null },
     noiseScale: { value: 0.01 },
     noiseMap: { value: noiseMap },
@@ -134,9 +168,19 @@ MY3D.newShaderMaterial = function(){
     diffuseMap: { value: concreteMap },
     particleMap: { value: particleMap },
   };
+  var defines = { 
+    USE_TEX_POS: false, 
+    USE_PARTICLE_MAP: false, 
+    USE_VERTEX_COL: false, 
+    USE_DIFFUSE_MAP: false, 
+  }
+  var defaultAttributeValues = { 
+    // 'myColor': [ 1, 1, 1 ],
+    // 'size': 1,
+  }
   var newShaderMaterial = new THREE.ShaderMaterial( {
-    uniforms:myUniforms, vertexShader:vShader, fragmentShader:fShader,
-    transparent:true,opacity:0.9,blending:THREE.AdditiveBlending, //depthTest:true,depthWrite:true,
+    uniforms:myUniforms,defines:defines,defaultAttributeValues:defaultAttributeValues, vertexShader:vShader,fragmentShader:fShader,
+    transparent:true,blending:THREE.AdditiveBlending, //depthTest:true,depthWrite:true,opacity:0.9,
   } );
   return newShaderMaterial;
 }
