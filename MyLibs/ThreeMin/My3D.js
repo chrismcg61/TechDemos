@@ -64,6 +64,124 @@ MY3D.initGui = function(_params, _gui, _selectObj){
   }
 }
 
+// COMPOSER - POSTFX :
+MY3D.initComposer = function(){
+  // console.log( window.devicePixelRatio )   // console.log( renderer.getPixelRatio() )
+  composer = new EffectComposer( renderer,  );   //myRenderTarget
+  composer.setSize( MY3D.WW,MY3D.HH );
+  composer.setPixelRatio( window.devicePixelRatio )
+  composer.renderPass = new RenderPass( scene, camera );
+  //
+  composer.renderPixelatedPass = new RenderPixelatedPass( 4, scene, camera );
+  composer.renderPixelatedPass.setPixelSize( 4 )  
+  composer.renderPixelatedPass.normalEdgeStrength = 4
+  composer.renderPixelatedPass.depthEdgeStrength = 4
+  //    
+  composer.colorCorrectionPass = new ShaderPass( ColorCorrectionShader );
+  composer.gammaPass = new ShaderPass( GammaCorrectionShader );
+  composer.outputPass = new OutputPass();  // composer.outputPass.uniforms._toneMapping = 2    
+  composer.filmPass = new FilmPass( 0.6, true );
+  composer.dotScreenPass = new DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 );
+  //
+  composer.bokehPass = new BokehPass( scene, camera, { focus: 1.0, aperture: 0.025, maxblur: 0.01 } );
+  // composer.bokehPass.uniforms[ 'maxblur' ].value =  params.fxStr  
+  //
+  composer.colorPass = new ShaderPass( ColorifyShader );
+  composer.colorPass.uniforms[ 'color' ] = new THREE.Uniform( new THREE.Color( 0.1,0.5,0.9 ) );
+  //
+  composer.tonePass = new ShaderPass( ACESFilmicToneMappingShader );
+  composer.tonePass.uniforms.exposure.value = 1.9
+  //
+  composer.bloomPass = new UnrealBloomPass( new THREE.Vector2( MY3D.WW,MY3D.HH ),  );
+  composer.bloomPass.strength = 1.1;
+  composer.bloomPass.threshold = 0.1;
+  composer.bloomPass.radius = 0.1;    
+  //
+  composer.vignettePass = new ShaderPass( VignetteShader );
+  composer.vignettePass.uniforms[ 'offset' ].value = 0.95;
+  composer.vignettePass.uniforms[ 'darkness' ].value = 1.6;    
+  //
+  composer.fxaaPass = new ShaderPass( FXAAShader );
+  var pixelRatio = renderer.getPixelRatio();
+  composer.fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( MY3D.WW * pixelRatio );
+  composer.fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( MY3D.HH * pixelRatio );
+  //
+  composer.ssrPass = new SSRPass( {
+    renderer, scene, camera,
+    width:MY3D.WW,height:MY3D.HH,
+    selects:[],  // selects: params.groundReflector ? selects : null    
+  } );  //composer.ssrPass.selects.push()
+  composer.ssrPass.maxDistance = 0.9
+  
+  MY3D.composerAddPasses(params);
+}
+MY3D.composerAddPasses = function(_params){
+  composer.addPass( composer.renderPass );  
+  switch( _params.fxSelect ) {
+    case 0:
+      composer.addPass( composer.gammaPass );
+      break;
+    case 1:
+      composer.addPass( composer.colorCorrectionPass );
+      break;        
+    case 2:
+      composer.addPass( composer.tonePass );
+      break;
+    case 3:
+      composer.addPass( composer.bloomPass );
+      break;
+    case 4:
+      composer.addPass( composer.bokehPass );
+      break;
+    case 5:
+      composer.addPass( composer.filmPass );
+      break;
+    case 6:
+      composer.addPass( composer.dotScreenPass );
+      break;
+    case 7:
+      composer.addPass( composer.colorPass );
+      break;
+    case 8:
+      composer.addPass( composer.vignettePass );
+      break;
+    case 9:
+      composer.addPass( composer.outputPass );
+      break;
+    case 10:
+      // composer.addPass( composer.colorCorrectionPass );
+      composer.addPass( composer.fxaaPass );
+      break;
+    case 11:
+      composer.removePass( composer.renderPass );
+      composer.addPass( composer.renderPixelatedPass );
+      // composer.addPass( composer.outputPass );
+      break;
+    case 12:
+      composer.addPass( composer.ssrPass );
+      // composer.addPass( composer.bloomPass );
+      // composer.addPass( composer.outputPass );
+      break;
+    default: //Only RenderPass
+  }
+}
+MY3D.addSsrGroundReflector = function(){
+  var groundReflector = new ReflectorForSSRPass( new THREE.PlaneGeometry( 90,90 ), {
+    textureWidth: MY3D.WW,textureHeight: MY3D.HH,
+    color: 0xffffff,  useDepthTexture: true,
+    // clipBias: 0.0003,
+  } );
+  groundReflector.material.depthWrite = false;
+  groundReflector.rotation.x = - Math.PI / 2;
+  groundReflector.visible = false;
+  groundReflector.position.y = 0.01
+  scene.add( groundReflector );
+  //
+  composer.ssrPass.groundReflector = groundReflector   
+  composer.ssrPass.groundReflector.maxDistance = 30
+}
+
+
 // CUSTOM GEOMETRY :
 MY3D.addGeoAttributes = function(_geo){
   const positionAttribute = _geo.getAttribute( 'position' );  //positionAttribute.array
