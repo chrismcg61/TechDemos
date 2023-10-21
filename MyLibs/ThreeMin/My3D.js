@@ -67,6 +67,15 @@ MY3D.initGui = function(_params, _gui, _selectObj){
   }
 }
 
+// SCENE 2 :
+MY3D.initScene2 = function(){
+  camera2 = new THREE.PerspectiveCamera( 60, MY3D.WW/MY3D.HH, 0.01, 1000 );
+  camera2.position.set( 0,0,1.7 )
+  scene2 = new THREE.Scene();  
+  scene2.testMesh = new THREE.Mesh( new THREE.BoxGeometry(),  new THREE.MeshBasicMaterial({})  );
+  scene2.add( scene2.testMesh );
+}
+
 // COMPOSER - POSTFX :
 MY3D.initComposer = function( _POSTFX, _params){
   // console.log( window.devicePixelRatio )   // console.log( renderer.getPixelRatio() )
