@@ -40,8 +40,8 @@ MY3D.initSceneBackground = function(){
   directionalLight.position.set( 1,1,1 );  
   scene.add( directionalLight );
   //
-  ground = new THREE.Mesh( new THREE.PlaneGeometry(6,6, 1,1),  new THREE.MeshLambertMaterial( {displacementMap:waterBumpMap,displacementScale:0.1} )  );
-  ground.position.y = -0.01;  ground.rotation.x = -Math.PI/2;  ground.receiveShadow = true;
+  ground = new THREE.Mesh( new THREE.PlaneGeometry(6,6, 90,90),  new THREE.MeshLambertMaterial( {displacementMap:waterBumpMap,displacementScale:0.2} )  );
+  ground.position.y = -0.1;  ground.rotation.x = -Math.PI/2;  ground.receiveShadow = true;
   scene.add( ground );
   //
   camPLight = new THREE.PointLight( 0xff8800, 5, 8, 0.9 );  //camPLight.position.z = -0.6  
@@ -90,7 +90,13 @@ MY3D.composerInit = function( _POSTFX, _params ){
       width:MY3D.WW,height:MY3D.HH,
       selects:[],  // selects: params.groundReflector ? selects : null    
     } );  //composer.ssrPass.selects.push()
-    composer.ssrPass.maxDistance = 0.9    
+    composer.ssrPass.maxDistance = 1.9    
+    composer.ssrPass.thickness = 0.01
+    composer.ssrPass.opacity = 0.7  //composer.ssrPass.groundReflector.opacity =
+    composer.ssrPass.distanceAttenuation = false
+    composer.ssrPass.fresnel = false
+    composer.ssrPass.blur = false
+    composer.ssrPass.bouncing = false
   }
   if(typeof _POSTFX.RenderPixelatedPass!=='undefined'){
     composer.renderPixelatedPass = new _POSTFX.RenderPixelatedPass( 4, scene, camera );
@@ -193,6 +199,7 @@ MY3D.addSsrGroundReflector = function( _POSTFX ){
   //
   composer.ssrPass.groundReflector = groundReflector   
   composer.ssrPass.groundReflector.maxDistance = 30
+  composer.ssrPass.groundReflector.opacity = 0.7
 }
 
 // CUSTOM RENDER LOOP :
