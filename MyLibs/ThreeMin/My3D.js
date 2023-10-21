@@ -7,6 +7,8 @@ let camera, scene, renderer;
 
 var concreteMap, waterBumpMap, particleMap, noiseMap;
 var directionalLight, camPLight, ground;
+var composer;
+
 function rand(_x){ return Math.random()*_x; }
 function sRand(_x){ return (Math.random()-0.5)*_x; }
 //
@@ -65,48 +67,48 @@ MY3D.initGui = function(_params, _gui, _selectObj){
 }
 
 // COMPOSER - POSTFX :
-MY3D.initComposer = function(){
+MY3D.initComposer = function( POSTFX ){
   // console.log( window.devicePixelRatio )   // console.log( renderer.getPixelRatio() )
-  composer = new EffectComposer( renderer,  );   //myRenderTarget
+  composer = new POSTFX.EffectComposer( renderer,  );   //myRenderTarget
   composer.setSize( MY3D.WW,MY3D.HH );
   composer.setPixelRatio( window.devicePixelRatio )
-  composer.renderPass = new RenderPass( scene, camera );
+  composer.renderPass = new POSTFX.RenderPass( scene, camera );
   //
-  composer.renderPixelatedPass = new RenderPixelatedPass( 4, scene, camera );
+  composer.renderPixelatedPass = new POSTFX.RenderPixelatedPass( 4, scene, camera );
   composer.renderPixelatedPass.setPixelSize( 4 )  
   composer.renderPixelatedPass.normalEdgeStrength = 4
   composer.renderPixelatedPass.depthEdgeStrength = 4
   //    
-  composer.colorCorrectionPass = new ShaderPass( ColorCorrectionShader );
-  composer.gammaPass = new ShaderPass( GammaCorrectionShader );
-  composer.outputPass = new OutputPass();  // composer.outputPass.uniforms._toneMapping = 2    
-  composer.filmPass = new FilmPass( 0.6, true );
-  composer.dotScreenPass = new DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 );
+  composer.colorCorrectionPass = new POSTFX.ShaderPass( POSTFX.ColorCorrectionShader );
+  composer.gammaPass = new POSTFX.ShaderPass( POSTFX.GammaCorrectionShader );
+  composer.outputPass = new POSTFX.OutputPass();  // composer.outputPass.uniforms._toneMapping = 2    
+  composer.filmPass = new POSTFX.FilmPass( 0.6, true );
+  composer.dotScreenPass = new POSTFX.DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 );
   //
-  composer.bokehPass = new BokehPass( scene, camera, { focus: 1.0, aperture: 0.025, maxblur: 0.01 } );
+  composer.bokehPass = new POSTFX.BokehPass( scene, camera, { focus: 1.0, aperture: 0.025, maxblur: 0.01 } );
   // composer.bokehPass.uniforms[ 'maxblur' ].value =  params.fxStr  
   //
-  composer.colorPass = new ShaderPass( ColorifyShader );
+  composer.colorPass = new POSTFX.ShaderPass( POSTFX.ColorifyShader );
   composer.colorPass.uniforms[ 'color' ] = new THREE.Uniform( new THREE.Color( 0.1,0.5,0.9 ) );
   //
-  composer.tonePass = new ShaderPass( ACESFilmicToneMappingShader );
+  composer.tonePass = new POSTFX.ShaderPass( POSTFX.ACESFilmicToneMappingShader );
   composer.tonePass.uniforms.exposure.value = 1.9
   //
-  composer.bloomPass = new UnrealBloomPass( new THREE.Vector2( MY3D.WW,MY3D.HH ),  );
+  composer.bloomPass = new POSTFX.UnrealBloomPass( new THREE.Vector2( MY3D.WW,MY3D.HH ),  );
   composer.bloomPass.strength = 1.1;
   composer.bloomPass.threshold = 0.1;
   composer.bloomPass.radius = 0.1;    
   //
-  composer.vignettePass = new ShaderPass( VignetteShader );
+  composer.vignettePass = new POSTFX.ShaderPass( POSTFX.VignetteShader );
   composer.vignettePass.uniforms[ 'offset' ].value = 0.95;
   composer.vignettePass.uniforms[ 'darkness' ].value = 1.6;    
   //
-  composer.fxaaPass = new ShaderPass( FXAAShader );
+  composer.fxaaPass = new POSTFX.ShaderPass( POSTFX.FXAAShader );
   var pixelRatio = renderer.getPixelRatio();
   composer.fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( MY3D.WW * pixelRatio );
   composer.fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( MY3D.HH * pixelRatio );
   //
-  composer.ssrPass = new SSRPass( {
+  composer.ssrPass = new POSTFX.SSRPass( {
     renderer, scene, camera,
     width:MY3D.WW,height:MY3D.HH,
     selects:[],  // selects: params.groundReflector ? selects : null    
@@ -166,7 +168,7 @@ MY3D.composerAddPasses = function(_params){
   }
 }
 MY3D.addSsrGroundReflector = function(){
-  var groundReflector = new ReflectorForSSRPass( new THREE.PlaneGeometry( 90,90 ), {
+  var groundReflector = new POSTFX.ReflectorForSSRPass( new THREE.PlaneGeometry( 90,90 ), {
     textureWidth: MY3D.WW,textureHeight: MY3D.HH,
     color: 0xffffff,  useDepthTexture: true,
     // clipBias: 0.0003,
