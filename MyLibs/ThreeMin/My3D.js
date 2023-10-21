@@ -77,54 +77,56 @@ MY3D.initScene2 = function(){
 }
 
 // COMPOSER - POSTFX :
-MY3D.initComposer = function( _POSTFX, _params){
+MY3D.composerInit = function( _POSTFX, _params ){
   // console.log( window.devicePixelRatio )   // console.log( renderer.getPixelRatio() )
   composer = new _POSTFX.EffectComposer( renderer,  );   //myRenderTarget
   composer.setSize( MY3D.WW,MY3D.HH );
   composer.setPixelRatio( window.devicePixelRatio )
   composer.renderPass = new _POSTFX.RenderPass( scene, camera );
   //
-  composer.renderPixelatedPass = new _POSTFX.RenderPixelatedPass( 4, scene, camera );
-  composer.renderPixelatedPass.setPixelSize( 4 )  
-  composer.renderPixelatedPass.normalEdgeStrength = 4
-  composer.renderPixelatedPass.depthEdgeStrength = 4
-  //    
-  composer.colorCorrectionPass = new _POSTFX.ShaderPass( _POSTFX.ColorCorrectionShader );
-  composer.gammaPass = new _POSTFX.ShaderPass( _POSTFX.GammaCorrectionShader );
-  composer.outputPass = new _POSTFX.OutputPass();  // composer.outputPass.uniforms._toneMapping = 2    
-  composer.filmPass = new _POSTFX.FilmPass( 0.6, true );
-  composer.dotScreenPass = new _POSTFX.DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 );
-  //
-  composer.bokehPass = new _POSTFX.BokehPass( scene, camera, { focus: 1.0, aperture: 0.025, maxblur: 0.01 } );
-  // composer.bokehPass.uniforms[ 'maxblur' ].value =  params.fxStr  
-  //
-  composer.colorPass = new _POSTFX.ShaderPass( _POSTFX.ColorifyShader );
-  composer.colorPass.uniforms[ 'color' ] = new THREE.Uniform( new THREE.Color( 0.1,0.5,0.9 ) );
-  //
-  composer.tonePass = new _POSTFX.ShaderPass( _POSTFX.ACESFilmicToneMappingShader );
-  composer.tonePass.uniforms.exposure.value = 1.9
-  //
-  composer.bloomPass = new _POSTFX.UnrealBloomPass( new THREE.Vector2( MY3D.WW,MY3D.HH ),  );
-  composer.bloomPass.strength = 1.1;
-  composer.bloomPass.threshold = 0.1;
-  composer.bloomPass.radius = 0.1;    
-  //
-  composer.vignettePass = new _POSTFX.ShaderPass( _POSTFX.VignetteShader );
-  composer.vignettePass.uniforms[ 'offset' ].value = 0.95;
-  composer.vignettePass.uniforms[ 'darkness' ].value = 1.6;    
-  //
-  composer.fxaaPass = new _POSTFX.ShaderPass( _POSTFX.FXAAShader );
-  var pixelRatio = renderer.getPixelRatio();
-  composer.fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( MY3D.WW * pixelRatio );
-  composer.fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( MY3D.HH * pixelRatio );
-  //
-  composer.ssrPass = new _POSTFX.SSRPass( {
-    renderer, scene, camera,
-    width:MY3D.WW,height:MY3D.HH,
-    selects:[],  // selects: params.groundReflector ? selects : null    
-  } );  //composer.ssrPass.selects.push()
-  composer.ssrPass.maxDistance = 0.9
-  
+  if(typeof _POSTFX.SSRPass!=='undefined'){
+    composer.ssrPass = new _POSTFX.SSRPass( {
+      renderer, scene, camera,
+      width:MY3D.WW,height:MY3D.HH,
+      selects:[],  // selects: params.groundReflector ? selects : null    
+    } );  //composer.ssrPass.selects.push()
+    composer.ssrPass.maxDistance = 0.9    
+  }
+  if(typeof _POSTFX.RenderPixelatedPass!=='undefined'){
+    composer.renderPixelatedPass = new _POSTFX.RenderPixelatedPass( 4, scene, camera );
+    composer.renderPixelatedPass.setPixelSize( 4 )  
+    composer.renderPixelatedPass.normalEdgeStrength = 4
+    composer.renderPixelatedPass.depthEdgeStrength = 4
+    //    
+    composer.colorCorrectionPass = new _POSTFX.ShaderPass( _POSTFX.ColorCorrectionShader );
+    composer.gammaPass = new _POSTFX.ShaderPass( _POSTFX.GammaCorrectionShader );
+    composer.outputPass = new _POSTFX.OutputPass();  // composer.outputPass.uniforms._toneMapping = 2    
+    composer.filmPass = new _POSTFX.FilmPass( 0.6, true );
+    composer.dotScreenPass = new _POSTFX.DotScreenPass( new THREE.Vector2( 0, 0 ), 0.5, 0.8 );
+    //
+    composer.bokehPass = new _POSTFX.BokehPass( scene, camera, { focus: 1.0, aperture: 0.025, maxblur: 0.01 } );
+    // composer.bokehPass.uniforms[ 'maxblur' ].value =  params.fxStr  
+    //
+    composer.colorPass = new _POSTFX.ShaderPass( _POSTFX.ColorifyShader );
+    composer.colorPass.uniforms[ 'color' ] = new THREE.Uniform( new THREE.Color( 0.1,0.5,0.9 ) );
+    //
+    composer.tonePass = new _POSTFX.ShaderPass( _POSTFX.ACESFilmicToneMappingShader );
+    composer.tonePass.uniforms.exposure.value = 1.9
+    //
+    composer.bloomPass = new _POSTFX.UnrealBloomPass( new THREE.Vector2( MY3D.WW,MY3D.HH ),  );
+    composer.bloomPass.strength = 1.1;
+    composer.bloomPass.threshold = 0.1;
+    composer.bloomPass.radius = 0.1;    
+    //
+    composer.vignettePass = new _POSTFX.ShaderPass( _POSTFX.VignetteShader );
+    composer.vignettePass.uniforms[ 'offset' ].value = 0.95;
+    composer.vignettePass.uniforms[ 'darkness' ].value = 1.6;    
+    //
+    composer.fxaaPass = new _POSTFX.ShaderPass( _POSTFX.FXAAShader );
+    var pixelRatio = renderer.getPixelRatio();
+    composer.fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( MY3D.WW * pixelRatio );
+    composer.fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( MY3D.HH * pixelRatio );
+  }  
   MY3D.composerAddPasses(_params);
 }
 MY3D.composerAddPasses = function( _params ){
