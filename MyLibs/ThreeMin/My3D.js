@@ -8,6 +8,7 @@ let camera, scene, renderer;
 var concreteMap, waterBumpMap, particleMap, noiseMap;
 var directionalLight, camPLight, ground;
 var composer;
+var scene2, camera2;
 
 function rand(_x){ return Math.random()*_x; }
 function sRand(_x){ return (Math.random()-0.5)*_x; }
