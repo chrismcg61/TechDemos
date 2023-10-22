@@ -242,7 +242,31 @@ MY3D.addGeoAttributes = function(_geo){
   _geo.setAttribute( 'size', new THREE.Float32BufferAttribute( sizes, 1 ) );
 }
 
-// CUSTOM "PointsMaterial" :
+// CUSTOM "PointsMaterial" - Dynamic Y Pos :
+MY3D.customPointsMat_Dynamic = function(_pointsMat){
+  _pointsMat.onBeforeCompile = function ( shader ) {
+    shader.vertexShader = 'attribute vec3 color;\n' + shader.vertexShader; 
+    shader.uniforms.time = { value: 0 };
+    shader.uniforms.ratio = { value: 0.05 };
+    shader.uniforms.deltaFactor = { value: 0.05 };
+    shader.vertexShader = 'uniform float time;\n' + shader.vertexShader;       
+    shader.vertexShader = 'uniform float ratio;\n' + shader.vertexShader;       
+    shader.vertexShader = 'uniform float deltaFactor;\n' + shader.vertexShader;    
+    shader.vertexShader = shader.vertexShader.replace(
+      '#include <begin_vertex>',
+      `
+        vec3 transformed = vec3( position );
+        //
+        float deltaY = time * color.r;
+        deltaY = mod(deltaY, deltaFactor);
+        if(color.g > ratio) deltaY = 0.0;
+        transformed.y += deltaY;
+      `);
+    _pointsMat.userData.shader = shader;    //console.log( shader.vertexShader )
+  };
+}
+
+// CUSTOM "PointsMaterial" - PosTexture :
 MY3D.customPointsMat_TexPos = function(_pointsMat){
   _pointsMat.onBeforeCompile = function ( shader ) {
     shader.uniforms.texturePosition = { value: null };
