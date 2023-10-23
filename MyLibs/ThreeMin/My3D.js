@@ -374,11 +374,8 @@ MY3D.newShaderMaterial = function(){
 
 // Alpha-Lit Material :
 MY3D.customMat_AlphaLit = function( _mat ){
-  _mat.onBeforeCompile = function ( shader ) {
-    shader.fragmentShader = '#define USE_ALPHALIT 1\n' + shader.fragmentShader;    
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "#include <lights_fragment_begin>",
-      `
+  var myLightFragment = 
+`
 vec3 geometryPosition = - vViewPosition;
 vec3 geometryNormal = normal;
 vec3 geometryViewDir = ( isOrthographic ) ? vec3( 0, 0, 1 ) : normalize( vViewPosition );
@@ -528,7 +525,14 @@ IncidentLight directLight;
 	vec3 radiance = vec3( 0.0 );
 	vec3 clearcoatRadiance = vec3( 0.0 );
 #endif
-      `);      
+`;          
+  _mat.onBeforeCompile = function ( shader ) {
+    shader.fragmentShader = '#define USE_ALPHALIT 1\n' + shader.fragmentShader;    
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <lights_fragment_begin>",
+      myLightFragment
+      );
     _mat.userData.shader = shader;    //console.log( shader.vertexShader )
   };
+  return myLightFragment;
 }
