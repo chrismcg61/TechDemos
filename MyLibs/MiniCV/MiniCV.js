@@ -1,6 +1,6 @@
-var birthDay = 1983 + 310/365
+var birthDay = 1983 + 310/365.25
 var birthDaySinceEpoch = birthDay - 1970
-var nowY = Date.now()/(1000*60*60*24*365)
+var nowY = Date.now()/(1000*60*60*24*365.25)
 var age = nowY - birthDaySinceEpoch
 // console.log(age)
 // var txt = " ";
@@ -167,8 +167,8 @@ var skills = [
     title:"Other Skills",titleExt:"",
     subLines:[
       {title:"",titleExt:"",titleSkill:"Tech-Survey, Game/DevTest",rating:[1,2,3,4],subLines:[]},
-      {title:"",titleExt:"",titleSkill:"Teacher, Translator",rating:[1,2,3],subLines:[]},
-      {title:"",titleExt:"",titleSkill:"Family Caregiver",rating:[1,2,3],subLines:[]},
+      {title:"",titleExt:"",titleSkill:"Teacher",titleSkillExt:"(Maths,Physics,Prog)",rating:[1,2,3],subLines:[]},
+      {title:"",titleExt:"",titleSkill:"Translator, Family Caregiver",rating:[1,2,3],subLines:[]},
     ]
   },
 ];
