@@ -13,7 +13,7 @@ var scene2, camera2;
 function rand(_x){ return Math.random()*_x; }
 function sRand(_x){ return (Math.random()-0.5)*_x; }
 //
-MY3D.initWebglRenderer = function(_THREE){
+MY3D.initWebglRenderer = function(_THREE, _params){
   THREE = _THREE
   particleMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/CloudParticle.jpg")
   concreteMap = new THREE.TextureLoader().load("https://cdn.rawgit.com/chrismcg61/TechDemos/master/Media/Concrete.jpg")
@@ -27,8 +27,23 @@ MY3D.initWebglRenderer = function(_THREE){
   document.body.appendChild( renderer.domElement );  
   renderer.setSize( MY3D.WW,MY3D.HH );
   renderer.setPixelRatio( window.devicePixelRatio )
-  // window.addEventListener( 'resize', onWindowResize );
+  
+  if(_params.AUTO_RESIZE){
+    document.body.style.margin = 0;   document.body.style.overflow = "hidden"; 
+    window.addEventListener( 'resize', myWindowResize );
+  }
 }
+function myWindowResize(){
+  MY3D.HH=window.innerHeight;  MY3D.WW=window.innerWidth;
+  camera.aspect = MY3D.WW/MY3D.HH;
+  camera.updateProjectionMatrix();
+  renderer.setSize( MY3D.WW,MY3D.HH );
+  //
+  camera2.aspect = MY3D.WW/MY3D.HH;
+  camera2.updateProjectionMatrix();
+  // MY3D.composerInit( POSTFX, params );  composer.ssrPass.groundReflector.textureWidth = MY3D.WW;
+}
+//
 MY3D.initSceneBackground = function(){
   camera = new THREE.PerspectiveCamera( 70, MY3D.WW/MY3D.HH, 0.01, 900 );  //camera.position.set( 0,0.5,3 )
   scene = new THREE.Scene();
