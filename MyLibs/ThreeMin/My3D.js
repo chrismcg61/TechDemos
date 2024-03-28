@@ -217,6 +217,22 @@ MY3D.addSsrGroundReflector = function( _POSTFX ){
   composer.ssrPass.groundReflector.opacity = 0.7
 }
 
+// Update My Default Objs :
+MY3D.myDefaultUpdate = function( _params ){
+  for ( var ii=0; ii<scene.rotMeshes.length; ii++ ){
+    scene.rotMeshes[ii].rotation.y += _params.speedFactor  
+  }
+  //
+  {
+    ground.material.displacementScale=_params.bumpFactor
+    camera.position.set( _params.camPosX, _params.camPosY, _params.camPosZ )  
+    scene.background = new THREE.Color( _params.backCol );   scene.fog = new THREE.FogExp2( _params.backCol, _params.fogFactor );
+    directionalLight.color = new THREE.Color( _params.dirLightCol )
+    camPLight.position.z=_params.pLightCamPosZ;   camPLight.color=new THREE.Color(_params.camLightCol);   camPLight.castShadow=_params.castShadow;
+    scene.mainGroup.position.set( _params.objPosX, _params.objPosY, _params.objPosZ )  
+  }
+}
+
 // CUSTOM RENDER LOOP :
 MY3D.myRender_Advanced = function(_params){
   {
