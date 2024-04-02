@@ -567,3 +567,43 @@ IncidentLight directLight;
   };
   return myLightFragment;
 }
+
+
+
+// Script String Mgt :
+function string_createCodePreTag( _script ) {
+	var _preTag = document.createElement('pre');
+	_preTag.innerHTML = string_escapeHTML( _script.textContent )  //innerHTML  //innerText
+	_preTag.style.backgroundColor = '#f1f1f1'
+	//
+	setTimeout( function(){ document.body.appendChild( _preTag ); }, 500)
+	return _preTag;
+}
+function string_escapeHTML( str ) {
+  return str.replace(/[&<>"']/g, function(match) {
+	const escape = {
+	  '&': '&amp;',
+	  '<': '&lt;',
+	  '>': '&gt;',
+	  '"': '&quot;',
+	  "'": '&#39;'
+	};
+	return escape[match];
+  });
+}
+function string_highlightKeywords( _preTag, _mode, keywords ) {
+	const preTagText = _preTag.innerHTML;
+	// Create a regular expression to find all keywords
+	const regex = new RegExp(`\\b(${keywords.join('|')})\\b`, 'gi');
+	// Replace each keyword with a <span> tag that styles the keyword
+	var highlightedText = "";
+	if(_mode==0) highlightedText = preTagText.replace(regex, (match) => `<span style="color:red;">${match}</span>`);
+	else  highlightedText = preTagText.replace(regex, (match) => `<span style="color:blue;">${match}</span>`);
+	// Update the <pre> tag's HTML with the highlighted text
+	_preTag.innerHTML = highlightedText;
+}
+function string_highlightKeywords_default( _preTag ) {
+	string_highlightKeywords( _preTag, 0, ['function','for', 'if','else', 'var','const', 'typeof','import', ] )
+	string_highlightKeywords( _preTag, 1, ['Math','sin','cos', 'push','add','new', 'true','false',  'THREE','Mesh','scene','params','MY3D'] )
+	string_highlightKeywords( _preTag, 1, ['setTimeout','setInterval','requestAnimationFrame',] )
+}
